@@ -4,11 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UnityBridge NGO</title>
+    <title>Vizioni Rinor i Shales</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                dark: '#33334d',
+                pink: '#e11d74',
+                orange: '#f39237',
+                cyan: '#00adb5',
+                blue: '#005691',
+                purple: '#7d5a94',
+                lime: '#95d03a'
+              }
+            }
+          }
+        }
+      }
+    </script>
     <style>
         body { font-family: 'Inter', sans-serif; }
+        .gradient-border {
+          background: linear-gradient(to right, #e11d74, #f39237, #95d03a, #00adb5, #7d5a94);
+          height: 4px;
+        }
     </style>
 <script type="importmap">
 {

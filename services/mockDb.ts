@@ -15,68 +15,68 @@ const initialData: DbSchema = {
   projects: [
     {
       id: 'p1',
-      title: 'Clean Water Initiative',
-      description: 'Providing sustainable clean water sources to rural communities in East Africa.',
-      startDate: '2024-01-15',
-      endDate: '2024-12-30',
+      title: 'Youth Leadership Academy',
+      description: 'Empowering the next generation of leaders in the Shala region through workshops on civic engagement, public speaking, and project management.',
+      startDate: '2024-04-01',
+      endDate: '2024-06-30',
       status: ProjectStatus.ACTIVE,
-      volunteerCount: 12,
-      image: 'https://picsum.photos/seed/water/800/600'
+      volunteerCount: 15,
+      image: 'https://images.unsplash.com/photo-1523240715630-9978613ff983?auto=format&fit=crop&q=80&w=800'
     },
     {
       id: 'p2',
-      title: 'EduTech for All',
-      description: 'Digital literacy program for underprivileged schools in urban areas.',
-      startDate: '2024-02-01',
-      endDate: '2024-11-20',
+      title: 'Green Shala Community Cleanup',
+      description: 'A regional initiative to preserve the natural beauty of Shala valley. Organizing weekly cleanup sessions and waste management education.',
+      startDate: '2024-03-01',
+      endDate: '2024-10-20',
       status: ProjectStatus.ACTIVE,
-      volunteerCount: 8,
-      image: 'https://picsum.photos/seed/edu/800/600'
+      volunteerCount: 34,
+      image: 'https://images.unsplash.com/photo-1595273670150-db0a3d39d0c5?auto=format&fit=crop&q=80&w=800'
     },
     {
       id: 'p3',
-      title: 'Green City Reforestation',
-      description: 'Planting 10,000 trees across major metropolitan parks to improve air quality.',
-      startDate: '2023-06-01',
-      endDate: '2023-12-31',
+      title: 'Cultural Heritage Festival',
+      description: 'Celebrating the unique traditions of Shala through music, dance, and craft exhibitions. Connecting youth with their regional identity.',
+      startDate: '2023-08-01',
+      endDate: '2023-08-20',
       status: ProjectStatus.COMPLETED,
-      volunteerCount: 45,
-      image: 'https://picsum.photos/seed/tree/800/600'
+      volunteerCount: 50,
+      image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=800'
     }
   ],
   events: [
     {
       id: 'e1',
-      title: 'Annual Charity Gala 2024',
-      description: 'Our flagship fundraising event featuring guest speakers and silent auction.',
-      date: '2024-09-12',
-      location: 'City Convention Center',
-      image: 'https://picsum.photos/seed/gala/800/600'
+      title: 'Networking Meetup for Volunteers',
+      description: 'Join us for an evening of connection and sharing experiences with fellow volunteers.',
+      date: '2024-05-15',
+      location: 'Community Hub, Shala',
+      image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=800'
     }
   ],
   users: [
-    { id: 'u1', name: 'Admin User', email: 'admin@ngo.org', role: UserRole.ADMIN },
-    { id: 'u2', name: 'John Doe', email: 'john@volunteer.com', role: UserRole.VOLUNTEER }
+    { id: 'u1', name: 'Admin Vizioni', email: 'admin@vizionirinorishales.org', role: UserRole.ADMIN },
+    { id: 'u2', name: 'Volunteer User', email: 'volunteer@vizionirinorishales.org', role: UserRole.VOLUNTEER }
   ],
   applications: [
     {
       id: 'a1',
       userId: 'u2',
-      userName: 'John Doe',
-      userEmail: 'john@volunteer.com',
+      userName: 'Volunteer User',
+      userEmail: 'volunteer@vizionirinorishales.org',
       projectId: 'p1',
-      projectTitle: 'Clean Water Initiative',
+      projectTitle: 'Youth Leadership Academy',
       status: ApplicationStatus.PENDING,
-      dateApplied: '2024-03-20'
+      dateApplied: '2024-03-22'
     }
   ],
   news: [
     {
       id: 'n1',
-      title: 'Grant Received from Global Foundation',
-      content: 'We are thrilled to announce a $50,000 grant for our educational projects.',
-      datePosted: '2024-03-15',
-      category: 'Funding'
+      title: 'New Partnership with Regional Youth Council',
+      content: 'Vizioni Rinor i Shales is proud to announce a new collaboration to boost regional youth programs.',
+      datePosted: '2024-03-20',
+      category: 'Announcements'
     }
   ]
 };

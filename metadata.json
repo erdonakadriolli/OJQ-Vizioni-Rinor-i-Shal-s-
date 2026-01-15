@@ -1,6 +1,6 @@
 {
-  "name": "Copy of UnityBridge NGO - Volunteer & Project Management",
-  "description": "A comprehensive NGO management platform featuring project tracking, volunteer coordination, and an AI-powered project pitch generator using Gemini.",
+  "name": "Vizioni Rinor i Shales - NGO Management",
+  "description": "An NGO management platform for Vizioni Rinor i Shales, focusing on youth empowerment, community projects, and regional development.",
   "requestFramePermissions": [
     "camera"
   ]
