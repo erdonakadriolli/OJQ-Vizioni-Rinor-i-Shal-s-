@@ -1,0 +1,7 @@
+{
+  "name": "Copy of UnityBridge NGO - Volunteer & Project Management",
+  "description": "A comprehensive NGO management platform featuring project tracking, volunteer coordination, and an AI-powered project pitch generator using Gemini.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
