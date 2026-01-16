@@ -63,3 +63,16 @@ export interface NewsItem {
   datePosted: string;
   category: string;
 }
+
+export interface StaffMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  image: string;
+  socials: {
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+  };
+}

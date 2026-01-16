@@ -63,9 +63,9 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div>
-            <span className="text-brand-pink font-bold uppercase tracking-widest text-[10px] mb-2 block">Katalogu i Veprimit</span>
-            <h1 className="text-5xl font-black text-brand-dark mb-4 uppercase">Eksploro Projektet</h1>
-            <p className="text-slate-500 font-medium max-w-xl">Zbuloni nismat ku aftësitë dhe pasioni juaj mund të bëjnë ndryshimin e vërtetë në Shala.</p>
+            <span className="text-brand-pink font-bold uppercase tracking-widest text-[10px] mb-2 block">Veprimtaria dhe Ndikimi</span>
+            <h1 className="text-5xl font-black text-brand-dark mb-4 uppercase">Llojet e Projekteve</h1>
+            <p className="text-slate-500 font-medium max-w-xl">Shikoni projektet tona edukative, mjedisore dhe fushatat sociale në rajonin e Shalës.</p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4">
@@ -73,7 +73,7 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
               <input 
                 type="text" 
-                placeholder="Kërko projektin..." 
+                placeholder="Kërko aktivitetin..." 
                 className="pl-12 pr-6 py-3 bg-white border border-slate-200 rounded-full focus:ring-2 focus:ring-brand-pink outline-none w-full sm:w-72 shadow-sm font-medium transition-all"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -143,7 +143,7 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
                     </div>
                     <div className="flex items-center text-[11px] font-bold text-slate-400 uppercase tracking-widest">
                       <Users className="h-4 w-4 mr-3 text-brand-cyan" />
-                      <span>{project.volunteerCount} Vullnetarë</span>
+                      <span>{project.volunteerCount} Vullnetarë pjesëmarrës</span>
                     </div>
                   </div>
 
