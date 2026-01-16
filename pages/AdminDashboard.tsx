@@ -1,12 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
   PieChart, Pie, Legend
 } from 'recharts';
 import { 
   LayoutDashboard, FolderKanban, Users, Calendar, Megaphone, 
-  Plus, Edit2, Trash2, Check, X, Sparkles, FileText, Newspaper, Tv, Clock
+  Plus, Edit2, Trash2, Check, X, Sparkles, FileText, Newspaper, Tv, Clock, Download, ExternalLink, Upload, Link as LinkIcon
 } from 'lucide-react';
 import { getDb, saveDb } from '../services/mockDb';
 import { Project, ApplicationStatus, ProjectStatus, NewsItem } from '../types';
@@ -18,7 +18,10 @@ const AdminDashboard: React.FC = () => {
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [showNewsModal, setShowNewsModal] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Form States
   const [newProject, setNewProject] = useState({
     title: '',
@@ -33,14 +36,14 @@ const AdminDashboard: React.FC = () => {
     title: '',
     content: '',
     category: 'Lajmet e fundit',
-    datePosted: new Date().toISOString().split('T')[0]
+    datePosted: new Date().toISOString().split('T')[0],
+    fileUrl: '',
+    fileName: ''
   });
 
   useEffect(() => {
     setDb(getDb());
   }, []);
-
-  const refreshData = () => setDb(getDb());
 
   const stats = [
     { label: 'Projekte Totale', value: db.projects.length, icon: FolderKanban, color: 'bg-brand-pink' },
@@ -56,7 +59,6 @@ const AdminDashboard: React.FC = () => {
     { name: 'Refuzuar', value: db.applications.filter(a => a.status === ApplicationStatus.REJECTED).length },
   ];
 
-  // Logic Handlers
   const handleAppStatus = (id: string, status: ApplicationStatus) => {
     const updatedApps = db.applications.map(a => a.id === id ? { ...a, status } : a);
     const newDb = { ...db, applications: updatedApps };
@@ -80,6 +82,23 @@ const AdminDashboard: React.FC = () => {
     saveDb(newDb);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setIsUploading(true);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewNews(prev => ({ 
+          ...prev, 
+          fileUrl: reader.result as string,
+          fileName: file.name
+        }));
+        setIsUploading(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAddProject = () => {
     const project: Project = {
       id: 'p' + Date.now(),
@@ -99,18 +118,24 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleAddNews = () => {
+    if (!newNews.title || !newNews.content) {
+      alert("Ju lutem plotësoni titullin dhe përmbajtjen.");
+      return;
+    }
+
     const item: NewsItem = {
       id: 'n' + Date.now(),
       title: newNews.title,
       content: newNews.content,
       category: newNews.category,
-      datePosted: newNews.datePosted
+      datePosted: newNews.datePosted,
+      fileUrl: newNews.fileUrl || undefined
     };
     const newDb = { ...db, news: [item, ...db.news] };
     setDb(newDb);
     saveDb(newDb);
     setShowNewsModal(false);
-    setNewNews({ title: '', content: '', category: 'Lajmet e fundit', datePosted: new Date().toISOString().split('T')[0] });
+    setNewNews({ title: '', content: '', category: 'Lajmet e fundit', datePosted: new Date().toISOString().split('T')[0], fileUrl: '', fileName: '' });
   };
 
   const handleGeneratePitch = async () => {
@@ -123,7 +148,6 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
-      {/* Sidebar */}
       <aside className="w-full md:w-72 bg-brand-dark border-r border-slate-800 flex-shrink-0 text-white z-20">
         <div className="p-8 sticky top-0">
           <div className="flex items-center space-x-3 mb-10">
@@ -132,7 +156,6 @@ const AdminDashboard: React.FC = () => {
             </div>
             <span className="text-sm font-black uppercase tracking-[0.2em]">ADMIN PANEL</span>
           </div>
-          
           <nav className="space-y-2">
             {[
               { id: 'overview', icon: LayoutDashboard, label: 'Pasqyra' },
@@ -154,11 +177,8 @@ const AdminDashboard: React.FC = () => {
         </div>
       </aside>
 
-      {/* Main Content */}
       <main className="flex-grow p-8 md:p-12 overflow-x-hidden">
         <div className="max-w-6xl mx-auto">
-          
-          {/* OVERVIEW TAB */}
           {activeTab === 'overview' && (
             <div className="space-y-12 animate-in fade-in duration-500">
               <div className="flex items-center justify-between">
@@ -167,7 +187,6 @@ const AdminDashboard: React.FC = () => {
                   <p className="text-slate-500 font-medium mt-1">Menaxhoni të gjitha aktivitetet e Vizioni Rinor i Shalës.</p>
                 </div>
               </div>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {stats.map((stat, i) => (
                   <div key={i} className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col group hover:shadow-xl transition-all">
@@ -179,7 +198,6 @@ const AdminDashboard: React.FC = () => {
                   </div>
                 ))}
               </div>
-
               <div className="grid lg:grid-cols-2 gap-10">
                 <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100">
                   <h3 className="text-sm font-black text-brand-dark uppercase tracking-widest mb-10">Volumi i Vullnetarëve</h3>
@@ -195,26 +213,13 @@ const AdminDashboard: React.FC = () => {
                     </ResponsiveContainer>
                   </div>
                 </div>
-
                 <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100">
                   <h3 className="text-sm font-black text-brand-dark uppercase tracking-widest mb-10">Statusi i Aplikimeve</h3>
                   <div className="h-72 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
-                        <Pie
-                          data={appStatusData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          outerRadius={90}
-                          paddingAngle={8}
-                          dataKey="value"
-                        >
-                          {[
-                            <Cell key="0" fill="#95d03a" />,
-                            <Cell key="1" fill="#f39237" />,
-                            <Cell key="2" fill="#e11d74" />
-                          ]}
+                        <Pie data={appStatusData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={8} dataKey="value">
+                          {[<Cell key="0" fill="#95d03a" />, <Cell key="1" fill="#f39237" />, <Cell key="2" fill="#e11d74" />]}
                         </Pie>
                         <Tooltip />
                         <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }} />
@@ -226,7 +231,6 @@ const AdminDashboard: React.FC = () => {
             </div>
           )}
 
-          {/* PROJECTS TAB */}
           {activeTab === 'projects' && (
              <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                <div className="flex items-center justify-between">
@@ -235,7 +239,6 @@ const AdminDashboard: React.FC = () => {
                    <Plus className="h-4 w-4 mr-2" /> Shto Projekt
                  </button>
                </div>
-               
                <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
                 <table className="w-full text-left">
                   <thead className="bg-slate-50/50 border-b border-slate-100">
@@ -269,16 +272,14 @@ const AdminDashboard: React.FC = () => {
              </div>
           )}
 
-          {/* NEWS TAB */}
           {activeTab === 'news' && (
              <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                <div className="flex items-center justify-between">
                  <h1 className="text-3xl font-black text-brand-dark uppercase">Lajmet & Njoftimet</h1>
-                 <button onClick={() => setShowNewsModal(true)} className="bg-brand-orange text-white px-8 py-3 rounded-full font-black uppercase text-[10px] tracking-widest shadow-lg shadow-brand-orange/20 hover:scale-105 transition-all flex items-center">
+                 <button onClick={() => { setNewNews(prev => ({ ...prev, category: 'Lajmet e fundit' })); setShowNewsModal(true); }} className="bg-brand-orange text-white px-8 py-3 rounded-full font-black uppercase text-[10px] tracking-widest shadow-lg shadow-brand-orange/20 hover:scale-105 transition-all flex items-center">
                    <Plus className="h-4 w-4 mr-2" /> Shpall Lajm
                  </button>
                </div>
-               
                <div className="grid gap-6">
                  {db.news.map(n => (
                    <div key={n.id} className="bg-white p-6 rounded-[2rem] border border-slate-100 flex items-center gap-6 group hover:shadow-lg transition-all">
@@ -301,16 +302,14 @@ const AdminDashboard: React.FC = () => {
              </div>
           )}
 
-          {/* REPORTS TAB */}
           {activeTab === 'reports' && (
              <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                <div className="flex items-center justify-between">
                  <h1 className="text-3xl font-black text-brand-dark uppercase">Raportet Zyrtare</h1>
-                 <button onClick={() => { setNewNews({...newNews, category: 'Raportet'}); setShowNewsModal(true); }} className="bg-brand-cyan text-white px-8 py-3 rounded-full font-black uppercase text-[10px] tracking-widest shadow-lg shadow-brand-cyan/20 hover:scale-105 transition-all flex items-center">
-                   <Plus className="h-4 w-4 mr-2" /> Ngarko Raport
+                 <button onClick={() => { setNewNews(prev => ({...prev, category: 'Raportet', fileUrl: '', fileName: ''})); setShowNewsModal(true); }} className="bg-brand-cyan text-white px-8 py-3 rounded-full font-black uppercase text-[10px] tracking-widest shadow-lg shadow-brand-cyan/20 hover:scale-105 transition-all flex items-center">
+                   <Plus className="h-4 w-4 mr-2" /> Ngarko Raport (PDF)
                  </button>
                </div>
-               
                <div className="grid md:grid-cols-2 gap-8">
                  {db.news.filter(n => n.category === 'Raportet').map(r => (
                    <div key={r.id} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 hover:border-brand-cyan transition-all flex flex-col group">
@@ -319,6 +318,12 @@ const AdminDashboard: React.FC = () => {
                      </div>
                      <h4 className="text-xl font-black text-brand-dark uppercase mb-2 leading-tight">{r.title}</h4>
                      <p className="text-sm text-slate-500 font-medium mb-8 line-clamp-2">{r.content}</p>
+                     {r.fileUrl && (
+                        <a href={r.fileUrl} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 text-brand-cyan font-black uppercase text-[10px] tracking-widest mb-6 hover:underline">
+                          <Download className="h-3 w-3" />
+                          <span>Shkarko PDF</span>
+                        </a>
+                     )}
                      <div className="mt-auto flex items-center justify-between pt-6 border-t border-slate-50">
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{r.datePosted}</span>
                         <button onClick={() => deleteNews(r.id)} className="text-red-500 font-black uppercase text-[10px] tracking-widest hover:underline">Fshij</button>
@@ -329,11 +334,9 @@ const AdminDashboard: React.FC = () => {
              </div>
           )}
 
-          {/* APPLICATIONS TAB */}
           {activeTab === 'applications' && (
              <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                <h1 className="text-3xl font-black text-brand-dark uppercase">Aplikimet e Vullnetarëve</h1>
-               
                <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
                 <table className="w-full text-left">
                   <thead className="bg-slate-50/50 border-b border-slate-100">
@@ -355,30 +358,14 @@ const AdminDashboard: React.FC = () => {
                         </td>
                         <td className="px-8 py-6 font-bold text-slate-600 text-sm">{app.projectTitle}</td>
                         <td className="px-8 py-6">
-                           <span className={`px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
-                             app.status === ApplicationStatus.APPROVED ? 'bg-brand-lime text-white' : 
-                             app.status === ApplicationStatus.PENDING ? 'bg-brand-orange text-white' : 
-                             'bg-brand-pink text-white'
-                           }`}>
+                           <span className={`px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${app.status === ApplicationStatus.APPROVED ? 'bg-brand-lime text-white' : app.status === ApplicationStatus.PENDING ? 'bg-brand-orange text-white' : 'bg-brand-pink text-white'}`}>
                             {app.status}
                           </span>
                         </td>
                         <td className="px-8 py-6 text-right">
                           <div className="flex items-center justify-end space-x-2">
-                             <button 
-                                onClick={() => handleAppStatus(app.id, ApplicationStatus.APPROVED)}
-                                className="p-2 bg-slate-50 text-brand-lime hover:bg-brand-lime hover:text-white rounded-xl transition-all"
-                                title="Aprovo"
-                             >
-                               <Check className="h-4 w-4" />
-                             </button>
-                             <button 
-                                onClick={() => handleAppStatus(app.id, ApplicationStatus.REJECTED)}
-                                className="p-2 bg-slate-50 text-brand-pink hover:bg-brand-pink hover:text-white rounded-xl transition-all"
-                                title="Refuzo"
-                             >
-                               <X className="h-4 w-4" />
-                             </button>
+                             <button onClick={() => handleAppStatus(app.id, ApplicationStatus.APPROVED)} className="p-2 bg-slate-50 text-brand-lime hover:bg-brand-lime hover:text-white rounded-xl transition-all" title="Aprovo"><Check className="h-4 w-4" /></button>
+                             <button onClick={() => handleAppStatus(app.id, ApplicationStatus.REJECTED)} className="p-2 bg-slate-50 text-brand-pink hover:bg-brand-pink hover:text-white rounded-xl transition-all" title="Refuzo"><X className="h-4 w-4" /></button>
                           </div>
                         </td>
                       </tr>
@@ -388,13 +375,10 @@ const AdminDashboard: React.FC = () => {
                </div>
              </div>
           )}
-
         </div>
       </main>
 
       {/* MODALS */}
-      
-      {/* Project Modal */}
       {showProjectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-brand-dark/60 backdrop-blur-md animate-in fade-in duration-300">
           <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
@@ -405,12 +389,7 @@ const AdminDashboard: React.FC = () => {
              <div className="p-10 space-y-6 max-h-[70vh] overflow-y-auto">
                 <div>
                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Titulli</label>
-                   <input 
-                      type="text" 
-                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-bold"
-                      value={newProject.title}
-                      onChange={e => setNewProject({...newProject, title: e.target.value})}
-                   />
+                   <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-bold" value={newProject.title} onChange={e => setNewProject({...newProject, title: e.target.value})} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -425,34 +404,18 @@ const AdminDashboard: React.FC = () => {
                 <div>
                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Përshkrimi (Mund ta gjenerosh me AI)</label>
                    <div className="relative">
-                      <textarea 
-                         rows={4}
-                         className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-medium resize-none"
-                         value={newProject.description}
-                         onChange={e => setNewProject({...newProject, description: e.target.value})}
-                      />
-                      <button 
-                        type="button"
-                        onClick={handleGeneratePitch}
-                        disabled={aiLoading}
-                        className="absolute bottom-4 right-4 bg-brand-pink text-white p-3 rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
-                      >
+                      <textarea rows={4} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-medium resize-none" value={newProject.description} onChange={e => setNewProject({...newProject, description: e.target.value})} />
+                      <button type="button" onClick={handleGeneratePitch} disabled={aiLoading} className="absolute bottom-4 right-4 bg-brand-pink text-white p-3 rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all disabled:opacity-50">
                         {aiLoading ? <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <Sparkles className="h-4 w-4" />}
                       </button>
                    </div>
                 </div>
-                <button 
-                  onClick={handleAddProject}
-                  className="w-full py-5 bg-brand-dark text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:bg-brand-pink transition-all"
-                >
-                   Publiko Projektin
-                </button>
+                <button onClick={handleAddProject} className="w-full py-5 bg-brand-dark text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:bg-brand-pink transition-all">Publiko Projektin</button>
              </div>
           </div>
         </div>
       )}
 
-      {/* News Modal */}
       {showNewsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-brand-dark/60 backdrop-blur-md animate-in fade-in duration-300">
           <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
@@ -463,11 +426,7 @@ const AdminDashboard: React.FC = () => {
              <div className="p-10 space-y-6">
                 <div>
                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Kategoria</label>
-                   <select 
-                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold"
-                      value={newNews.category}
-                      onChange={e => setNewNews({...newNews, category: e.target.value})}
-                   >
+                   <select className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold" value={newNews.category} onChange={e => setNewNews({...newNews, category: e.target.value, fileUrl: '', fileName: ''})}>
                      <option>Lajmet e fundit</option>
                      <option>Media</option>
                      <option>Raportet</option>
@@ -475,27 +434,51 @@ const AdminDashboard: React.FC = () => {
                 </div>
                 <div>
                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Titulli</label>
-                   <input 
-                      type="text" 
-                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:ring-2 focus:ring-brand-orange"
-                      value={newNews.title}
-                      onChange={e => setNewNews({...newNews, title: e.target.value})}
-                   />
+                   <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:ring-2 focus:ring-brand-orange" value={newNews.title} onChange={e => setNewNews({...newNews, title: e.target.value})} />
                 </div>
                 <div>
                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Përmbajtja</label>
-                   <textarea 
-                      rows={5}
-                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium resize-none outline-none focus:ring-2 focus:ring-brand-orange"
-                      value={newNews.content}
-                      onChange={e => setNewNews({...newNews, content: e.target.value})}
-                   />
+                   <textarea rows={5} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium resize-none outline-none focus:ring-2 focus:ring-brand-orange" value={newNews.content} onChange={e => setNewNews({...newNews, content: e.target.value})} />
                 </div>
-                <button 
-                  onClick={handleAddNews}
-                  className="w-full py-5 bg-brand-orange text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:bg-brand-dark transition-all"
-                >
-                   Ruaj Lajmin
+
+                {newNews.category === 'Media' && (
+                   <div>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Linku i Medias (URL)</label>
+                      <div className="relative">
+                        <input type="text" placeholder="https://youtube.com/..." className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:ring-2 focus:ring-brand-orange" value={newNews.fileUrl} onChange={e => setNewNews({...newNews, fileUrl: e.target.value})} />
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300"><LinkIcon className="h-5 w-5" /></div>
+                      </div>
+                   </div>
+                )}
+
+                {newNews.category === 'Raportet' && (
+                   <div>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Ngarko Dokumentin (PDF)</label>
+                      <div 
+                        onClick={() => fileInputRef.current?.click()}
+                        className="cursor-pointer border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-brand-cyan hover:bg-slate-50 transition-all flex flex-col items-center justify-center"
+                      >
+                         <input type="file" accept=".pdf" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
+                         {isUploading ? (
+                           <div className="h-8 w-8 border-4 border-slate-200 border-t-brand-cyan rounded-full animate-spin"></div>
+                         ) : newNews.fileName ? (
+                           <>
+                             <FileText className="h-10 w-10 text-brand-cyan mb-2" />
+                             <p className="text-xs font-bold text-brand-dark uppercase truncate max-w-xs">{newNews.fileName}</p>
+                             <p className="text-[9px] text-slate-400 uppercase tracking-widest mt-1">Kliko për ta ndryshuar</p>
+                           </>
+                         ) : (
+                           <>
+                             <Upload className="h-10 w-10 text-slate-300 mb-2" />
+                             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Kliko për të zgjedhur PDF</p>
+                           </>
+                         )}
+                      </div>
+                   </div>
+                )}
+
+                <button onClick={handleAddNews} className={`w-full py-5 text-white rounded-2xl font-black uppercase text-sm tracking-[0.2em] shadow-xl hover:bg-brand-dark transition-all ${newNews.category === 'Raportet' ? 'bg-brand-cyan' : 'bg-brand-orange'}`}>
+                   Ruaj {newNews.category === 'Raportet' ? 'Raportin' : 'Lajmin'}
                 </button>
              </div>
           </div>

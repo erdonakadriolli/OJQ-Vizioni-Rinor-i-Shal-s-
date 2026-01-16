@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getDb } from '../services/mockDb';
 import { NewsItem } from '../types';
-import { Calendar, Tag, ArrowRight, Newspaper, Tv, FileText } from 'lucide-react';
+import { Calendar, Tag, ArrowRight, Newspaper, Tv, FileText, Download, ExternalLink } from 'lucide-react';
 
 const News: React.FC = () => {
   const { category } = useParams<{ category: string }>();
@@ -74,13 +74,40 @@ const News: React.FC = () => {
                   <h3 className="text-2xl font-black text-brand-dark uppercase leading-tight mb-2 group-hover:text-brand-pink transition-colors">
                     {item.title}
                   </h3>
-                  <p className="text-slate-500 font-medium line-clamp-2">
+                  <p className="text-slate-500 font-medium line-clamp-2 leading-relaxed">
                     {item.content}
                   </p>
+                  
+                  <div className="flex gap-4 mt-6">
+                    {item.category === 'Raportet' && item.fileUrl && (
+                      <a 
+                        href={item.fileUrl} 
+                        download={item.title.replace(/\s+/g, '_') + ".pdf"}
+                        className="flex items-center space-x-2 bg-brand-cyan/10 text-brand-cyan px-5 py-2.5 rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-brand-cyan hover:text-white transition-all"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        <span>Shkarko PDF</span>
+                      </a>
+                    )}
+
+                    {item.category === 'Media' && item.fileUrl && (
+                      <a 
+                        href={item.fileUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-2 bg-brand-orange/10 text-brand-orange px-5 py-2.5 rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-brand-orange hover:text-white transition-all"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        <span>Shiko Burimin</span>
+                      </a>
+                    )}
+                  </div>
                 </div>
-                <button className="flex items-center justify-center w-12 h-12 bg-slate-50 rounded-full group-hover:bg-brand-dark group-hover:text-white transition-all">
-                  <ArrowRight className="h-5 w-5" />
-                </button>
+                {(!item.fileUrl || item.category === 'Lajmet e fundit') && (
+                  <button className="flex items-center justify-center w-12 h-12 bg-slate-50 rounded-full group-hover:bg-brand-dark group-hover:text-white transition-all">
+                    <ArrowRight className="h-5 w-5" />
+                  </button>
+                )}
               </div>
             ))}
           </div>

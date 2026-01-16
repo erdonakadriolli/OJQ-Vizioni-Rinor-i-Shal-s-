@@ -90,7 +90,8 @@ const initialData: DbSchema = {
       title: 'Raporti Vjetor 2023',
       content: 'Shikoni arritjet tona dhe ndikimin që kemi pasur gjatë vitit që lamë pas.',
       datePosted: '2024-01-15',
-      category: 'Raportet'
+      category: 'Raportet',
+      fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
     },
     {
       id: 'n4',

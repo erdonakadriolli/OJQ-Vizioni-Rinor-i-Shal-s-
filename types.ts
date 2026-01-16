@@ -62,6 +62,7 @@ export interface NewsItem {
   content: string;
   datePosted: string;
   category: string;
+  fileUrl?: string;
 }
 
 export interface StaffMember {
