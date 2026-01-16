@@ -17,42 +17,42 @@ const initialData: DbSchema = {
     {
       id: 'p1',
       title: 'Trajnime për Aftësi Digjitale',
-      description: 'Trajnime profesionale në IT, Web Development dhe Media Digjitale për të rinjtë e rajonit të Shales, me qëllim rritjen e punësueshmërisë.',
+      description: 'Trajnime profesionale në IT, Web Development dhe Media Digjitale për të rinjtë e rajonit të Shales.',
+      longDescription: 'Ky projekt synon të pajisë të rinjtë me mjetet e nevojshme për tregun modern të punës. Gjatë 6 muajve, pjesëmarrësit do të mësojnë bazat e programimit, dizajnit grafik dhe menaxhimit të rrjeteve sociale.\n\nObjektivat kryesore:\n1. Certifikimi i 50 të rinjve në HTML/CSS.\n2. Krijimi i portofolios digjitale për secilin pjesëmarrës.\n3. Lidhja me biznese lokale për praktikë pune.',
       startDate: '2024-05-01',
       endDate: '2024-10-30',
       status: ProjectStatus.ACTIVE,
       volunteerCount: 28,
-      image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800'
+      image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800',
+      gallery: [
+        'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=800',
+        'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=800'
+      ]
     },
     {
       id: 'p2',
       title: 'Lidershipi Rinor dhe Aftësitë e Buta',
-      description: 'Punëtori edukative mbi komunikimin efektiv, punën në ekip dhe mendimin kritik për të nxitur aktivizmin qytetar.',
+      description: 'Punëtori edukative mbi komunikimin efektiv dhe punën në ekip.',
+      longDescription: 'Projekti fokusohet në zhvillimin e personalitetit dhe aftësive udhëheqëse. Përmes metodave të edukimit joformal, të rinjtë sfidohen të marrin role drejtuese në projekte simuluese.\n\nModulet përfshijnë:\n- Komunikimi joverbal dhe publik.\n- Menaxhimi i konflikteve.\n- Hartimi i projekteve komunitare.',
       startDate: '2024-06-10',
       endDate: '2024-08-15',
       status: ProjectStatus.ACTIVE,
       volunteerCount: 15,
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800'
+      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800',
+      gallery: [
+        'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800'
+      ]
     },
     {
       id: 'p3',
       title: 'Demokracia Lokale dhe Pjesëmarrja',
-      description: 'Inkurajimi i të rinjve për pjesëmarrje aktive në vendimmarrje lokale dhe debate publike.',
+      description: 'Inkurajimi i të rinjve për pjesëmarrje aktive në vendimmarrje lokale.',
+      longDescription: 'Ky ishte një ndër projektet tona më të suksesshme ku të rinjtë patën mundësinë të takojnë zyrtarë komunalë dhe të propozojnë ndryshime në rregulloret lokale për rininë.\n\nRezultatet:\n- Miratimi i Strategjisë Lokale për Rininë.\n- Formimi i Këshillit Rinor Lokal.',
       startDate: '2023-09-01',
       endDate: '2023-12-20',
       status: ProjectStatus.COMPLETED,
       volunteerCount: 35,
       image: 'https://images.unsplash.com/photo-1541873676947-d7977a1e8f74?auto=format&fit=crop&q=80&w=800'
-    },
-    {
-      id: 'p4',
-      title: 'Barazia Gjinore dhe Përfshirja Sociale',
-      description: 'Fushata ndërgjegjësimi dhe aktivitete sociale që promovojnë barazinë dhe gjithëpërfshirjen në komunitet.',
-      startDate: '2024-09-01',
-      endDate: '2024-12-30',
-      status: ProjectStatus.UPCOMING,
-      volunteerCount: 0,
-      image: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=800'
     }
   ],
   events: [
@@ -92,13 +92,6 @@ const initialData: DbSchema = {
       datePosted: '2024-01-15',
       category: 'Raportet',
       fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-    },
-    {
-      id: 'n4',
-      title: 'Pjesëmarrja në Forumin Rajonal',
-      content: 'Diskutime mbi të ardhmen e rinisë në Ballkanin Perëndimor.',
-      datePosted: '2024-03-10',
-      category: 'Lajmet e fundit'
     }
   ],
   staff: [
@@ -116,22 +109,6 @@ const initialData: DbSchema = {
       role: 'Organi Mbikëqyrës',
       bio: 'Mbikëqyr funksionimin e organizatës, siguron transparencë dhe udhëzon politikat afatgjata strategjike.',
       image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=400',
-      socials: { facebook: '#' }
-    },
-    {
-      id: 's3',
-      name: 'Stafi dhe Asistentët',
-      role: 'Koordinimi',
-      bio: 'Koordinojnë aktivitetet, raportimin, logjistikën dhe komunikimin me partnerët vendorë dhe ndërkombëtarë.',
-      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
-      socials: { instagram: '#' }
-    },
-    {
-      id: 's4',
-      name: 'Vullnetarët',
-      role: 'Zemra e Organizatës',
-      bio: 'Shtylla kryesore e VRS, të përfshirë në planifikim, zbatim dhe promovim të aktiviteteve komunitare.',
-      image: 'https://images.unsplash.com/photo-1559027615-cd76efc4125c?auto=format&fit=crop&q=80&w=400',
       socials: { facebook: '#' }
     }
   ]

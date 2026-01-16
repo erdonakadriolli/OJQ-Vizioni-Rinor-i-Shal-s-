@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, MapPin, Calendar, Users, Filter, CheckCircle2 } from 'lucide-react';
-import { Project, ProjectStatus, User, UserRole, ApplicationStatus } from '../types';
-import { getDb, saveDb } from '../services/mockDb';
+import { Search, Calendar, Info, ArrowRight, X, Image as ImageIcon, LayoutGrid } from 'lucide-react';
+import { Project, ProjectStatus, User } from '../types';
+import { getDb } from '../services/mockDb';
 
 interface ProjectsProps {
   user: User | null;
@@ -12,8 +12,7 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [filter, setFilter] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [applyingTo, setApplyingTo] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   useEffect(() => {
     const db = getDb();
@@ -27,145 +26,152 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
     return matchesFilter && matchesSearch;
   });
 
-  const handleApply = (project: Project) => {
-    if (!user) {
-      window.location.hash = '/login';
-      return;
-    }
-
-    setApplyingTo(project.id);
-
-    setTimeout(() => {
-      const db = getDb();
-      const newApp = {
-        id: 'app_' + Date.now(),
-        userId: user.id,
-        userName: user.name,
-        userEmail: user.email,
-        projectId: project.id,
-        projectTitle: project.title,
-        status: ApplicationStatus.PENDING,
-        dateApplied: new Date().toISOString().split('T')[0]
-      };
-      
-      db.applications.push(newApp);
-      saveDb(db);
-      
-      setApplyingTo(null);
-      setSuccessMessage(`Aplikimi juaj për "${project.title}" u dërgua me sukses!`);
-      
-      setTimeout(() => setSuccessMessage(null), 5000);
-    }, 1500);
-  };
-
   return (
-    <div className="py-16 px-6 bg-slate-50 min-h-screen">
+    <div className="py-24 px-6 bg-slate-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-20">
           <div>
-            <span className="text-brand-pink font-bold uppercase tracking-widest text-[10px] mb-2 block">Veprimtaria dhe Ndikimi</span>
-            <h1 className="text-5xl font-black text-brand-dark mb-4 uppercase">Llojet e Projekteve</h1>
-            <p className="text-slate-500 font-medium max-w-xl">Shikoni projektet tona edukative, mjedisore dhe fushatat sociale në rajonin e Shalës.</p>
+            <span className="text-brand-pink font-bold uppercase tracking-widest text-[10px] mb-4 block">Veprimtaria dhe Ndikimi</span>
+            <h1 className="text-5xl md:text-6xl font-black text-brand-dark mb-6 uppercase tracking-tighter leading-none">
+              Projektet e <span className="text-brand-pink">Vizionit</span>
+            </h1>
+            <p className="text-slate-500 font-medium max-w-xl text-lg leading-relaxed">
+              Njihuni me iniciativat tona që po transformojnë komunitetin. Çdo projekt mbart një tregim suksesi dhe përkushtimi.
+            </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
-              <input 
-                type="text" 
-                placeholder="Kërko aktivitetin..." 
-                className="pl-12 pr-6 py-3 bg-white border border-slate-200 rounded-full focus:ring-2 focus:ring-brand-pink outline-none w-full sm:w-72 shadow-sm font-medium transition-all"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="flex items-center bg-white border border-slate-200 rounded-full p-1 shadow-sm">
-              {['All', 'Active', 'Completed'].map(f => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${filter === f ? 'bg-brand-dark text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}
-                >
-                  {f === 'All' ? 'Të gjitha' : f === 'Active' ? 'Aktive' : 'Të mbyllura'}
-                </button>
-              ))}
-            </div>
+          <div className="relative group">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5 group-focus-within:text-brand-pink transition-colors" />
+            <input 
+              type="text" 
+              placeholder="Kërko projektin..." 
+              className="pl-14 pr-8 py-4 bg-white border border-slate-200 rounded-3xl focus:ring-2 focus:ring-brand-pink outline-none w-full sm:w-80 shadow-sm font-bold transition-all text-sm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
         </div>
 
-        {successMessage && (
-          <div className="mb-10 p-5 bg-white border-l-4 border-brand-lime text-brand-dark rounded-r-2xl flex items-center shadow-xl animate-in slide-in-from-top-4">
-            <div className="bg-brand-lime p-2 rounded-full mr-4 text-white">
-              <CheckCircle2 className="h-5 w-5" />
-            </div>
-            <p className="font-bold">{successMessage}</p>
-          </div>
-        )}
+        <div className="flex items-center space-x-2 mb-12 bg-white/50 p-2 rounded-3xl inline-flex border border-slate-100 shadow-sm">
+          {['All', 'Active', 'Completed'].map(f => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-brand-dark text-white shadow-xl translate-y-[-2px]' : 'text-slate-400 hover:text-brand-dark hover:bg-slate-50'}`}
+            >
+              {f === 'All' ? 'Të gjitha' : f === 'Active' ? 'Aktive' : 'Të mbyllura'}
+            </button>
+          ))}
+        </div>
 
-        {filteredProjects.length === 0 ? (
-          <div className="text-center py-24 bg-white rounded-[2rem] border border-dashed border-slate-300">
-            <Filter className="h-16 w-16 text-slate-200 mx-auto mb-6" />
-            <h3 className="text-xl font-black text-brand-dark uppercase">Nuk u gjet asnjë projekt</h3>
-            <p className="text-slate-400 font-medium mt-2">Provoni të ndryshoni filtrat ose termat e kërkimit.</p>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {filteredProjects.map(project => (
-              <div key={project.id} className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all border border-slate-100 flex flex-col group border-b-4 border-b-transparent hover:border-b-brand-pink">
-                <div className="relative h-60 overflow-hidden">
-                  <img 
-                    src={project.image} 
-                    alt={project.title} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  <div className="absolute top-6 left-6">
-                    <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-lg ${
-                      project.status === ProjectStatus.ACTIVE ? 'bg-brand-lime text-white' : 'bg-slate-700 text-white'
-                    }`}>
-                      {project.status === ProjectStatus.ACTIVE ? 'Aktive' : 'Mbyllur'}
-                    </span>
-                  </div>
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <h3 className="text-2xl font-black text-white uppercase leading-tight">{project.title}</h3>
-                  </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+          {filteredProjects.map(project => (
+            <div 
+              key={project.id} 
+              onClick={() => setSelectedProject(project)}
+              className="bg-white rounded-[3rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all border border-slate-100 flex flex-col group relative cursor-pointer hover:-translate-y-2 duration-500"
+            >
+              <div className="relative h-72 overflow-hidden">
+                <img 
+                  src={project.image} 
+                  alt={project.title} 
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/20 to-transparent"></div>
+                <div className="absolute top-8 left-8">
+                  <span className={`px-5 py-2 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] shadow-2xl ${
+                    project.status === ProjectStatus.ACTIVE ? 'bg-brand-lime text-white' : 'bg-slate-700 text-white'
+                  }`}>
+                    {project.status === ProjectStatus.ACTIVE ? 'Aktive' : 'Mbyllur'}
+                  </span>
                 </div>
-                
-                <div className="p-8 flex-grow flex flex-col">
-                  <p className="text-slate-600 text-sm mb-8 line-clamp-3 leading-relaxed font-medium">
-                    {project.description}
-                  </p>
-                  
-                  <div className="space-y-4 mb-10 pt-6 border-t border-slate-50">
-                    <div className="flex items-center text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                      <Calendar className="h-4 w-4 mr-3 text-brand-pink" />
-                      <span>{project.startDate} - {project.endDate}</span>
-                    </div>
-                    <div className="flex items-center text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                      <Users className="h-4 w-4 mr-3 text-brand-cyan" />
-                      <span>{project.volunteerCount} Vullnetarë pjesëmarrës</span>
-                    </div>
-                  </div>
-
-                  <button 
-                    disabled={project.status !== ProjectStatus.ACTIVE || applyingTo === project.id}
-                    onClick={() => handleApply(project)}
-                    className={`mt-auto w-full py-4 rounded-full font-black uppercase text-xs tracking-widest transition-all shadow-lg ${
-                      project.status !== ProjectStatus.ACTIVE 
-                        ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                        : 'bg-brand-dark text-white hover:bg-brand-pink shadow-brand-pink/10'
-                    }`}
-                  >
-                    {applyingTo === project.id ? (
-                      <div className="flex items-center justify-center">
-                        <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-3"></div>
-                        Duke aplikuar...
-                      </div>
-                    ) : project.status === ProjectStatus.ACTIVE ? 'Apliko si Vullnetar' : 'Projekti i Mbyllur'}
-                  </button>
+                <div className="absolute bottom-8 left-8 right-8">
+                  <h3 className="text-2xl font-black text-white uppercase leading-tight tracking-tighter group-hover:text-brand-pink transition-colors">
+                    {project.title}
+                  </h3>
                 </div>
               </div>
-            ))}
+              <div className="p-10 flex-grow flex flex-col">
+                <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium line-clamp-3 italic">
+                  "{project.description}"
+                </p>
+                <div className="mt-auto flex items-center justify-between pt-6 border-t border-slate-50">
+                  <div className="flex items-center text-slate-400">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">{project.startDate}</span>
+                  </div>
+                  <div className="flex items-center text-brand-pink font-black text-[10px] uppercase tracking-widest">
+                    Detajet <ArrowRight className="ml-2 h-4 w-4" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Project Detail Modal */}
+        {selectedProject && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-6 md:p-12 bg-brand-dark/80 backdrop-blur-xl animate-in fade-in duration-300">
+            <div className="bg-white w-full max-w-6xl h-full max-h-[90vh] rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row animate-in zoom-in duration-300">
+              <button 
+                onClick={() => setSelectedProject(null)}
+                className="absolute top-8 right-8 z-[70] bg-white text-brand-dark p-3 rounded-full shadow-xl hover:bg-brand-pink hover:text-white transition-all"
+              >
+                <X className="h-6 w-6" />
+              </button>
+
+              <div className="w-full md:w-1/2 h-64 md:h-full bg-slate-100 overflow-y-auto custom-scrollbar p-1">
+                <div className="grid grid-cols-1 gap-1">
+                  <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-auto object-cover" />
+                  {selectedProject.gallery?.map((img, i) => (
+                    <img key={i} src={img} alt={`Gallery ${i}`} className="w-full h-auto object-cover" />
+                  ))}
+                  {(!selectedProject.gallery || selectedProject.gallery.length === 0) && (
+                    <div className="p-20 flex flex-col items-center justify-center text-slate-300">
+                       <ImageIcon className="h-12 w-12 mb-4" />
+                       <span className="text-[10px] font-black uppercase tracking-widest">Nuk ka foto tjera në galeri</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex-1 p-10 md:p-16 overflow-y-auto flex flex-col">
+                <div className="mb-10">
+                  <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest mb-4 inline-block ${
+                    selectedProject.status === ProjectStatus.ACTIVE ? 'bg-brand-lime text-white' : 'bg-slate-200 text-slate-500'
+                  }`}>
+                    Statusi: {selectedProject.status}
+                  </span>
+                  <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter mb-6">{selectedProject.title}</h2>
+                  <div className="h-1.5 w-20 bg-brand-pink rounded-full mb-10"></div>
+                </div>
+
+                <div className="space-y-8 flex-grow">
+                   <div>
+                      <h4 className="text-[10px] font-black text-brand-pink uppercase tracking-[0.2em] mb-4">Përmbledhja</h4>
+                      <p className="text-lg text-slate-600 font-bold leading-relaxed">{selectedProject.description}</p>
+                   </div>
+                   
+                   <div>
+                      <h4 className="text-[10px] font-black text-brand-pink uppercase tracking-[0.2em] mb-4">Detajet e Zbatimit</h4>
+                      <div className="text-slate-500 leading-relaxed font-medium whitespace-pre-wrap">
+                        {selectedProject.longDescription || "Nuk ka detaje shtesë për këtë projekt."}
+                      </div>
+                   </div>
+
+                   <div className="grid grid-cols-2 gap-8 pt-8 border-t border-slate-100">
+                      <div className="flex flex-col">
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Periudha</span>
+                        <span className="text-sm font-bold text-brand-dark">{selectedProject.startDate} — {selectedProject.endDate}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Pjesëmarrës</span>
+                        <span className="text-sm font-bold text-brand-dark">{selectedProject.volunteerCount} Të angazhuar</span>
+                      </div>
+                   </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>

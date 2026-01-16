@@ -29,11 +29,13 @@ export interface Project {
   id: string;
   title: string;
   description: string;
+  longDescription?: string;
   startDate: string;
   endDate: string;
   status: ProjectStatus;
   volunteerCount: number;
   image: string;
+  gallery?: string[];
 }
 
 export interface Event {

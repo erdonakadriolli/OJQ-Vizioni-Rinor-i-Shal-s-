@@ -6,30 +6,34 @@ import {
 } from 'recharts';
 import { 
   LayoutDashboard, FolderKanban, Users, Calendar, Megaphone, 
-  Plus, Edit2, Trash2, Check, X, Sparkles, FileText, Newspaper, Tv, Clock, Download, ExternalLink, Upload, Link as LinkIcon
+  Plus, Edit2, Trash2, Check, X, Sparkles, FileText, Newspaper, Tv, Clock, Download, ExternalLink, Upload, Link as LinkIcon, Briefcase, Camera, Facebook, Instagram, Linkedin, Image as ImageIcon
 } from 'lucide-react';
 import { getDb, saveDb } from '../services/mockDb';
-import { Project, ApplicationStatus, ProjectStatus, NewsItem } from '../types';
+import { Project, ApplicationStatus, ProjectStatus, NewsItem, StaffMember } from '../types';
 import { generateProjectPitch } from '../services/gemini';
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'applications' | 'news' | 'reports'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'applications' | 'news' | 'reports' | 'staff'>('overview');
   const [db, setDb] = useState(getDb());
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [showNewsModal, setShowNewsModal] = useState(false);
+  const [showStaffModal, setShowStaffModal] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form States
-  const [newProject, setNewProject] = useState({
+  const [projectForm, setProjectForm] = useState({
     title: '',
     description: '',
+    longDescription: '',
     startDate: '',
     endDate: '',
     keywords: '',
-    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800'
+    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800',
+    gallery: [] as string[]
   });
 
   const [newNews, setNewNews] = useState({
@@ -41,6 +45,14 @@ const AdminDashboard: React.FC = () => {
     fileName: ''
   });
 
+  const [newStaff, setNewStaff] = useState({
+    name: '',
+    role: '',
+    bio: '',
+    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400',
+    socials: { facebook: '', instagram: '', linkedin: '' }
+  });
+
   useEffect(() => {
     setDb(getDb());
   }, []);
@@ -48,7 +60,7 @@ const AdminDashboard: React.FC = () => {
   const stats = [
     { label: 'Projekte Totale', value: db.projects.length, icon: FolderKanban, color: 'bg-brand-pink' },
     { label: 'Vullnetarë', value: db.users.filter(u => u.role === 'VOLUNTEER').length, icon: Users, color: 'bg-brand-cyan' },
-    { label: 'Aplikime Pendim', value: db.applications.filter(a => a.status === ApplicationStatus.PENDING).length, icon: Calendar, color: 'bg-brand-orange' },
+    { label: 'Staff Aktiv', value: db.staff.length, icon: Briefcase, color: 'bg-brand-blue' },
     { label: 'Lajme & Raporte', value: db.news.length, icon: Megaphone, color: 'bg-brand-lime' },
   ];
 
@@ -82,6 +94,14 @@ const AdminDashboard: React.FC = () => {
     saveDb(newDb);
   };
 
+  const deleteStaff = (id: string) => {
+    if (!confirm('Fshij këtë anëtar të stafit?')) return;
+    const updatedStaff = db.staff.filter(s => s.id !== id);
+    const newDb = { ...db, staff: updatedStaff };
+    setDb(newDb);
+    saveDb(newDb);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -99,22 +119,56 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const handleAddProject = () => {
-    const project: Project = {
-      id: 'p' + Date.now(),
-      title: newProject.title,
-      description: newProject.description,
-      startDate: newProject.startDate || '2024-01-01',
-      endDate: newProject.endDate || '2024-12-31',
-      status: ProjectStatus.ACTIVE,
-      volunteerCount: 0,
-      image: newProject.image
-    };
-    const newDb = { ...db, projects: [...db.projects, project] };
+  const handleOpenProjectModal = (proj?: Project) => {
+    if (proj) {
+      setEditingProject(proj);
+      setProjectForm({
+        title: proj.title,
+        description: proj.description,
+        longDescription: proj.longDescription || '',
+        startDate: proj.startDate,
+        endDate: proj.endDate,
+        keywords: '',
+        image: proj.image,
+        gallery: proj.gallery || []
+      });
+    } else {
+      setEditingProject(null);
+      setProjectForm({
+        title: '',
+        description: '',
+        longDescription: '',
+        startDate: '',
+        endDate: '',
+        keywords: '',
+        image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800',
+        gallery: []
+      });
+    }
+    setShowProjectModal(true);
+  };
+
+  const handleSaveProject = () => {
+    let newProjects;
+    if (editingProject) {
+      newProjects = db.projects.map(p => p.id === editingProject.id ? {
+        ...p,
+        ...projectForm,
+        volunteerCount: p.volunteerCount // maintain count
+      } : p);
+    } else {
+      const project: Project = {
+        id: 'p' + Date.now(),
+        ...projectForm,
+        status: ProjectStatus.ACTIVE,
+        volunteerCount: 0,
+      };
+      newProjects = [...db.projects, project];
+    }
+    const newDb = { ...db, projects: newProjects };
     setDb(newDb);
     saveDb(newDb);
     setShowProjectModal(false);
-    setNewProject({ title: '', description: '', startDate: '', endDate: '', keywords: '', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800' });
   };
 
   const handleAddNews = () => {
@@ -122,7 +176,6 @@ const AdminDashboard: React.FC = () => {
       alert("Ju lutem plotësoni titullin dhe përmbajtjen.");
       return;
     }
-
     const item: NewsItem = {
       id: 'n' + Date.now(),
       title: newNews.title,
@@ -138,12 +191,39 @@ const AdminDashboard: React.FC = () => {
     setNewNews({ title: '', content: '', category: 'Lajmet e fundit', datePosted: new Date().toISOString().split('T')[0], fileUrl: '', fileName: '' });
   };
 
+  const handleAddStaff = () => {
+    if (!newStaff.name || !newStaff.role) {
+      alert("Ju lutem plotësoni emrin dhe rolin.");
+      return;
+    }
+    const staff: StaffMember = {
+      id: 's' + Date.now(),
+      name: newStaff.name,
+      role: newStaff.role,
+      bio: newStaff.bio,
+      image: newStaff.image,
+      socials: { ...newStaff.socials }
+    };
+    const newDb = { ...db, staff: [...db.staff, staff] };
+    setDb(newDb);
+    saveDb(newDb);
+    setShowStaffModal(false);
+    setNewStaff({ name: '', role: '', bio: '', image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400', socials: { facebook: '', instagram: '', linkedin: '' } });
+  };
+
   const handleGeneratePitch = async () => {
-    if (!newProject.title) return;
+    if (!projectForm.title) return;
     setAiLoading(true);
-    const pitch = await generateProjectPitch(newProject.title, newProject.keywords || "rininë e Shales, komunitet, rajon, zhvillim");
-    setNewProject(prev => ({ ...prev, description: pitch }));
+    const pitch = await generateProjectPitch(projectForm.title, projectForm.keywords || "rininë e Shales, komunitet, rajon, zhvillim");
+    setProjectForm(prev => ({ ...prev, description: pitch }));
     setAiLoading(false);
+  };
+
+  const addGalleryImage = () => {
+    const url = prompt("Vendos URL-në e fotos për galeri:");
+    if (url) {
+      setProjectForm(prev => ({ ...prev, gallery: [...prev.gallery, url] }));
+    }
   };
 
   return (
@@ -160,6 +240,7 @@ const AdminDashboard: React.FC = () => {
             {[
               { id: 'overview', icon: LayoutDashboard, label: 'Pasqyra' },
               { id: 'projects', icon: FolderKanban, label: 'Projektet' },
+              { id: 'staff', icon: Briefcase, label: 'Stafi' },
               { id: 'news', icon: Newspaper, label: 'Lajmet' },
               { id: 'reports', icon: FileText, label: 'Raportet' },
               { id: 'applications', icon: Users, label: 'Aplikimet' },
@@ -235,7 +316,7 @@ const AdminDashboard: React.FC = () => {
              <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                <div className="flex items-center justify-between">
                  <h1 className="text-3xl font-black text-brand-dark uppercase">Menaxho Projektet</h1>
-                 <button onClick={() => setShowProjectModal(true)} className="bg-brand-pink text-white px-8 py-3 rounded-full font-black uppercase text-[10px] tracking-widest shadow-lg shadow-brand-pink/20 hover:scale-105 transition-all flex items-center">
+                 <button onClick={() => handleOpenProjectModal()} className="bg-brand-pink text-white px-8 py-3 rounded-full font-black uppercase text-[10px] tracking-widest shadow-lg shadow-brand-pink/20 hover:scale-105 transition-all flex items-center">
                    <Plus className="h-4 w-4 mr-2" /> Shto Projekt
                  </button>
                </div>
@@ -245,29 +326,65 @@ const AdminDashboard: React.FC = () => {
                     <tr>
                       <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Projekti</th>
                       <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Vullnetarë</th>
-                      <th className="px-8 py-5 text-right"></th>
+                      <th className="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Veprime</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
                     {db.projects.map(p => (
                       <tr key={p.id} className="hover:bg-slate-50/30 transition-colors group">
-                        <td className="px-8 py-6 font-bold text-brand-dark">{p.title}</td>
+                        <td className="px-8 py-6">
+                           <div className="flex items-center space-x-3">
+                              <img src={p.image} className="w-10 h-10 rounded-lg object-cover" />
+                              <span className="font-bold text-brand-dark">{p.title}</span>
+                           </div>
+                        </td>
                         <td className="px-8 py-6">
                            <span className={`px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${p.status === ProjectStatus.ACTIVE ? 'bg-brand-lime text-white' : 'bg-slate-200 text-slate-500'}`}>
                             {p.status}
                           </span>
                         </td>
-                        <td className="px-8 py-6 text-sm font-bold text-slate-600">{p.volunteerCount}</td>
                         <td className="px-8 py-6 text-right">
-                          <button onClick={() => deleteProject(p.id)} className="p-2 text-slate-300 hover:text-red-500 transition-colors">
-                            <Trash2 className="h-5 w-5" />
-                          </button>
+                          <div className="flex items-center justify-end space-x-2">
+                            <button onClick={() => handleOpenProjectModal(p)} className="p-2 text-slate-400 hover:text-brand-cyan">
+                              <Edit2 className="h-4 w-4" />
+                            </button>
+                            <button onClick={() => deleteProject(p.id)} className="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+               </div>
+             </div>
+          )}
+
+          {activeTab === 'staff' && (
+             <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+               <div className="flex items-center justify-between">
+                 <h1 className="text-3xl font-black text-brand-dark uppercase">Menaxho Stafin</h1>
+                 <button onClick={() => setShowStaffModal(true)} className="bg-brand-blue text-white px-8 py-3 rounded-full font-black uppercase text-[10px] tracking-widest shadow-lg shadow-brand-blue/20 hover:scale-105 transition-all flex items-center">
+                   <Plus className="h-4 w-4 mr-2" /> Shto Anëtar Stafi
+                 </button>
+               </div>
+               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                 {db.staff.map(s => (
+                   <div key={s.id} className="bg-white p-6 rounded-[2rem] border border-slate-100 flex flex-col group hover:shadow-xl transition-all relative">
+                     <button onClick={() => deleteStaff(s.id)} className="absolute top-6 right-6 p-2 text-slate-300 hover:text-red-500 transition-colors">
+                       <Trash2 className="h-5 w-5" />
+                     </button>
+                     <div className="flex items-center space-x-4 mb-6">
+                        <img src={s.image} alt={s.name} className="w-16 h-16 rounded-2xl object-cover grayscale" />
+                        <div>
+                          <h4 className="font-black text-brand-dark uppercase tracking-tight">{s.name}</h4>
+                          <p className="text-[10px] font-black text-brand-pink uppercase tracking-widest">{s.role}</p>
+                        </div>
+                     </div>
+                     <p className="text-xs text-slate-500 line-clamp-3 italic mb-4">"{s.bio}"</p>
+                   </div>
+                 ))}
                </div>
              </div>
           )}
@@ -318,12 +435,6 @@ const AdminDashboard: React.FC = () => {
                      </div>
                      <h4 className="text-xl font-black text-brand-dark uppercase mb-2 leading-tight">{r.title}</h4>
                      <p className="text-sm text-slate-500 font-medium mb-8 line-clamp-2">{r.content}</p>
-                     {r.fileUrl && (
-                        <a href={r.fileUrl} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 text-brand-cyan font-black uppercase text-[10px] tracking-widest mb-6 hover:underline">
-                          <Download className="h-3 w-3" />
-                          <span>Shkarko PDF</span>
-                        </a>
-                     )}
                      <div className="mt-auto flex items-center justify-between pt-6 border-t border-slate-50">
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{r.datePosted}</span>
                         <button onClick={() => deleteNews(r.id)} className="text-red-500 font-black uppercase text-[10px] tracking-widest hover:underline">Fshij</button>
@@ -354,7 +465,6 @@ const AdminDashboard: React.FC = () => {
                       <tr key={app.id} className="hover:bg-slate-50/30 transition-colors">
                         <td className="px-8 py-6">
                           <p className="font-bold text-brand-dark">{app.userName}</p>
-                          <p className="text-xs text-slate-400">{app.userEmail}</p>
                         </td>
                         <td className="px-8 py-6 font-bold text-slate-600 text-sm">{app.projectTitle}</td>
                         <td className="px-8 py-6">
@@ -381,36 +491,91 @@ const AdminDashboard: React.FC = () => {
       {/* MODALS */}
       {showProjectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-brand-dark/60 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
+          <div className="bg-white w-full max-w-3xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
              <div className="p-10 border-b border-slate-100 flex items-center justify-between">
-               <h2 className="text-2xl font-black text-brand-dark uppercase">Krijo Projekt të Ri</h2>
+               <h2 className="text-2xl font-black text-brand-dark uppercase">{editingProject ? 'Edito Projektin' : 'Krijo Projekt të Ri'}</h2>
                <button onClick={() => setShowProjectModal(false)} className="text-slate-300 hover:text-brand-dark"><X className="h-8 w-8" /></button>
              </div>
-             <div className="p-10 space-y-6 max-h-[70vh] overflow-y-auto">
+             <div className="p-10 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <div>
                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Titulli</label>
-                   <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-bold" value={newProject.title} onChange={e => setNewProject({...newProject, title: e.target.value})} />
+                   <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-bold" value={projectForm.title} onChange={e => setProjectForm({...projectForm, title: e.target.value})} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Data Fillimit</label>
-                    <input type="date" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold" onChange={e => setNewProject({...newProject, startDate: e.target.value})} />
+                    <input type="date" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold" value={projectForm.startDate} onChange={e => setProjectForm({...projectForm, startDate: e.target.value})} />
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Data Mbarimit</label>
-                    <input type="date" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold" onChange={e => setNewProject({...newProject, endDate: e.target.value})} />
+                    <input type="date" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold" value={projectForm.endDate} onChange={e => setProjectForm({...projectForm, endDate: e.target.value})} />
                   </div>
                 </div>
                 <div>
-                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Përshkrimi (Mund ta gjenerosh me AI)</label>
+                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Përshkrimi i Shkurtër</label>
                    <div className="relative">
-                      <textarea rows={4} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-medium resize-none" value={newProject.description} onChange={e => setNewProject({...newProject, description: e.target.value})} />
+                      <textarea rows={2} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-medium resize-none" value={projectForm.description} onChange={e => setProjectForm({...projectForm, description: e.target.value})} />
                       <button type="button" onClick={handleGeneratePitch} disabled={aiLoading} className="absolute bottom-4 right-4 bg-brand-pink text-white p-3 rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all disabled:opacity-50">
                         {aiLoading ? <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <Sparkles className="h-4 w-4" />}
                       </button>
                    </div>
                 </div>
-                <button onClick={handleAddProject} className="w-full py-5 bg-brand-dark text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:bg-brand-pink transition-all">Publiko Projektin</button>
+                <div>
+                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Detajet e Projektit (Informacioni i gjatë)</label>
+                   <textarea rows={6} placeholder="Shkruani detaje rreth projektit, objektivave dhe rezultateve..." className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-medium resize-none" value={projectForm.longDescription} onChange={e => setProjectForm({...projectForm, longDescription: e.target.value})} />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                   <div>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Fotoja Kryesore (URL)</label>
+                      <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold" value={projectForm.image} onChange={e => setProjectForm({...projectForm, image: e.target.value})} />
+                   </div>
+                   <div>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Galeria e Fotove</label>
+                      <button onClick={addGalleryImage} className="w-full px-6 py-4 border-2 border-dashed border-slate-200 rounded-2xl font-black uppercase text-[10px] tracking-widest text-slate-400 hover:border-brand-pink hover:text-brand-pink transition-all flex items-center justify-center">
+                        <ImageIcon className="h-4 w-4 mr-2" /> Shto Foto
+                      </button>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {projectForm.gallery.map((img, i) => (
+                           <div key={i} className="relative group">
+                              <img src={img} className="w-10 h-10 rounded-lg object-cover" />
+                              <button 
+                                onClick={() => setProjectForm(prev => ({...prev, gallery: prev.gallery.filter((_, idx) => idx !== i)}))}
+                                className="absolute -top-1 -right-1 bg-red-500 text-white p-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="h-2 w-2" />
+                              </button>
+                           </div>
+                        ))}
+                      </div>
+                   </div>
+                </div>
+                <button onClick={handleSaveProject} className="w-full py-5 bg-brand-dark text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:bg-brand-pink transition-all">
+                   {editingProject ? 'Përditëso Projektin' : 'Publiko Projektin'}
+                </button>
+             </div>
+          </div>
+        </div>
+      )}
+
+      {showStaffModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-brand-dark/60 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
+             <div className="p-10 border-b border-slate-100 flex items-center justify-between">
+               <h2 className="text-2xl font-black text-brand-dark uppercase">Shto Anëtar Stafi</h2>
+               <button onClick={() => setShowStaffModal(false)} className="text-slate-300 hover:text-brand-dark"><X className="h-8 w-8" /></button>
+             </div>
+             <div className="p-10 space-y-6 max-h-[70vh] overflow-y-auto">
+                <div>
+                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Emri i Plotë</label>
+                   <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold" value={newStaff.name} onChange={e => setNewStaff({...newStaff, name: e.target.value})} />
+                </div>
+                <div>
+                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Roli / Pozita</label>
+                   <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold" value={newStaff.role} onChange={e => setNewStaff({...newStaff, role: e.target.value})} />
+                </div>
+                <button onClick={handleAddStaff} className="w-full py-5 bg-brand-blue text-white rounded-2xl font-black uppercase text-sm tracking-[0.2em] shadow-xl hover:bg-brand-dark transition-all">
+                   Shto në Ekip
+                </button>
              </div>
           </div>
         </div>
@@ -440,43 +605,6 @@ const AdminDashboard: React.FC = () => {
                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Përmbajtja</label>
                    <textarea rows={5} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium resize-none outline-none focus:ring-2 focus:ring-brand-orange" value={newNews.content} onChange={e => setNewNews({...newNews, content: e.target.value})} />
                 </div>
-
-                {newNews.category === 'Media' && (
-                   <div>
-                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Linku i Medias (URL)</label>
-                      <div className="relative">
-                        <input type="text" placeholder="https://youtube.com/..." className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:ring-2 focus:ring-brand-orange" value={newNews.fileUrl} onChange={e => setNewNews({...newNews, fileUrl: e.target.value})} />
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300"><LinkIcon className="h-5 w-5" /></div>
-                      </div>
-                   </div>
-                )}
-
-                {newNews.category === 'Raportet' && (
-                   <div>
-                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Ngarko Dokumentin (PDF)</label>
-                      <div 
-                        onClick={() => fileInputRef.current?.click()}
-                        className="cursor-pointer border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-brand-cyan hover:bg-slate-50 transition-all flex flex-col items-center justify-center"
-                      >
-                         <input type="file" accept=".pdf" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
-                         {isUploading ? (
-                           <div className="h-8 w-8 border-4 border-slate-200 border-t-brand-cyan rounded-full animate-spin"></div>
-                         ) : newNews.fileName ? (
-                           <>
-                             <FileText className="h-10 w-10 text-brand-cyan mb-2" />
-                             <p className="text-xs font-bold text-brand-dark uppercase truncate max-w-xs">{newNews.fileName}</p>
-                             <p className="text-[9px] text-slate-400 uppercase tracking-widest mt-1">Kliko për ta ndryshuar</p>
-                           </>
-                         ) : (
-                           <>
-                             <Upload className="h-10 w-10 text-slate-300 mb-2" />
-                             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Kliko për të zgjedhur PDF</p>
-                           </>
-                         )}
-                      </div>
-                   </div>
-                )}
-
                 <button onClick={handleAddNews} className={`w-full py-5 text-white rounded-2xl font-black uppercase text-sm tracking-[0.2em] shadow-xl hover:bg-brand-dark transition-all ${newNews.category === 'Raportet' ? 'bg-brand-cyan' : 'bg-brand-orange'}`}>
                    Ruaj {newNews.category === 'Raportet' ? 'Raportin' : 'Lajmin'}
                 </button>
