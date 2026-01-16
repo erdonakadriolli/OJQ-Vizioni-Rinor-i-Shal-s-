@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import Projects from './pages/Projects';
 import AdminDashboard from './pages/AdminDashboard';
 import Login from './pages/Login';
+import About from './pages/About';
+import News from './pages/News';
 import { User, UserRole } from './types';
 import { Facebook, Instagram, Mail, Phone, MapPin } from 'lucide-react';
 
@@ -36,6 +38,10 @@ const App: React.FC = () => {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/about/:section" element={<About />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/news/:category" element={<News />} />
             <Route path="/projects" element={<Projects user={user} />} />
             <Route path="/login" element={<Login onLogin={handleLogin} />} />
             <Route 
@@ -81,7 +87,7 @@ const App: React.FC = () => {
               <ul className="space-y-3 text-sm font-bold uppercase tracking-wider text-[11px]">
                 <li><a href="#/" className="hover:text-brand-pink transition-colors">Kreu</a></li>
                 <li><a href="#/projects" className="hover:text-brand-pink transition-colors">Projekte</a></li>
-                <li><a href="#/about" className="hover:text-brand-pink transition-colors">Misioni</a></li>
+                <li><a href="#/about/mission" className="hover:text-brand-pink transition-colors">Misioni</a></li>
               </ul>
             </div>
 

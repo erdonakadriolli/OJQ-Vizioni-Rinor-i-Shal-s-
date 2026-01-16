@@ -76,7 +76,28 @@ const initialData: DbSchema = {
       title: 'Ngritje e kapaciteteve për stafin',
       content: 'Sesione trajnimi menaxheriale dhe digjitale për stafin dhe vullnetarët e VRS.',
       datePosted: '2024-03-25',
-      category: 'Brendshme'
+      category: 'Lajmet e fundit'
+    },
+    {
+      id: 'n2',
+      title: 'Vizioni Rinor në RTK',
+      content: 'Përfaqësuesit tanë folën për rëndësinë e edukimit digjital në emisionin e mëngjesit.',
+      datePosted: '2024-03-20',
+      category: 'Media'
+    },
+    {
+      id: 'n3',
+      title: 'Raporti Vjetor 2023',
+      content: 'Shikoni arritjet tona dhe ndikimin që kemi pasur gjatë vitit që lamë pas.',
+      datePosted: '2024-01-15',
+      category: 'Raportet'
+    },
+    {
+      id: 'n4',
+      title: 'Pjesëmarrja në Forumin Rajonal',
+      content: 'Diskutime mbi të ardhmen e rinisë në Ballkanin Perëndimor.',
+      datePosted: '2024-03-10',
+      category: 'Lajmet e fundit'
     }
   ],
   staff: [
