@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   LayoutDashboard, FolderKanban, Users, 
   Plus, Edit2, Trash2, X, Newspaper, Briefcase, Camera, 
-  LayoutList
+  LayoutList, Facebook, Instagram, Linkedin
 } from 'lucide-react';
 import { getDb, saveDb } from '../services/mockDb';
 import { Project, ApplicationStatus, ProjectStatus, NewsItem, StaffMember, VolunteerApplication } from '../types';
@@ -25,7 +25,12 @@ const AdminDashboard: React.FC = () => {
   const staffImageRef = useRef<HTMLInputElement>(null);
 
   const [staffForm, setStaffForm] = useState({
-    name: '', role: '', category: 'Stafi Aktual', bio: '', image: '', socials: {}
+    name: '', 
+    role: '', 
+    category: 'Stafi Aktual', 
+    bio: '', 
+    image: '', 
+    socials: { facebook: '', instagram: '', linkedin: '' }
   });
 
   const staffCategories = [
@@ -57,11 +62,22 @@ const AdminDashboard: React.FC = () => {
         category: member.category || 'Stafi Aktual',
         bio: member.bio || '',
         image: member.image || '',
-        socials: member.socials || {}
+        socials: {
+          facebook: member.socials?.facebook || '',
+          instagram: member.socials?.instagram || '',
+          linkedin: member.socials?.linkedin || '',
+        }
       });
     } else {
       setEditingStaff(null);
-      setStaffForm({ name: '', role: '', category: 'Stafi Aktual', bio: '', image: '', socials: {} });
+      setStaffForm({ 
+        name: '', 
+        role: '', 
+        category: 'Stafi Aktual', 
+        bio: '', 
+        image: '', 
+        socials: { facebook: '', instagram: '', linkedin: '' } 
+      });
     }
     setShowStaffModal(true);
   };
@@ -208,7 +224,7 @@ const AdminDashboard: React.FC = () => {
                <h2 className="text-2xl font-black text-brand-dark uppercase">{editingStaff ? 'Edito Personin' : 'Shto Person të Ri'}</h2>
                <button onClick={() => setShowStaffModal(false)}><X className="h-8 w-8 text-slate-300" /></button>
              </div>
-             <div className="p-10 space-y-6 max-h-[70vh] overflow-y-auto">
+             <div className="p-10 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase text-slate-400">Emri Mbiemri</label>
@@ -227,7 +243,7 @@ const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                   <label className="text-[10px] font-black uppercase text-slate-400">Pozita / Roli (Shkruaj manualisht)</label>
+                   <label className="text-[10px] font-black uppercase text-slate-400">Pozita / Roli</label>
                    <input 
                       type="text" 
                       placeholder="P.sh. Asistente e Projekteve, Anëtar i Bordit..."
@@ -248,8 +264,37 @@ const AdminDashboard: React.FC = () => {
                     if (file) setStaffForm({...staffForm, image: await handleFileRead(file)});
                   }} />
                 </div>
+
+                <div className="space-y-2">
+                   <label className="text-[10px] font-black uppercase text-slate-400">Bio / Përshkrimi</label>
+                   <textarea 
+                      rows={3}
+                      placeholder="Shkruani një përshkrim të shkurtër për këtë person..."
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium focus:ring-2 focus:ring-brand-cyan outline-none resize-none" 
+                      value={staffForm.bio} 
+                      onChange={e => setStaffForm({...staffForm, bio: e.target.value})}
+                   />
+                </div>
+
+                <div className="space-y-4 pt-4 border-t border-slate-100">
+                   <label className="text-[10px] font-black uppercase text-slate-400">Rrjetet Sociale (Linqet)</label>
+                   <div className="grid grid-cols-1 gap-4">
+                      <div className="relative">
+                        <Facebook className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <input type="text" placeholder="Linku i Facebook" className="w-full pl-12 pr-6 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-pink" value={staffForm.socials.facebook} onChange={e => setStaffForm({...staffForm, socials: {...staffForm.socials, facebook: e.target.value}})} />
+                      </div>
+                      <div className="relative">
+                        <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <input type="text" placeholder="Linku i Instagram" className="w-full pl-12 pr-6 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-pink" value={staffForm.socials.instagram} onChange={e => setStaffForm({...staffForm, socials: {...staffForm.socials, instagram: e.target.value}})} />
+                      </div>
+                      <div className="relative">
+                        <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <input type="text" placeholder="Linku i LinkedIn" className="w-full pl-12 pr-6 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-pink" value={staffForm.socials.linkedin} onChange={e => setStaffForm({...staffForm, socials: {...staffForm.socials, linkedin: e.target.value}})} />
+                      </div>
+                   </div>
+                </div>
                 
-                <button onClick={handleSaveStaff} className="w-full py-5 bg-brand-cyan text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-brand-cyan/20">Ruaj Të Dhënat</button>
+                <button onClick={handleSaveStaff} className="w-full py-5 bg-brand-cyan text-white rounded-2xl font-black uppercase text-sm tracking-widest shadow-xl shadow-brand-cyan/20">Ruaj Të Dhënat</button>
              </div>
           </div>
         </div>

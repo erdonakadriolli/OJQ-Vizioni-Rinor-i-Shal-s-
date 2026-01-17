@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vizioni Rinor i Shales</title>
+    <title>Vizioni Rinor i Shalës</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
@@ -21,17 +21,67 @@
                 purple: '#7d5a94',
                 lime: '#95d03a'
               }
+            },
+            animation: {
+              'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 3s ease-in-out infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              }
             }
           }
         }
       }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+          font-family: 'Inter', sans-serif; 
+          background-color: #f8fafc;
+        }
+        
+        /* Brand Aura Background */
+        .brand-aura {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: -1;
+          overflow: hidden;
+          background: #f8fafc;
+        }
+        
+        .aura-blob {
+          position: absolute;
+          filter: blur(80px);
+          opacity: 0.15;
+          border-radius: 50%;
+        }
+        
+        .aura-1 { top: -10%; left: -10%; width: 40vw; height: 40vw; background: #e11d74; }
+        .aura-2 { bottom: -10%; right: -10%; width: 35vw; height: 35vw; background: #95d03a; }
+        .aura-3 { top: 20%; right: 10%; width: 25vw; height: 25vw; background: #f39237; }
+        .aura-4 { bottom: 20%; left: 10%; width: 30vw; height: 30vw; background: #00adb5; }
+
+        .glass-card {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
         .gradient-border {
           background: linear-gradient(to right, #e11d74, #f39237, #95d03a, #00adb5, #7d5a94);
           height: 4px;
         }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
     </style>
 <script type="importmap">
 {
@@ -47,7 +97,14 @@
 }
 </script>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body class="text-slate-900">
+    <!-- Sfondi Dinamik i Brandit -->
+    <div class="brand-aura">
+      <div class="aura-blob aura-1 animate-pulse-slow"></div>
+      <div class="aura-blob aura-2 animate-pulse-slow" style="animation-delay: 2s"></div>
+      <div class="aura-blob aura-3 animate-pulse-slow" style="animation-delay: 4s"></div>
+      <div class="aura-blob aura-4 animate-pulse-slow" style="animation-delay: 1s"></div>
+    </div>
     <div id="root"></div>
 </body>
 </html>
