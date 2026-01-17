@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, Calendar, Info, ArrowRight, X, Image as ImageIcon, LayoutGrid } from 'lucide-react';
+import { Search, Calendar, Info, ArrowRight, X, Image as ImageIcon, LayoutGrid, Maximize2 } from 'lucide-react';
 import { Project, ProjectStatus, User } from '../types';
 import { getDb } from '../services/mockDb';
 import { useLanguage } from '../context/LanguageContext';
@@ -121,60 +121,91 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
             <div className="bg-white w-full max-w-6xl h-full max-h-[90vh] rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row animate-in zoom-in duration-300">
               <button 
                 onClick={() => setSelectedProject(null)}
-                className="absolute top-8 right-8 z-[70] bg-white text-brand-dark p-3 rounded-full shadow-xl hover:bg-brand-pink hover:text-white transition-all"
+                className="absolute top-8 right-8 z-[70] bg-white/90 backdrop-blur-sm text-brand-dark p-3 rounded-full shadow-xl hover:bg-brand-pink hover:text-white transition-all"
               >
                 <X className="h-6 w-6" />
               </button>
 
-              <div className="w-full md:w-1/2 h-64 md:h-full bg-slate-100 overflow-y-auto custom-scrollbar p-1">
-                <div className="grid grid-cols-1 gap-1">
-                  <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-auto object-cover" />
-                  {selectedProject.gallery?.map((img, i) => (
-                    <img key={i} src={img} alt={`Gallery ${i}`} className="w-full h-auto object-cover" />
-                  ))}
+              {/* Enhanced Visual Section */}
+              <div className="w-full md:w-1/2 h-64 md:h-full bg-slate-900 overflow-y-auto custom-scrollbar">
+                <div className="flex flex-col">
+                  {/* Hero Image */}
+                  <div className="relative group w-full aspect-video md:aspect-[4/5]">
+                    <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="absolute bottom-6 right-6 p-2 bg-white/20 backdrop-blur-md rounded-lg text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Maximize2 className="h-5 w-5" />
+                    </div>
+                  </div>
+                  
+                  {/* Gallery Grid */}
+                  <div className="grid grid-cols-2 gap-px bg-slate-800">
+                    {selectedProject.gallery?.map((img, i) => (
+                      <div key={i} className="relative group aspect-square overflow-hidden bg-slate-900">
+                        <img src={img} alt={`Gallery ${i}`} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-all group-hover:scale-110 duration-500" />
+                        <div className="absolute inset-0 bg-brand-pink/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      </div>
+                    ))}
+                  </div>
+                  
                   {(!selectedProject.gallery || selectedProject.gallery.length === 0) && (
-                    <div className="p-20 flex flex-col items-center justify-center text-slate-300">
-                       <ImageIcon className="h-12 w-12 mb-4" />
-                       <span className="text-[10px] font-black uppercase tracking-widest">No additional photos</span>
+                    <div className="p-20 flex flex-col items-center justify-center text-slate-700 bg-slate-900">
+                       <ImageIcon className="h-12 w-12 mb-4 opacity-20" />
+                       <span className="text-[10px] font-black uppercase tracking-widest opacity-30">No additional photos</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="flex-1 p-10 md:p-16 overflow-y-auto flex flex-col">
+              {/* Content Section */}
+              <div className="flex-1 p-10 md:p-16 overflow-y-auto flex flex-col bg-white">
                 <div className="mb-10">
-                  <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest mb-4 inline-block ${
-                    selectedProject.status === ProjectStatus.Active ? 'bg-brand-lime text-white' : 'bg-slate-200 text-slate-500'
-                  }`}>
-                    {selectedProject.status}
-                  </span>
-                  <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter mb-6">{selectedProject.title}</h2>
+                  <div className="flex items-center space-x-3 mb-4">
+                    <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest inline-block ${
+                      selectedProject.status === ProjectStatus.Active ? 'bg-brand-lime text-white' : 'bg-slate-200 text-slate-500'
+                    }`}>
+                      {selectedProject.status}
+                    </span>
+                    <div className="flex items-center text-slate-400">
+                      <Calendar className="h-3.5 w-3.5 mr-2" />
+                      <span className="text-[10px] font-bold uppercase tracking-widest">{selectedProject.startDate}</span>
+                    </div>
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter mb-6 leading-[1.1]">{selectedProject.title}</h2>
                   <div className="h-1.5 w-20 bg-brand-pink rounded-full mb-10"></div>
                 </div>
 
                 <div className="space-y-8 flex-grow">
-                   <div>
-                      <h4 className="text-[10px] font-black text-brand-pink uppercase tracking-[0.2em] mb-4">{t('projects.summary')}</h4>
-                      <p className="text-lg text-slate-600 font-bold leading-relaxed">{selectedProject.description}</p>
+                   <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100">
+                      <h4 className="text-[10px] font-black text-brand-pink uppercase tracking-[0.2em] mb-4 flex items-center">
+                        <Info className="h-4 w-4 mr-2" /> {t('projects.summary')}
+                      </h4>
+                      <p className="text-lg text-brand-dark font-semibold leading-relaxed italic">"{selectedProject.description}"</p>
                    </div>
                    
                    <div>
                       <h4 className="text-[10px] font-black text-brand-pink uppercase tracking-[0.2em] mb-4">{t('projects.impl')}</h4>
-                      <div className="text-slate-500 leading-relaxed font-medium whitespace-pre-wrap">
-                        {selectedProject.longDescription || "No additional details available."}
+                      <div className="text-slate-600 leading-relaxed font-medium whitespace-pre-wrap text-sm">
+                        {selectedProject.longDescription || "No additional implementation details provided for this project yet. Stay tuned for updates from our field team in Shale."}
                       </div>
                    </div>
 
                    <div className="grid grid-cols-2 gap-8 pt-8 border-t border-slate-100">
-                      <div className="flex flex-col">
+                      <div className="flex flex-col p-4 bg-slate-50 rounded-2xl">
                         <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{t('projects.period')}</span>
-                        <span className="text-sm font-bold text-brand-dark">{selectedProject.startDate} — {selectedProject.endDate}</span>
+                        <span className="text-xs font-bold text-brand-dark">{selectedProject.startDate} — {selectedProject.endDate}</span>
                       </div>
-                      <div className="flex flex-col">
+                      <div className="flex flex-col p-4 bg-slate-50 rounded-2xl">
                         <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{t('projects.participants')}</span>
-                        <span className="text-sm font-bold text-brand-dark">{selectedProject.volunteerCount} Engaged</span>
+                        <span className="text-xs font-bold text-brand-dark">{selectedProject.volunteerCount} Participants</span>
                       </div>
                    </div>
+                </div>
+
+                <div className="mt-12 pt-8 border-t border-slate-100">
+                  <button className="w-full py-5 bg-brand-dark text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] hover:bg-brand-pink transition-all flex items-center justify-center group">
+                    Contact for Support <ArrowRight className="ml-3 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
                 </div>
               </div>
             </div>

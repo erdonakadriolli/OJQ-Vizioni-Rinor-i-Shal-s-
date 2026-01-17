@@ -4,7 +4,7 @@ import {
   LayoutDashboard, FolderKanban, Users, 
   Plus, Edit2, Trash2, X, Newspaper, Briefcase, Camera, 
   Facebook, Instagram, Linkedin, Calendar, Sparkles, Loader2,
-  CheckCircle, XCircle, Eye, FileText, ExternalLink
+  CheckCircle, XCircle, Eye, FileText, ExternalLink, Image as ImageIcon
 } from 'lucide-react';
 import { getDb, saveDb } from '../services/mockDb';
 import { Project, ApplicationStatus, ProjectStatus, NewsItem, StaffMember, VolunteerApplication } from '../types';
@@ -26,15 +26,26 @@ const AdminDashboard: React.FC = () => {
   
   const staffImageRef = useRef<HTMLInputElement>(null);
   const projectImageRef = useRef<HTMLInputElement>(null);
+  const projectGalleryRef = useRef<HTMLInputElement>(null);
 
   const [staffForm, setStaffForm] = useState({
     name: '', role: '', category: 'Current Staff', bio: '', image: '', 
     socials: { facebook: '', instagram: '', linkedin: '' }
   });
 
-  const [projectForm, setProjectForm] = useState({
+  const [projectForm, setProjectForm] = useState<{
+    title: string;
+    description: string;
+    longDescription: string;
+    startDate: string;
+    endDate: string;
+    status: ProjectStatus;
+    image: string;
+    volunteerCount: number;
+    gallery: string[];
+  }>({
     title: '', description: '', longDescription: '', startDate: '', endDate: '',
-    status: ProjectStatus.Active, image: '', volunteerCount: 0
+    status: ProjectStatus.Active, image: '', volunteerCount: 0, gallery: []
   });
 
   const [newsForm, setNewsForm] = useState({
@@ -56,6 +67,29 @@ const AdminDashboard: React.FC = () => {
       reader.onloadend = () => resolve(reader.result as string);
       reader.readAsDataURL(file);
     });
+  };
+
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newImages: string[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const base64 = await handleFileRead(files[i]);
+      newImages.push(base64);
+    }
+    
+    setProjectForm(prev => ({
+      ...prev,
+      gallery: [...prev.gallery, ...newImages]
+    }));
+  };
+
+  const removeGalleryImage = (index: number) => {
+    setProjectForm(prev => ({
+      ...prev,
+      gallery: prev.gallery.filter((_, i) => i !== index)
+    }));
   };
 
   // AI Generation Function
@@ -135,10 +169,17 @@ const AdminDashboard: React.FC = () => {
         endDate: p.endDate, 
         status: p.status, 
         image: p.image, 
-        volunteerCount: p.volunteerCount 
+        volunteerCount: p.volunteerCount,
+        gallery: p.gallery || []
       }); 
     }
-    else { setEditingProject(null); setProjectForm({ title: '', description: '', longDescription: '', startDate: new Date().toISOString().split('T')[0], endDate: '', status: ProjectStatus.Active, image: '', volunteerCount: 0 }); }
+    else { 
+      setEditingProject(null); 
+      setProjectForm({ 
+        title: '', description: '', longDescription: '', startDate: new Date().toISOString().split('T')[0], 
+        endDate: '', status: ProjectStatus.Active, image: '', volunteerCount: 0, gallery: [] 
+      }); 
+    }
     setShowProjectModal(true);
   };
 
@@ -496,16 +537,46 @@ const AdminDashboard: React.FC = () => {
                    </div>
                    <textarea rows={3} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium outline-none" value={projectForm.description} onChange={e => setProjectForm({...projectForm, description: e.target.value})} />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Image (Upload)</label>
-                  <div onClick={() => projectImageRef.current?.click()} className="cursor-pointer h-40 border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center overflow-hidden bg-slate-50">
-                    {projectForm.image ? <img src={projectForm.image} className="w-full h-full object-cover" /> : <div className="flex flex-col items-center"><Camera className="text-slate-300 mb-1" /><span className="text-[8px] font-black uppercase text-slate-400">Upload Image</span></div>}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-slate-400">Main Hero Image</label>
+                    <div onClick={() => projectImageRef.current?.click()} className="cursor-pointer h-48 border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center overflow-hidden bg-slate-50">
+                      {projectForm.image ? <img src={projectForm.image} className="w-full h-full object-cover" /> : <div className="flex flex-col items-center"><Camera className="text-slate-300 mb-1" /><span className="text-[8px] font-black uppercase text-slate-400">Upload Image</span></div>}
+                    </div>
+                    <input type="file" hidden ref={projectImageRef} accept="image/*" onChange={async e => {
+                      const file = e.target.files?.[0];
+                      if (file) setProjectForm({...projectForm, image: await handleFileRead(file)});
+                    }} />
                   </div>
-                  <input type="file" hidden ref={projectImageRef} accept="image/*" onChange={async e => {
-                    const file = e.target.files?.[0];
-                    if (file) setProjectForm({...projectForm, image: await handleFileRead(file)});
-                  }} />
+                  
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-slate-400">Project Gallery</label>
+                    <div className="space-y-3">
+                      <div onClick={() => projectGalleryRef.current?.click()} className="cursor-pointer py-4 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center bg-slate-50 hover:bg-slate-100 transition-all">
+                        <div className="flex items-center space-x-2">
+                          <ImageIcon className="h-4 w-4 text-slate-400" />
+                          <span className="text-[8px] font-black uppercase text-slate-400">Add Images</span>
+                        </div>
+                      </div>
+                      <input type="file" hidden ref={projectGalleryRef} multiple accept="image/*" onChange={handleGalleryUpload} />
+                      
+                      <div className="grid grid-cols-4 gap-2 max-h-32 overflow-y-auto custom-scrollbar p-1">
+                        {projectForm.gallery.map((img, idx) => (
+                          <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-slate-100 group">
+                            <img src={img} className="w-full h-full object-cover" />
+                            <button 
+                              onClick={() => removeGalleryImage(idx)}
+                              className="absolute inset-0 bg-red-500/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
                 <button onClick={handleSaveProject} className="w-full py-5 bg-brand-pink text-white rounded-2xl font-black uppercase text-sm tracking-widest shadow-xl">Save Project</button>
              </div>
           </div>
