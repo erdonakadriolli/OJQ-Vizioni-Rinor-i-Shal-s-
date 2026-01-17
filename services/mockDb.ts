@@ -52,6 +52,13 @@ const initialData: DbSchema = {
       content: 'Vizioni Rinor i Shalës ka nënshkruar memorandum bashkëpunimi për projektet e ardhshme rinore në fshatin Shalë, duke u fokusuar në edukimin joformal.',
       datePosted: '2024-03-28',
       category: 'Lajmet e fundit'
+    },
+    {
+      id: 'n2',
+      title: 'Hapet thirrja për vullnetarë: Akademia Digjitale 2024',
+      content: 'Jeni të interesuar për teknologjinë? VRSH fton të gjithë të rinjtë e Shalës të aplikojnë për modulin e parë të Akademisë Digjitale.',
+      datePosted: '2024-04-05',
+      category: 'Lajmet e fundit'
     }
   ],
   staff: [
@@ -62,6 +69,14 @@ const initialData: DbSchema = {
       bio: 'E përkushtuar për të sjellë ndryshim pozitiv në komunitetin e Shalës përmes inovacionit dhe edukimit.',
       image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
       socials: { linkedin: '#' }
+    },
+    {
+      id: 's2',
+      name: 'Besnik Shaljani',
+      role: 'Menaxher i Projekteve',
+      bio: 'Me përvojë në koordinimin e aktiviteteve rinore dhe bashkëpunimin me organizatat ndërkombëtare.',
+      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
+      socials: { facebook: '#' }
     }
   ]
 };

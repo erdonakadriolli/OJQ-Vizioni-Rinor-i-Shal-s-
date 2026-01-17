@@ -407,7 +407,9 @@ const AdminDashboard: React.FC = () => {
                     {staffForm.image ? <img src={staffForm.image} className="w-full h-full object-cover" /> : <Camera className="text-slate-300" />}
                   </div>
                   <input type="file" hidden ref={staffImageRef} accept="image/*" onChange={async e => {
-                    const file = e.target.files?.[0];
+                    // Fix: Properly handle target files with explicit type casting to avoid 'unknown' errors
+                    const input = e.target as HTMLInputElement;
+                    const file = input.files?.[0];
                     if (file) setStaffForm({...staffForm, image: await handleFileRead(file)});
                   }} />
                 </div>
@@ -452,7 +454,9 @@ const AdminDashboard: React.FC = () => {
                     <input type="text" placeholder="URL e burimit" className="flex-grow px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl" value={newsForm.fileUrl} onChange={e => setNewsForm({...newsForm, fileUrl: e.target.value})} />
                     <button onClick={() => newsFileRef.current?.click()} className="px-6 bg-slate-100 rounded-2xl border border-slate-200 text-slate-400"><Upload className="h-5 w-5" /></button>
                     <input type="file" hidden ref={newsFileRef} onChange={async e => {
-                       const file = e.target.files?.[0];
+                       // Fix: Explicitly type target to access files properly and avoid 'unknown' issues
+                       const input = e.target as HTMLInputElement;
+                       const file = input.files?.[0];
                        if (file) setNewsForm({...newsForm, fileUrl: await handleFileRead(file)});
                     }} />
                   </div>
@@ -482,7 +486,9 @@ const AdminDashboard: React.FC = () => {
                          {projectForm.image ? <img src={projectForm.image} className="w-full h-full object-cover" /> : <Camera className="text-slate-300" />}
                       </div>
                       <input type="file" hidden ref={mainImageRef} accept="image/*" onChange={async e => {
-                        const file = e.target.files?.[0];
+                        // Fix: Explicitly type target to access files properly and avoid 'unknown' issues
+                        const input = e.target as HTMLInputElement;
+                        const file = input.files?.[0];
                         if (file) setProjectForm({...projectForm, image: await handleFileRead(file)});
                       }} />
                    </div>
@@ -495,8 +501,11 @@ const AdminDashboard: React.FC = () => {
                          </div>
                       </div>
                       <input type="file" hidden ref={galleryImagesRef} multiple accept="image/*" onChange={async e => {
-                        const files = Array.from(e.target.files || []);
-                        const base64s = await Promise.all(files.map(f => handleFileRead(f)));
+                        // Fix: Explicitly type target to access files properly and avoid 'unknown' issues
+                        const input = e.target as HTMLInputElement;
+                        const files = Array.from(input.files || []);
+                        // Fix: Cast each item in the map to File to resolve 'unknown' type errors from Array.from
+                        const base64s = await Promise.all(files.map(f => handleFileRead(f as File)));
                         setProjectForm({...projectForm, gallery: [...projectForm.gallery, ...base64s]});
                       }} />
                    </div>
