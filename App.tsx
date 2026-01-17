@@ -12,6 +12,7 @@ import VolunteerApply from './pages/VolunteerApply';
 import DerdoChat from './pages/DerdoChat';
 import { User, UserRole } from './types';
 import { Facebook, Instagram, Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
+import { LanguageProvider } from './context/LanguageContext';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -34,133 +35,134 @@ const App: React.FC = () => {
   };
 
   return (
-    <HashRouter>
-      <div className="min-h-screen flex flex-col selection:bg-brand-pink selection:text-white">
-        <Navbar user={user} onLogout={handleLogout} />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/about/:section" element={<About />} />
-            <Route path="/news" element={<News />} />
-            <Route path="/news/:category" element={<News />} />
-            <Route path="/projects" element={<Projects user={user} />} />
-            <Route path="/login" element={<Login onLogin={handleLogin} />} />
-            <Route path="/join" element={<VolunteerApply />} />
-            <Route path="/derdo" element={<DerdoChat />} />
-            <Route 
-              path="/admin/*" 
-              element={
-                user?.role === UserRole.ADMIN ? (
-                  <AdminDashboard />
-                ) : (
-                  <Navigate to="/login" replace />
-                )
-              } 
-            />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
-        
-        <footer className="bg-brand-dark text-slate-400 py-20 px-6 relative overflow-hidden">
-          <div className="absolute bottom-0 right-0 w-64 h-64 bg-white/5 rounded-full -mb-32 -mr-32 blur-3xl"></div>
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left relative z-10">
-            <div className="col-span-1 md:col-span-1">
-              <div className="flex items-center space-x-3 mb-6 justify-center md:justify-start">
-                <div className="w-10 h-10 rounded-full border-2 border-white/20 flex items-center justify-center overflow-hidden">
-                   <div className="w-5 h-5 bg-brand-pink rounded-full"></div>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xl font-black text-white uppercase tracking-tight leading-none">Vizioni</span>
-                  <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Rinor i Shalës</span>
-                </div>
-              </div>
-              <p className="text-sm leading-relaxed mb-6 font-medium">
-                Vizioni Rinor i Shalës (Shalë, Lipjan) është një organizatë dedikuar fuqizimit të të rinjve përmes edukimit, inovacionit dhe vullnetarizmit.
-              </p>
-              <div className="flex justify-center md:justify-start space-x-4">
-                <a href="https://www.facebook.com/vizionirinorishales" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-brand-pink hover:text-white transition-all">
-                  <Facebook className="h-5 w-5" />
-                </a>
-                <a href="https://www.instagram.com/vizionirinorishales/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-brand-pink hover:text-white transition-all">
-                  <Instagram className="h-5 w-5" />
-                </a>
-              </div>
-            </div>
-            
-            <div>
-              <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Navigimi</h4>
-              <ul className="space-y-3 text-sm font-bold uppercase tracking-wider text-[11px]">
-                <li><a href="#/" className="hover:text-brand-pink transition-colors">Kreu</a></li>
-                <li><a href="#/projects" className="hover:text-brand-pink transition-colors">Projekte</a></li>
-                <li><a href="#/news" className="hover:text-brand-pink transition-colors">Lajmet</a></li>
-                <li><a href="#/about/mission" className="hover:text-brand-pink transition-colors">Misioni ynë</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Mundësitë</h4>
-              <ul className="space-y-3 text-sm font-bold uppercase tracking-wider text-[11px]">
-                <li><a href="#/join" className="hover:text-brand-lime transition-colors">Bëhu Vullnetar</a></li>
-                <li><a href="#/partner" className="hover:text-brand-cyan transition-colors">Partneritete</a></li>
-                <li><a href="#/derdo" className="hover:text-brand-orange transition-colors">Derdo AI Chat</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Na Gjeni</h4>
-              <ul className="space-y-4 text-sm font-medium">
-                <li className="flex items-start justify-center md:justify-start space-x-3">
-                  <MapPin className="h-5 w-5 text-brand-pink mt-1 flex-shrink-0" />
-                  <a href="https://maps.app.goo.gl/N5XVp95AxwZyngCq8" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                    Fshati Shalë, Komuna Lipjan<br/>
-                    Republika e Kosovës
-                  </a>
-                </li>
-                <li className="flex items-center justify-center md:justify-start space-x-3">
-                  <Mail className="h-4 w-4 text-brand-cyan" />
-                  <span>info@vizionirinorishales.org</span>
-                </li>
-                <li className="flex items-center justify-center md:justify-start space-x-3">
-                  <Phone className="h-4 w-4 text-brand-lime" />
-                  <span>+383 44 000 000</span>
-                </li>
-                {/* Small Map Integrated in Footer */}
-                <li className="pt-4">
-                  <div className="w-full h-32 rounded-2xl overflow-hidden border border-white/10 shadow-lg group relative">
-                    <iframe 
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11756.914594950346!2d20.968333!3d42.483333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1353856e7290f05d%3A0xc06e00f98363359!2sShal%C3%AB!5e0!3m2!1sen!2s!4v1711710000000!5m2!1sen!2s" 
-                      className="w-full h-full grayscale hover:grayscale-0 transition-all duration-500"
-                      style={{ border: 0 }} 
-                      allowFullScreen={true} 
-                      loading="lazy"
-                    ></iframe>
-                    <a 
-                      href="https://maps.app.goo.gl/N5XVp95AxwZyngCq8" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="absolute inset-0 bg-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 bg-brand-dark/40 transition-opacity"
-                    >
-                      <span className="bg-white text-brand-dark px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center">
-                        Harta <ArrowRight className="ml-1 h-3 w-3" />
-                      </span>
-                    </a>
+    <LanguageProvider>
+      <HashRouter>
+        <div className="min-h-screen flex flex-col selection:bg-brand-pink selection:text-white">
+          <Navbar user={user} onLogout={handleLogout} />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/about/:section" element={<About />} />
+              <Route path="/news" element={<News />} />
+              <Route path="/news/:category" element={<News />} />
+              <Route path="/projects" element={<Projects user={user} />} />
+              <Route path="/login" element={<Login onLogin={handleLogin} />} />
+              <Route path="/join" element={<VolunteerApply />} />
+              <Route path="/derdo" element={<DerdoChat />} />
+              <Route 
+                path="/admin/*" 
+                element={
+                  user?.role === UserRole.ADMIN ? (
+                    <AdminDashboard />
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                } 
+              />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
+          
+          <footer className="bg-brand-dark text-slate-400 py-20 px-6 relative overflow-hidden">
+            <div className="absolute bottom-0 right-0 w-64 h-64 bg-white/5 rounded-full -mb-32 -mr-32 blur-3xl"></div>
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left relative z-10">
+              <div className="col-span-1 md:col-span-1">
+                <div className="flex items-center space-x-3 mb-6 justify-center md:justify-start">
+                  <div className="w-10 h-10 rounded-full border-2 border-white/20 flex items-center justify-center overflow-hidden">
+                     <div className="w-5 h-5 bg-brand-pink rounded-full"></div>
                   </div>
-                </li>
-              </ul>
+                  <div className="flex flex-col">
+                    <span className="text-xl font-black text-white uppercase tracking-tight leading-none">Vizioni</span>
+                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Rinor i Shalës</span>
+                  </div>
+                </div>
+                <p className="text-sm leading-relaxed mb-6 font-medium">
+                  Vizioni Rinor i Shalës (Shalë, Lipjan) është një organizatë dedikuar fuqizimit të të rinjve përmes edukimit, inovacionit dhe vullnetarizmit.
+                </p>
+                <div className="flex justify-center md:justify-start space-x-4">
+                  <a href="https://www.facebook.com/vizionirinorishales" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-brand-pink hover:text-white transition-all">
+                    <Facebook className="h-5 w-5" />
+                  </a>
+                  <a href="https://www.instagram.com/vizionirinorishales/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-brand-pink hover:text-white transition-all">
+                    <Instagram className="h-5 w-5" />
+                  </a>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Navigimi</h4>
+                <ul className="space-y-3 text-sm font-bold uppercase tracking-wider text-[11px]">
+                  <li><a href="#/" className="hover:text-brand-pink transition-colors">Kreu</a></li>
+                  <li><a href="#/projects" className="hover:text-brand-pink transition-colors">Projekte</a></li>
+                  <li><a href="#/news" className="hover:text-brand-pink transition-colors">Lajmet</a></li>
+                  <li><a href="#/about/mission" className="hover:text-brand-pink transition-colors">Misioni ynë</a></li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Mundësitë</h4>
+                <ul className="space-y-3 text-sm font-bold uppercase tracking-wider text-[11px]">
+                  <li><a href="#/join" className="hover:text-brand-lime transition-colors">Bëhu Vullnetar</a></li>
+                  <li><a href="#/partner" className="hover:text-brand-cyan transition-colors">Partneritete</a></li>
+                  <li><a href="#/derdo" className="hover:text-brand-orange transition-colors">Derdo AI Chat</a></li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Na Gjeni</h4>
+                <ul className="space-y-4 text-sm font-medium">
+                  <li className="flex items-start justify-center md:justify-start space-x-3">
+                    <MapPin className="h-5 w-5 text-brand-pink mt-1 flex-shrink-0" />
+                    <a href="https://maps.app.goo.gl/N5XVp95AxwZyngCq8" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                      Fshati Shalë, Komuna Lipjan<br/>
+                      Republika e Kosovës
+                    </a>
+                  </li>
+                  <li className="flex items-center justify-center md:justify-start space-x-3">
+                    <Mail className="h-4 w-4 text-brand-cyan" />
+                    <span>info@vizionirinorishales.org</span>
+                  </li>
+                  <li className="flex items-center justify-center md:justify-start space-x-3">
+                    <Phone className="h-4 w-4 text-brand-lime" />
+                    <span>+383 44 000 000</span>
+                  </li>
+                  <li className="pt-4">
+                    <div className="w-full h-32 rounded-2xl overflow-hidden border border-white/10 shadow-lg group relative">
+                      <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11756.914594950346!2d20.968333!3d42.483333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1353856e7290f05d%3A0xc06e00f98363359!2sShal%C3%AB!5e0!3m2!1sen!2s!4v1711710000000!5m2!1sen!2s" 
+                        className="w-full h-full grayscale hover:grayscale-0 transition-all duration-500"
+                        style={{ border: 0 }} 
+                        allowFullScreen={true} 
+                        loading="lazy"
+                      ></iframe>
+                      <a 
+                        href="https://maps.app.goo.gl/N5XVp95AxwZyngCq8" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="absolute inset-0 bg-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 bg-brand-dark/40 transition-opacity"
+                      >
+                        <span className="bg-white text-brand-dark px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center">
+                          Harta <ArrowRight className="ml-1 h-3 w-3" />
+                        </span>
+                      </a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-          <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-600">
-              &copy; 2026 Vizioni Rinor i Shalës. Të gjitha të drejtat të rezervuara.
-            </p>
-            <p className="text-[10px] font-black uppercase tracking-[0.1em] text-slate-500">
-              Project by <span className="text-brand-pink">Erdona Kadriolli</span>
-            </p>
-          </div>
-        </footer>
-      </div>
-    </HashRouter>
+            <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-600">
+                &copy; 2026 Vizioni Rinor i Shalës. Të gjitha të drejtat të rezervuara.
+              </p>
+              <p className="text-[10px] font-black uppercase tracking-[0.1em] text-slate-500">
+                Project by <span className="text-brand-pink">Erdona Kadriolli</span>
+              </p>
+            </div>
+          </footer>
+        </div>
+      </HashRouter>
+    </LanguageProvider>
   );
 };
 

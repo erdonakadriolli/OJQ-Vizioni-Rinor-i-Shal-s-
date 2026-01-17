@@ -17,14 +17,14 @@ const VolunteerApply: React.FC = () => {
   });
 
   const interestsList = [
-    'Teknologji & IT',
-    'Dizajn Grafik',
-    'Marketing Digjital',
-    'Aktivizëm Qytetar',
-    'Mbrojtje e Mjedisit',
-    'Kulturë & Sport',
-    'Lidership',
-    'Edukimi'
+    'Technology & IT',
+    'Graphic Design',
+    'Digital Marketing',
+    'Civic Activism',
+    'Environmental Protection',
+    'Culture & Sports',
+    'Leadership',
+    'Education'
   ];
 
   const handleInterestToggle = (interest: string) => {
@@ -65,15 +65,15 @@ const VolunteerApply: React.FC = () => {
           <div className="w-24 h-24 bg-brand-lime/20 text-brand-lime rounded-full flex items-center justify-center mx-auto mb-10">
             <CheckCircle className="h-12 w-12" />
           </div>
-          <h2 className="text-4xl font-black text-brand-dark uppercase tracking-tighter mb-6">Aplikimi u dërgua me sukses!</h2>
+          <h2 className="text-4xl font-black text-brand-dark uppercase tracking-tighter mb-6">Application Sent Successfully!</h2>
           <p className="text-slate-500 text-lg mb-10 font-medium">
-            Faleminderit që dëshironi të bëheni pjesë e Vizionit Rinor të Shalës. Ekipi ynë do ta rishikojë aplikimin tuaj dhe do t'ju kontaktojë së shpejti në Lipjan.
+            Thank you for wanting to be part of Youth Vision of Shale. Our team will review your application and contact you soon in Lipjan.
           </p>
           <button 
             onClick={() => navigate('/')}
             className="px-12 py-5 bg-brand-dark text-white rounded-full font-black uppercase text-sm tracking-widest hover:bg-brand-pink transition-all shadow-xl"
           >
-            Kthehu në Fillim
+            Return to Home
           </button>
         </div>
       </div>
@@ -86,32 +86,32 @@ const VolunteerApply: React.FC = () => {
         <div className="text-center mb-16">
           <div className="inline-flex items-center space-x-2 px-4 py-2 bg-brand-pink/10 text-brand-pink rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-6">
             <Heart className="h-3 w-3" />
-            <span>Bashkohu me Ne</span>
+            <span>Join Us</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-brand-dark uppercase tracking-tighter mb-6">
-            Bëhu <span className="text-brand-pink">Vullnetar</span>
+            Become a <span className="text-brand-pink">Volunteer</span>
           </h1>
           <p className="text-xl text-slate-500 font-medium max-w-2xl mx-auto">
-            Ndërtoni të ardhmen e fshatit Shalë së bashku me ne. Aplikoni sot për t'u bërë pjesë e iniciativave tona në Komunën e Lipjanit.
+            Build the future of Shale village together with us. Apply today to become part of our initiatives in the Lipjan Municipality.
           </p>
         </div>
 
         <div className="bg-white rounded-[3.5rem] shadow-sm border border-slate-100 overflow-hidden">
           <div className="grid md:grid-cols-3">
             <div className="bg-brand-dark p-12 text-white">
-              <h3 className="text-2xl font-black uppercase mb-8">Pse të aplikosh?</h3>
+              <h3 className="text-2xl font-black uppercase mb-8">Why Apply?</h3>
               <div className="space-y-8">
                 <div className="flex space-x-4">
                   <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0 text-brand-lime"><Star className="h-5 w-5" /></div>
-                  <p className="text-sm font-medium text-slate-400">Përfitoni përvojë pune dhe certifikata vullnetarizmi.</p>
+                  <p className="text-sm font-medium text-slate-400">Gain work experience and volunteer certificates.</p>
                 </div>
                 <div className="flex space-x-4">
                   <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0 text-brand-cyan"><Sparkles className="h-5 w-5" /></div>
-                  <p className="text-sm font-medium text-slate-400">Zhvilloni aftësi të reja profesionale dhe digjitale.</p>
+                  <p className="text-sm font-medium text-slate-400">Develop new professional and digital skills.</p>
                 </div>
                 <div className="flex space-x-4">
                   <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0 text-brand-orange"><MapPin className="h-5 w-5" /></div>
-                  <p className="text-sm font-medium text-slate-400">Kontribuoni direkt në zhvillimin e komunitetit në Shalë.</p>
+                  <p className="text-sm font-medium text-slate-400">Contribute directly to community development in Shale.</p>
                 </div>
               </div>
             </div>
@@ -120,11 +120,11 @@ const VolunteerApply: React.FC = () => {
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Emri & Mbiemri</label>
+                    <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Full Name</label>
                     <input 
                       required
                       type="text" 
-                      placeholder="Filan Fisteku"
+                      placeholder="John Doe"
                       className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-bold"
                       value={formData.name}
                       onChange={e => setFormData({...formData, name: e.target.value})}
@@ -135,7 +135,7 @@ const VolunteerApply: React.FC = () => {
                     <input 
                       required
                       type="email" 
-                      placeholder="email@shembull.com"
+                      placeholder="email@example.com"
                       className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-bold"
                       value={formData.email}
                       onChange={e => setFormData({...formData, email: e.target.value})}
@@ -144,7 +144,7 @@ const VolunteerApply: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Numri i Telefonit</label>
+                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Phone Number</label>
                   <input 
                     required
                     type="tel" 
@@ -156,7 +156,7 @@ const VolunteerApply: React.FC = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Fushat e Interesit</label>
+                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Interests</label>
                   <div className="flex flex-wrap gap-2">
                     {interestsList.map(interest => (
                       <button
@@ -176,11 +176,11 @@ const VolunteerApply: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Pse dëshironi të bëheni pjesë e VRSH?</label>
+                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Why do you want to join VRSH?</label>
                   <textarea 
                     required
                     rows={4}
-                    placeholder="Shkruani motivimin tuaj këtu..."
+                    placeholder="Write your motivation here..."
                     className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-bold resize-none"
                     value={formData.motivation}
                     onChange={e => setFormData({...formData, motivation: e.target.value})}
@@ -192,7 +192,7 @@ const VolunteerApply: React.FC = () => {
                   className="w-full py-5 bg-brand-pink text-white rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-brand-dark transition-all shadow-xl shadow-brand-pink/20 flex items-center justify-center"
                 >
                   <Send className="h-5 w-5 mr-3" />
-                  Dërgo Aplikimin
+                  Send Application
                 </button>
               </form>
             </div>

@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, Sparkles, User, Bot, MessageSquare, Trash2, ChevronLeft } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 interface Message {
   role: 'user' | 'model';
@@ -10,8 +11,14 @@ interface Message {
 }
 
 const DerdoChat: React.FC = () => {
+  const { language } = useLanguage();
+  
+  const initialMessage = language === 'AL' 
+    ? 'Përshëndetje! Unë jam Derdo, asistenti yt inteligjent nga Vizioni Rinor i Shalës. Si mund të të ndihmoj sot?'
+    : 'Hello! I am Derdo, your intelligent assistant from Youth Vision of Shale. How can I help you today?';
+
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', text: 'Përshëndetje! Unë jam Derdo, asistenti yt inteligjent nga Vizioni Rinor i Shalës. Si mund të të ndihmoj sot me informacion rreth projekteve tona apo vullnetarizmit?' }
+    { role: 'model', text: initialMessage }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +40,10 @@ const DerdoChat: React.FC = () => {
 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const systemPrompt = language === 'AL'
+        ? "Ju jeni Derdo, një asistent inteligjent për organizatën VRSH (Vizioni Rinor i Shalës) në fshatin Shalë, Lipjan. Përgjigjuni gjithmonë në gjuhën shqipe, jini miqësor dhe pozitiv."
+        : "You are Derdo, an intelligent assistant for VRSH (Youth Vision of Shale) in Shale village, Lipjan. Always respond in English, be friendly and professional.";
+
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
         contents: messages.concat({ role: 'user', text: userMessage }).map(m => ({
@@ -40,23 +51,23 @@ const DerdoChat: React.FC = () => {
             parts: [{ text: m.text }]
         })),
         config: {
-          systemInstruction: "Ju jeni Derdo, një asistent inteligjent për organizatën VRSH (Vizioni Rinor i Shalës) në fshatin Shalë, Lipjan. Qëllimi juaj është të ndihmoni të rinjtë të informohen për projektet si 'Akademia Digjitale', t'u tregoni si të aplikojnë për vullnetarizëm dhe t'i frymëzoni për aktivizëm qytetar. Përgjigjuni gjithmonë në gjuhën shqipe, jini miqësor, pozitiv dhe përdorni terma që lidhen me rininë dhe teknologjinë.",
+          systemInstruction: systemPrompt,
           temperature: 0.7,
         }
       });
 
-      const botResponse = response.text || "Më falni, kam një problem teknik. Ju lutem provoni përsëri.";
+      const botResponse = response.text || (language === 'AL' ? "Më falni, kam një problem teknik." : "Sorry, I am having technical issues.");
       setMessages(prev => [...prev, { role: 'model', text: botResponse }]);
     } catch (error) {
       console.error("Gemini Error:", error);
-      setMessages(prev => [...prev, { role: 'model', text: "Ndodhi një gabim gjatë lidhjes me trurin tim artificial. Kontrolloni internetin!" }]);
+      setMessages(prev => [...prev, { role: 'model', text: language === 'AL' ? "Gabim në lidhje!" : "Connection error!" }]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const clearChat = () => {
-    setMessages([{ role: 'model', text: 'Chat-i u fshi. Si mund të të ndihmoj nga fillimi?' }]);
+    setMessages([{ role: 'model', text: initialMessage }]);
   };
 
   return (
@@ -69,14 +80,15 @@ const DerdoChat: React.FC = () => {
               <ChevronLeft className="h-6 w-6" />
             </Link>
             <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-tr from-brand-pink to-brand-orange rounded-2xl flex items-center justify-center shadow-lg">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${language === 'AL' ? 'bg-brand-pink' : 'bg-brand-cyan'}`}>
                 <Bot className="h-7 w-7 text-white" />
               </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-brand-lime border-2 border-brand-dark rounded-full"></div>
             </div>
             <div>
               <h2 className="text-xl font-black uppercase tracking-tight">Derdo AI</h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Asistenti i VRSH</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                {language === 'AL' ? 'Asistenti i VRSH' : 'VRSH Assistant'}
+              </p>
             </div>
           </div>
           <button onClick={clearChat} className="p-3 text-slate-400 hover:text-red-400 transition-colors">
@@ -118,7 +130,7 @@ const DerdoChat: React.FC = () => {
           <div className="relative flex items-center">
             <input
               type="text"
-              placeholder="Pyet Derdon për projektet, vullnetarizmin..."
+              placeholder={language === 'AL' ? "Pyet Derdon..." : "Ask Derdo..."}
               className="w-full pl-8 pr-20 py-5 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-brand-pink font-bold text-sm transition-all"
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -132,10 +144,6 @@ const DerdoChat: React.FC = () => {
               <Send className="h-5 w-5" />
             </button>
           </div>
-          <p className="text-center mt-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest flex items-center justify-center">
-            <Sparkles className="h-3 w-3 mr-2 text-brand-orange" />
-            Mundësuar nga Inteligjenca Artificiale e VRSH
-          </p>
         </div>
       </div>
     </div>

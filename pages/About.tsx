@@ -41,7 +41,7 @@ const About: React.FC = () => {
           <p className="text-[9px] font-bold text-brand-pink uppercase tracking-[0.15em] mb-3">{member.role}</p>
           {!isSmall && (
              <span className="inline-flex items-center text-[8px] font-black text-slate-400 uppercase tracking-widest group-hover:text-brand-dark transition-colors">
-               Profili <ArrowRight className="ml-1 h-2.5 w-2.5" />
+               Profile <ArrowRight className="ml-1 h-2.5 w-2.5" />
              </span>
           )}
         </div>
@@ -53,10 +53,10 @@ const About: React.FC = () => {
     <div className="space-y-16 animate-in fade-in duration-500 pb-20">
       {/* Header Section */}
       <section className="text-center max-w-4xl mx-auto py-12">
-        <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[9px] mb-3 block">Misioni & Vizioni</span>
-        <h1 className="text-4xl md:text-7xl font-black text-brand-dark uppercase tracking-tighter mb-6 leading-none">Për Rininë, <br/><span className="text-brand-pink">Për të Ardhmen</span></h1>
+        <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[9px] mb-3 block">Mission & Vision</span>
+        <h1 className="text-4xl md:text-7xl font-black text-brand-dark uppercase tracking-tighter mb-6 leading-none">For Youth, <br/><span className="text-brand-pink">For the Future</span></h1>
         <p className="text-xl text-slate-600 leading-relaxed font-semibold italic max-w-2xl mx-auto">
-          "Vizioni Rinor i Shalës (VRSH) transformon potencialin e të rinjve në forcë lëvizëse për zhvillimin e komunitetit në Shalë dhe Lipjan."
+          "Youth Vision of Shale (VRSH) transforms youth potential into a driving force for community development in Shale and Lipjan."
         </p>
         <div className="h-1.5 w-24 bg-gradient-to-r from-brand-pink via-brand-orange to-brand-lime mx-auto mt-8 rounded-full"></div>
       </section>
@@ -66,14 +66,14 @@ const About: React.FC = () => {
         <div className="space-y-6">
           <div className="inline-flex items-center space-x-2 px-3 py-1 bg-brand-orange/10 text-brand-orange rounded-lg text-[10px] font-black uppercase tracking-widest">
             <History className="h-3.5 w-3.5" />
-            <span>Si filloi gjithçka</span>
+            <span>How it all began</span>
           </div>
-          <h2 className="text-3xl font-black text-brand-dark uppercase tracking-tight">Rrënjët tona në <span className="text-brand-orange">Shalë</span></h2>
+          <h2 className="text-3xl font-black text-brand-dark uppercase tracking-tight">Our Roots in <span className="text-brand-orange">Shale</span></h2>
           <p className="text-slate-500 font-medium leading-relaxed">
-            Vizioni Rinor i Shalës u themelua si një iniciativë vullnetare nga një grup të rinjsh entuziastë të cilët besonin se ndryshimi fillon nga vendlindja. Me seli në fshatin Shalë, organizata u rrit shpejt duke u bërë një zë i fuqishëm për kërkesat dhe nevojat e rinisë rurale në komunën e Lipjanit.
+            Youth Vision of Shale was founded as a voluntary initiative by a group of enthusiastic young people who believed that change starts from home. Based in the village of Shale, the organization grew rapidly to become a powerful voice for rural youth needs in the Lipjan municipality.
           </p>
           <p className="text-slate-500 font-medium leading-relaxed">
-            Sot, ne jemi pikëtakimi i inovacionit dhe traditës, duke u ofruar të rinjve mjete dhe njohuri që dikur ishin të arritshme vetëm në qendrat e mëdha urbane.
+            Today, we are the intersection of innovation and tradition, offering young people tools and knowledge that were once accessible only in large urban centers.
           </p>
         </div>
         <div className="relative rounded-[3rem] overflow-hidden shadow-2xl h-[350px]">
@@ -89,13 +89,13 @@ const About: React.FC = () => {
       {/* Core Values Section */}
       <div className="py-12">
         <div className="text-center mb-12">
-           <h3 className="text-2xl font-black text-brand-dark uppercase tracking-tight">Vlerat që na <span className="text-brand-pink">Udhëheqin</span></h3>
+           <h3 className="text-2xl font-black text-brand-dark uppercase tracking-tight">Values that <span className="text-brand-pink">Lead Us</span></h3>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[
-            { icon: Shield, title: 'Transparenca', desc: 'Llogaridhënie e plotë ndaj anëtarëve dhe donatorëve tanë.', color: 'text-brand-pink' },
-            { icon: Zap, title: 'Inovacioni', desc: 'Përdorimi i teknologjisë për të zgjidhur probleme komunitare.', color: 'text-brand-orange' },
-            { icon: Users, title: 'Përfshirja', desc: 'Mundësi të barabarta për çdo të ri, pa dallim gjinie apo statusi.', color: 'text-brand-lime' }
+            { icon: Shield, title: 'Transparency', desc: 'Full accountability to our members and donors.', color: 'text-brand-pink' },
+            { icon: Zap, title: 'Innovation', desc: 'Using technology to solve community problems.', color: 'text-brand-orange' },
+            { icon: Users, title: 'Inclusion', desc: 'Equal opportunities for every young person, regardless of gender or status.', color: 'text-brand-lime' }
           ].map((v, i) => (
             <div key={i} className="glass-card p-8 rounded-[2.5rem] border border-white text-center group hover:bg-white transition-all">
               <div className={`${v.color} mb-4 flex justify-center group-hover:scale-110 transition-transform`}>
@@ -115,15 +115,15 @@ const About: React.FC = () => {
             <div>
                <div className="inline-flex items-center space-x-2 px-3 py-1 bg-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest mb-6">
                  <Rocket className="h-3.5 w-3.5 text-brand-lime" />
-                 <span>Strategjia 2024-2027</span>
+                 <span>Strategy 2024-2027</span>
                </div>
-               <h3 className="text-3xl font-black uppercase tracking-tighter mb-8">Objektivat tona <br/><span className="text-brand-lime">Kryesore</span></h3>
+               <h3 className="text-3xl font-black uppercase tracking-tighter mb-8">Our Key <br/><span className="text-brand-lime">Objectives</span></h3>
                <ul className="space-y-6">
                  {[
-                   { t: 'Digjitalizimi i Rinisë', d: 'Krijimi i laboratorit të parë digjital në fshatin Shalë për trajnime në IT.' },
-                   { t: 'Lidershipi Rinor', d: 'Fuqizimi i të rinjve për të marrë pjesë aktive në proceset vendimmarrëse lokale.' },
-                   { t: 'Mjedisi & Ndryshimet Klimatike', d: 'Iniciativa për pyllëzimin dhe menaxhimin e mbetjeve në rajon.' },
-                   { t: 'Rrjetëzimi Ndërkombëtar', d: 'Anëtarësimi në rrjete evropiane të rinisë dhe shkëmbime Erasmus+.' }
+                   { t: 'Youth Digitalization', d: 'Creating the first digital lab in Shale village for IT training.' },
+                   { t: 'Youth Leadership', d: 'Empowering young people to actively participate in local decision-making processes.' },
+                   { t: 'Environment & Climate Change', d: 'Initiatives for reforestation and waste management in the region.' },
+                   { t: 'International Networking', d: 'Membership in European youth networks and Erasmus+ exchanges.' }
                  ].map((pill, i) => (
                    <li key={i} className="flex space-x-4 group">
                       <div className="w-1.5 h-1.5 rounded-full bg-brand-lime mt-2 group-hover:scale-150 transition-transform"></div>
@@ -137,11 +137,11 @@ const About: React.FC = () => {
             </div>
             <div className="bg-white/5 rounded-[3rem] p-10 border border-white/10 flex flex-col justify-center">
                <h4 className="text-xl font-black uppercase mb-6 flex items-center">
-                 <Target className="mr-3 h-6 w-6 text-brand-pink" /> Fushat e Veprimit
+                 <Target className="mr-3 h-6 w-6 text-brand-pink" /> Fields of Action
                </h4>
                <div className="grid grid-cols-2 gap-4">
                  {[
-                   'Kodimi & Web', 'Dizajni Grafik', 'Media & PR', 'Vullnetarizmi', 'Kultura', 'Sporti', 'Debati', 'Eko-Aktivizmi'
+                   'Coding & Web', 'Graphic Design', 'Media & PR', 'Volunteerism', 'Culture', 'Sports', 'Debate', 'Eco-Activism'
                  ].map((field, i) => (
                    <div key={i} className="px-4 py-3 bg-white/5 rounded-xl border border-white/5 text-[9px] font-bold uppercase tracking-widest hover:bg-brand-pink hover:border-brand-pink transition-all text-center">
                      {field}
@@ -156,12 +156,12 @@ const About: React.FC = () => {
       <section className="py-12 border-t border-slate-100">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
            <div className="max-w-xs">
-              <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight">Bashkëpunëtorët tanë</h4>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">VRSH punon me institucione dhe organizata partnerë.</p>
+              <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight">Our Collaborators</h4>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">VRSH works with institutional and organizational partners.</p>
            </div>
            <div className="flex flex-wrap justify-center gap-10 opacity-40 grayscale hover:grayscale-0 transition-all">
-              <span className="font-black text-sm uppercase tracking-tighter">Komuna Lipjan</span>
-              <span className="font-black text-sm uppercase tracking-tighter">Ministria e Rinisë</span>
+              <span className="font-black text-sm uppercase tracking-tighter">Lipjan Municipality</span>
+              <span className="font-black text-sm uppercase tracking-tighter">Ministry of Youth</span>
               <span className="font-black text-sm uppercase tracking-tighter">Erasmus+</span>
               <span className="font-black text-sm uppercase tracking-tighter">UNICEF Kosovo</span>
            </div>
@@ -172,14 +172,14 @@ const About: React.FC = () => {
       <div className="relative rounded-[3rem] overflow-hidden shadow-2xl border border-white/20 h-[450px] flex items-center justify-center group mt-10">
          <img 
             src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200" 
-            alt="Zyra e VRSH" 
+            alt="VRSH Office" 
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
          />
          <div className="absolute inset-0 bg-brand-dark/50 backdrop-blur-[1px]"></div>
          <div className="relative z-10 text-center text-white px-6">
             <MapPin className="h-10 w-10 mx-auto mb-4 text-brand-cyan animate-bounce" />
-            <h3 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">Shtëpia e Ideve</h3>
-            <p className="text-lg font-bold text-white/80 max-w-xl mx-auto uppercase tracking-widest text-xs">Zyra jonë në Shalë, Lipjan — aty ku fillon ndryshimi.</p>
+            <h3 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">Home of Ideas</h3>
+            <p className="text-lg font-bold text-white/80 max-w-xl mx-auto uppercase tracking-widest text-xs">Our office in Shale, Lipjan — where change begins.</p>
          </div>
       </div>
     </div>
@@ -189,29 +189,29 @@ const About: React.FC = () => {
     <div className="space-y-16 animate-in slide-in-from-bottom-4 duration-500">
       <section className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
-          <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[9px] mb-3 block">Ekipi & Struktura</span>
-          <h2 className="text-4xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter mb-3 leading-none">Stafi <span className="text-brand-pink">Vizionit</span></h2>
+          <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[9px] mb-3 block">Team & Structure</span>
+          <h2 className="text-4xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter mb-3 leading-none">Vision <span className="text-brand-pink">Staff</span></h2>
           <p className="text-slate-500 max-w-xl mx-auto font-bold text-sm uppercase tracking-widest text-center">
-            Udhëheqja që bën diferencën çdo ditë.
+            Leadership that makes a difference every day.
           </p>
         </div>
 
         <div className="space-y-16">
           
-          {/* 1. Drejtor Ekzekutiv */}
+          {/* 1. Executive Director */}
           <div className="space-y-6">
             <div className="flex items-center space-x-3 justify-center md:justify-start">
               <div className="w-10 h-10 bg-brand-orange text-white rounded-xl flex items-center justify-center shadow-lg shadow-brand-orange/20">
                 <Briefcase className="h-5 w-5" />
               </div>
-              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Drejtor Ekzekutiv</h4>
+              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Executive Director</h4>
             </div>
             <div className="max-w-xs mx-auto md:mx-0">
-              {getStaffByCategory('Drejtor Ekzekutiv').map(m => <StaffCard key={m.id} member={m} size="md" />)}
+              {getStaffByCategory('Executive Director').map(m => <StaffCard key={m.id} member={m} size="md" />)}
             </div>
           </div>
 
-          {/* 2. Stafi Aktual */}
+          {/* 2. Current Staff */}
           <div className="bg-brand-dark/95 p-10 md:p-14 rounded-[3.5rem] text-white relative overflow-hidden shadow-2xl backdrop-blur-md">
             <div className="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/20 rounded-full -mr-32 -mt-32 blur-3xl"></div>
             <div className="relative z-10">
@@ -219,10 +219,10 @@ const About: React.FC = () => {
                 <div className="w-10 h-10 bg-brand-cyan rounded-xl flex items-center justify-center">
                   <LayoutList className="h-5 w-5 text-white" />
                 </div>
-                <h4 className="text-xl font-black uppercase tracking-tight">Stafi Aktual & Koordinatorët</h4>
+                <h4 className="text-xl font-black uppercase tracking-tight">Current Staff & Coordinators</h4>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {getStaffByCategory('Stafi Aktual').map(m => (
+                {getStaffByCategory('Current Staff').map(m => (
                   <div 
                     key={m.id} 
                     onClick={() => setSelectedMember(m)}
@@ -239,17 +239,17 @@ const About: React.FC = () => {
             </div>
           </div>
 
-          {/* 3 & 4. Kuvendi dhe Bordi */}
+          {/* 3 & 4. Assembly and Board */}
           <div className="grid md:grid-cols-2 gap-10">
             <div className="space-y-6">
               <div className="flex items-center space-x-3">
                 <div className="w-9 h-9 bg-brand-dark text-white rounded-xl flex items-center justify-center">
                   <Users className="h-5 w-5" />
                 </div>
-                <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight">Kuvendi i Anëtarëve</h4>
+                <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight">Members Assembly</h4>
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
-                {getStaffByCategory('Kuvendi i Anëtarëve').map(m => <StaffCard key={m.id} member={m} size="sm" />)}
+                {getStaffByCategory('Members Assembly').map(m => <StaffCard key={m.id} member={m} size="sm" />)}
               </div>
             </div>
 
@@ -258,26 +258,26 @@ const About: React.FC = () => {
                 <div className="w-9 h-9 bg-brand-pink text-white rounded-xl flex items-center justify-center">
                   <ShieldCheck className="h-5 w-5" />
                 </div>
-                <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight">Bordi i Drejtorëve</h4>
+                <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight">Board of Directors</h4>
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
-                {getStaffByCategory('Bordi i Drejtorëve').map(m => <StaffCard key={m.id} member={m} size="sm" />)}
+                {getStaffByCategory('Board of Directors').map(m => <StaffCard key={m.id} member={m} size="sm" />)}
               </div>
             </div>
           </div>
 
-          {/* 5. Vullnetarët */}
+          {/* 5. Volunteers */}
           <div className="glass-card p-10 rounded-[3rem] border border-white shadow-sm">
             <div className="flex items-center space-x-3 mb-8">
               <div className="w-10 h-10 bg-brand-lime text-white rounded-xl flex items-center justify-center shadow-lg shadow-brand-lime/20">
                 <Heart className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Vullnetarët</h4>
+                <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Volunteers</h4>
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-5">
-              {getStaffByCategory('Vullnetarët').map(m => (
+              {getStaffByCategory('Volunteers').map(m => (
                 <div 
                   key={m.id} 
                   onClick={() => setSelectedMember(m)}
@@ -319,10 +319,10 @@ const About: React.FC = () => {
 
                  <div className="flex-grow">
                    <h4 className="text-[9px] font-black text-brand-dark uppercase tracking-widest mb-3 flex items-center">
-                     <BookOpen className="h-3.5 w-3.5 mr-2 text-brand-pink" /> Biografia
+                     <BookOpen className="h-3.5 w-3.5 mr-2 text-brand-pink" /> Biography
                    </h4>
                    <p className="text-xs text-slate-500 font-medium leading-relaxed italic">
-                     {selectedMember.bio || "Ky anëtar i përkushtuar kontribuon në VRSH për fuqizimin e komunitetit."}
+                     {selectedMember.bio || "This dedicated member contributes to VRSH for community empowerment."}
                    </p>
                  </div>
 
@@ -354,8 +354,8 @@ const About: React.FC = () => {
     <div className="py-16 px-6 min-h-screen relative z-10">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center space-x-2 mb-12 glass-card p-1.5 rounded-2xl inline-flex shadow-sm">
-          <button onClick={() => window.location.hash = '#/about/mission'} className={`px-6 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${(!section || section === 'mission') ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>Misioni</button>
-          <button onClick={() => window.location.hash = '#/about/staff'} className={`px-6 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${section === 'staff' ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>Ekipi</button>
+          <button onClick={() => window.location.hash = '#/about/mission'} className={`px-6 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${(!section || section === 'mission') ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>Mission</button>
+          <button onClick={() => window.location.hash = '#/about/staff'} className={`px-6 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${section === 'staff' ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>Team</button>
         </div>
         {section === 'staff' ? renderStaff() : renderMission()}
       </div>

@@ -31,12 +31,12 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-20">
           <div>
-            <span className="text-brand-pink font-bold uppercase tracking-widest text-[10px] mb-4 block">Veprimtaria dhe Ndikimi</span>
+            <span className="text-brand-pink font-bold uppercase tracking-widest text-[10px] mb-4 block">Activities and Impact</span>
             <h1 className="text-5xl md:text-6xl font-black text-brand-dark mb-6 uppercase tracking-tighter leading-none">
-              Projektet e <span className="text-brand-pink">Vizionit</span>
+              Vision <span className="text-brand-pink">Projects</span>
             </h1>
             <p className="text-slate-500 font-medium max-w-xl text-lg leading-relaxed">
-              Njihuni me iniciativat tona që po transformojnë komunitetin. Çdo projekt mbart një tregim suksesi dhe përkushtimi.
+              Explore our initiatives transforming the community. Every project carries a story of success and dedication.
             </p>
           </div>
           
@@ -44,7 +44,7 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
             <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5 group-focus-within:text-brand-pink transition-colors" />
             <input 
               type="text" 
-              placeholder="Kërko projektin..." 
+              placeholder="Search projects..." 
               className="pl-14 pr-8 py-4 bg-white border border-slate-200 rounded-3xl focus:ring-2 focus:ring-brand-pink outline-none w-full sm:w-80 shadow-sm font-bold transition-all text-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -59,7 +59,7 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
               onClick={() => setFilter(f)}
               className={`px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-brand-dark text-white shadow-xl translate-y-[-2px]' : 'text-slate-400 hover:text-brand-dark hover:bg-slate-50'}`}
             >
-              {f === 'All' ? 'Të gjitha' : f === 'Active' ? 'Aktive' : 'Të mbyllura'}
+              {f === 'All' ? 'All' : f === 'Active' ? 'Active' : 'Closed'}
             </button>
           ))}
         </div>
@@ -79,12 +79,10 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/20 to-transparent"></div>
                 <div className="absolute top-8 left-8">
-                  {/* Fixed: ProjectStatus.Active instead of ProjectStatus.ACTIVE */}
                   <span className={`px-5 py-2 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] shadow-2xl ${
                     project.status === ProjectStatus.Active ? 'bg-brand-lime text-white' : 'bg-slate-700 text-white'
                   }`}>
-                    {/* Fixed: ProjectStatus.Active instead of ProjectStatus.ACTIVE */}
-                    {project.status === ProjectStatus.Active ? 'Aktive' : 'Mbyllur'}
+                    {project.status === ProjectStatus.Active ? 'Active' : 'Completed'}
                   </span>
                 </div>
                 <div className="absolute bottom-8 left-8 right-8">
@@ -103,7 +101,7 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
                     <span className="text-[10px] font-bold uppercase tracking-widest">{project.startDate}</span>
                   </div>
                   <div className="flex items-center text-brand-pink font-black text-[10px] uppercase tracking-widest">
-                    Detajet <ArrowRight className="ml-2 h-4 w-4" />
+                    Details <ArrowRight className="ml-2 h-4 w-4" />
                   </div>
                 </div>
               </div>
@@ -131,7 +129,7 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
                   {(!selectedProject.gallery || selectedProject.gallery.length === 0) && (
                     <div className="p-20 flex flex-col items-center justify-center text-slate-300">
                        <ImageIcon className="h-12 w-12 mb-4" />
-                       <span className="text-[10px] font-black uppercase tracking-widest">Nuk ka foto tjera në galeri</span>
+                       <span className="text-[10px] font-black uppercase tracking-widest">No additional photos in gallery</span>
                     </div>
                   )}
                 </div>
@@ -139,11 +137,10 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
 
               <div className="flex-1 p-10 md:p-16 overflow-y-auto flex flex-col">
                 <div className="mb-10">
-                  {/* Fixed: ProjectStatus.Active instead of ProjectStatus.ACTIVE */}
                   <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest mb-4 inline-block ${
                     selectedProject.status === ProjectStatus.Active ? 'bg-brand-lime text-white' : 'bg-slate-200 text-slate-500'
                   }`}>
-                    Statusi: {selectedProject.status}
+                    Status: {selectedProject.status}
                   </span>
                   <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter mb-6">{selectedProject.title}</h2>
                   <div className="h-1.5 w-20 bg-brand-pink rounded-full mb-10"></div>
@@ -151,25 +148,25 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
 
                 <div className="space-y-8 flex-grow">
                    <div>
-                      <h4 className="text-[10px] font-black text-brand-pink uppercase tracking-[0.2em] mb-4">Përmbledhja</h4>
+                      <h4 className="text-[10px] font-black text-brand-pink uppercase tracking-[0.2em] mb-4">Summary</h4>
                       <p className="text-lg text-slate-600 font-bold leading-relaxed">{selectedProject.description}</p>
                    </div>
                    
                    <div>
-                      <h4 className="text-[10px] font-black text-brand-pink uppercase tracking-[0.2em] mb-4">Detajet e Zbatimit</h4>
+                      <h4 className="text-[10px] font-black text-brand-pink uppercase tracking-[0.2em] mb-4">Implementation Details</h4>
                       <div className="text-slate-500 leading-relaxed font-medium whitespace-pre-wrap">
-                        {selectedProject.longDescription || "Nuk ka detaje shtesë për këtë projekt."}
+                        {selectedProject.longDescription || "No additional details for this project."}
                       </div>
                    </div>
 
                    <div className="grid grid-cols-2 gap-8 pt-8 border-t border-slate-100">
                       <div className="flex flex-col">
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Periudha</span>
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Period</span>
                         <span className="text-sm font-bold text-brand-dark">{selectedProject.startDate} — {selectedProject.endDate}</span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Pjesëmarrës</span>
-                        <span className="text-sm font-bold text-brand-dark">{selectedProject.volunteerCount} Të angazhuar</span>
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Participants</span>
+                        <span className="text-sm font-bold text-brand-dark">{selectedProject.volunteerCount} Engaged</span>
                       </div>
                    </div>
                 </div>
