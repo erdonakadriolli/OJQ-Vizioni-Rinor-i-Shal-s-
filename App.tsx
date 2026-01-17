@@ -11,7 +11,7 @@ import News from './pages/News';
 import VolunteerApply from './pages/VolunteerApply';
 import DerdoChat from './pages/DerdoChat';
 import { User, UserRole } from './types';
-import { Facebook, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -124,6 +124,28 @@ const App: React.FC = () => {
                 <li className="flex items-center justify-center md:justify-start space-x-3">
                   <Phone className="h-4 w-4 text-brand-lime" />
                   <span>+383 44 000 000</span>
+                </li>
+                {/* Small Map Integrated in Footer */}
+                <li className="pt-4">
+                  <div className="w-full h-32 rounded-2xl overflow-hidden border border-white/10 shadow-lg group relative">
+                    <iframe 
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11756.914594950346!2d20.968333!3d42.483333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1353856e7290f05d%3A0xc06e00f98363359!2sShal%C3%AB!5e0!3m2!1sen!2s!4v1711710000000!5m2!1sen!2s" 
+                      className="w-full h-full grayscale hover:grayscale-0 transition-all duration-500"
+                      style={{ border: 0 }} 
+                      allowFullScreen={true} 
+                      loading="lazy"
+                    ></iframe>
+                    <a 
+                      href="https://maps.app.goo.gl/N5XVp95AxwZyngCq8" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="absolute inset-0 bg-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 bg-brand-dark/40 transition-opacity"
+                    >
+                      <span className="bg-white text-brand-dark px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center">
+                        Harta <ArrowRight className="ml-1 h-3 w-3" />
+                      </span>
+                    </a>
+                  </div>
                 </li>
               </ul>
             </div>

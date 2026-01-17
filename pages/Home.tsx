@@ -131,58 +131,27 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Location Section */}
-      <section className="py-24 px-6 bg-slate-50 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Na Gjeni</span>
-            <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter">Lokacioni ynë në <span className="text-brand-pink">Shalë</span></h2>
-          </div>
-          
-          <div className="grid lg:grid-cols-3 gap-12 items-center">
-            <div className="lg:col-span-1 space-y-8">
-              <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="w-12 h-12 bg-brand-pink/10 text-brand-pink rounded-2xl flex items-center justify-center">
-                    <MapPin className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-black uppercase text-slate-400 tracking-widest">Adresa</h4>
-                    <p className="font-bold text-brand-dark">Fshati Shalë, Komuna Lipjan</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="w-12 h-12 bg-brand-lime/10 text-brand-lime rounded-2xl flex items-center justify-center">
-                    <Globe className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-black uppercase text-slate-400 tracking-widest">Rajoni</h4>
-                    <p className="font-bold text-brand-dark">Republika e Kosovës</p>
-                  </div>
-                </div>
-                <a 
-                  href="https://maps.app.goo.gl/N5XVp95AxwZyngCq8" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center space-x-2 py-4 bg-brand-dark text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-brand-pink transition-all"
-                >
-                  <ArrowRight className="h-4 w-4" />
-                  <span>Hape në Google Maps</span>
-                </a>
+      {/* Values Section */}
+      <section className="py-24 px-6 bg-slate-50">
+        <div className="max-w-7xl mx-auto text-center mb-20">
+          <h2 className="text-5xl font-black text-brand-dark mb-6 uppercase tracking-tighter">Vlerat tona</h2>
+          <div className="h-2 w-40 bg-brand-pink mx-auto rounded-full"></div>
+        </div>
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+          {[
+            { icon: Shield, title: 'Transparenca', color: 'bg-brand-pink', desc: 'Transparencë dhe llogaridhënie e plotë në çdo veprimtari tonën.' },
+            { icon: Users, title: 'Bashkëpunimi', color: 'bg-brand-lime', desc: 'Përfshirje e të gjithë akterëve relevantë për të mirën e komunitetit.' },
+            { icon: Zap, title: 'Inovacioni', color: 'bg-brand-orange', desc: 'Zgjidhje kreative dhe teknologjike për sfidat e të rinjve.' },
+            { icon: Star, title: 'Ndryshimi', color: 'bg-brand-cyan', desc: 'Angazhim i palodhur për ndryshim pozitiv në fshatin Shalë.' },
+          ].map((pillar, i) => (
+            <div key={i} className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:-translate-y-2 transition-all">
+              <div className={`w-20 h-20 ${pillar.color} rounded-[1.5rem] flex items-center justify-center mb-8 text-white shadow-xl`}>
+                <pillar.icon className="h-10 w-10" />
               </div>
+              <h3 className="text-2xl font-black text-brand-dark mb-4 uppercase leading-none">{pillar.title}</h3>
+              <p className="text-slate-500 leading-relaxed text-sm font-semibold">{pillar.desc}</p>
             </div>
-            
-            <div className="lg:col-span-2 h-[450px] rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white">
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11756.914594950346!2d20.968333!3d42.483333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1353856e7290f05d%3A0xc06e00f98363359!2sShal%C3%AB!5e0!3m2!1sen!2s!4v1711710000000!5m2!1sen!2s" 
-                className="w-full h-full grayscale hover:grayscale-0 transition-all duration-700"
-                style={{ border: 0 }} 
-                allowFullScreen={true} 
-                loading="lazy" 
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 

@@ -66,37 +66,6 @@ const About: React.FC = () => {
         </div>
       </div>
 
-      {/* Map Section in About */}
-      <section className="bg-white rounded-[4rem] p-12 md:p-16 border border-slate-100 shadow-xl overflow-hidden">
-        <div className="flex flex-col md:flex-row gap-12 items-center">
-           <div className="md:w-1/3 space-y-6">
-             <h3 className="text-3xl font-black text-brand-dark uppercase tracking-tight">Zbuloni <span className="text-brand-pink">Shalën</span></h3>
-             <p className="text-slate-500 text-sm font-medium leading-relaxed">
-               Zyret tona dhe pika e grumbullimit për çdo aktivitet ndodhen në zemër të fshatit Shalë. Na vizitoni për t'u informuar më shumë rreth projekteve.
-             </p>
-             <div className="pt-4 border-t border-slate-100">
-                <div className="flex items-center space-x-3 mb-4">
-                  <MapPin className="h-5 w-5 text-brand-pink" />
-                  <span className="text-sm font-bold">Fshati Shalë, Lipjan</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Globe className="h-5 w-5 text-brand-cyan" />
-                  <span className="text-sm font-bold">Kosovë</span>
-                </div>
-             </div>
-           </div>
-           <div className="flex-grow w-full h-[350px] rounded-[2.5rem] overflow-hidden">
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11756.914594950346!2d20.968333!3d42.483333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1353856e7290f05d%3A0xc06e00f98363359!2sShal%C3%AB!5e0!3m2!1sen!2s!4v1711710000000!5m2!1sen!2s" 
-                className="w-full h-full"
-                style={{ border: 0 }} 
-                allowFullScreen={true} 
-                loading="lazy" 
-              ></iframe>
-           </div>
-        </div>
-      </section>
-
       <section className="bg-brand-dark rounded-[4rem] p-16 md:p-24 text-white relative overflow-hidden">
         <div className="relative z-10 grid md:grid-cols-2 gap-16 items-center">
           <div>
