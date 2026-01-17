@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, LayoutDashboard, LogOut, LogIn, ChevronDown } from 'lucide-react';
+import { Menu, X, LayoutDashboard, LogOut, LogIn, ChevronDown, UserPlus } from 'lucide-react';
 import { User, UserRole } from '../types';
 
+// Define the NavbarProps interface
 interface NavbarProps {
   user: User | null;
   onLogout: () => void;
@@ -13,7 +14,7 @@ const VizioniLogo = () => (
   <div className="relative flex items-center justify-center w-10 h-10">
     <div className="absolute inset-0 rounded-full border-4 border-transparent" 
          style={{ borderTopColor: '#e11d74', borderRightColor: '#f39237', borderBottomColor: '#95d03a', borderLeftColor: '#00adb5' }}></div>
-    <div className="w-4 h-4 bg-brand-dark rounded-full"></div>
+    <div className="w-3 h-3 bg-brand-dark rounded-full"></div>
   </div>
 );
 
@@ -22,11 +23,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const location = useLocation();
 
-  const isActive = (path: string) => location.pathname.startsWith(path);
-
-  const toggleDropdown = (name: string) => {
-    setActiveDropdown(activeDropdown === name ? null : name);
-  };
+  const isActive = (path: string) => location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
 
   return (
     <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
@@ -46,25 +43,17 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
             <Link to="/" className={`text-sm font-semibold transition-colors ${location.pathname === '/' ? 'text-brand-pink' : 'text-slate-600 hover:text-brand-pink'}`}>
-              Home
+              Kreu
             </Link>
 
-            {/* Dropdown: Rreth Nesh */}
-            <div className="relative group">
-              <button 
-                className={`flex items-center space-x-1 text-sm font-semibold transition-colors ${isActive('/about') ? 'text-brand-pink' : 'text-slate-600 hover:text-brand-pink'}`}
-                onMouseEnter={() => setActiveDropdown('about')}
-              >
+            <div className="relative group" onMouseEnter={() => setActiveDropdown('about')} onMouseLeave={() => setActiveDropdown(null)}>
+              <button className={`flex items-center space-x-1 text-sm font-semibold transition-colors ${isActive('/about') ? 'text-brand-pink' : 'text-slate-600 hover:text-brand-pink'}`}>
                 <span>Rreth Nesh</span>
                 <ChevronDown className="h-3 w-3" />
               </button>
-              <div 
-                className={`absolute left-0 mt-0 w-48 bg-white border border-slate-100 shadow-xl rounded-2xl py-2 transition-all transform origin-top ${activeDropdown === 'about' ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
-                onMouseLeave={() => setActiveDropdown(null)}
-              >
-                <Link to="/about/mission" className="block px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-wider">Misioni & Vlerat</Link>
-                <Link to="/about/staff" className="block px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-wider">Stafi & Struktura</Link>
-                <Link to="/about/partners" className="block px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-wider">Partnerët</Link>
+              <div className={`absolute left-0 mt-0 w-48 bg-white border border-slate-100 shadow-xl rounded-2xl py-2 transition-all transform origin-top ${activeDropdown === 'about' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
+                <Link to="/about/mission" className="block px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-wider">Misioni</Link>
+                <Link to="/about/staff" className="block px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-wider">Stafi</Link>
               </div>
             </div>
 
@@ -72,102 +61,44 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
               Projekte
             </Link>
 
-            {/* Dropdown: Lajmet */}
-            <div className="relative group">
-              <button 
-                className={`flex items-center space-x-1 text-sm font-semibold transition-colors ${isActive('/news') ? 'text-brand-pink' : 'text-slate-600 hover:text-brand-pink'}`}
-                onMouseEnter={() => setActiveDropdown('news')}
-              >
+            <div className="relative group" onMouseEnter={() => setActiveDropdown('news')} onMouseLeave={() => setActiveDropdown(null)}>
+              <button className={`flex items-center space-x-1 text-sm font-semibold transition-colors ${isActive('/news') ? 'text-brand-pink' : 'text-slate-600 hover:text-brand-pink'}`}>
                 <span>Lajmet</span>
                 <ChevronDown className="h-3 w-3" />
               </button>
-              <div 
-                className={`absolute left-0 mt-0 w-48 bg-white border border-slate-100 shadow-xl rounded-2xl py-2 transition-all transform origin-top ${activeDropdown === 'news' ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
-                onMouseLeave={() => setActiveDropdown(null)}
-              >
+              <div className={`absolute left-0 mt-0 w-48 bg-white border border-slate-100 shadow-xl rounded-2xl py-2 transition-all transform origin-top ${activeDropdown === 'news' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
                 <Link to="/news/latest" className="block px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-wider">Lajmet e Fundit</Link>
-                <Link to="/news/media" className="block px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-wider">Media</Link>
                 <Link to="/news/reports" className="block px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-wider">Raportet</Link>
               </div>
             </div>
             
+            <Link to="/join" className={`flex items-center space-x-2 px-6 py-2 rounded-full text-xs font-bold transition-all border-2 ${isActive('/join') ? 'bg-brand-lime border-brand-lime text-white' : 'border-brand-lime text-brand-lime hover:bg-brand-lime hover:text-white'}`}>
+              <UserPlus className="h-4 w-4" />
+              <span>Bashkohu me Ne</span>
+            </Link>
+
             {user?.role === UserRole.ADMIN && (
-              <Link to="/admin" className="flex items-center space-x-1 text-sm font-semibold text-slate-600 hover:text-brand-cyan transition-colors">
+              <Link to="/admin" className="flex items-center space-x-1 text-sm font-semibold text-brand-cyan hover:opacity-80 transition-colors">
                 <LayoutDashboard className="h-4 w-4" />
-                <span>Dashboard</span>
+                <span>Admin</span>
               </Link>
             )}
 
             {user ? (
-              <div className="flex items-center space-x-4 border-l pl-4 ml-4">
-                <div className="text-right">
-                  <p className="text-xs font-bold text-slate-900">{user.name}</p>
-                  <p className="text-[9px] text-slate-500 uppercase tracking-widest">{user.role}</p>
-                </div>
-                <button 
-                  onClick={onLogout}
-                  className="p-2 text-slate-400 hover:text-red-500 transition-colors"
-                >
-                  <LogOut className="h-5 w-5" />
-                </button>
-              </div>
+              <button onClick={onLogout} className="p-2 text-slate-400 hover:text-red-500 transition-colors"><LogOut className="h-5 w-5" /></button>
             ) : (
-              <Link to="/login" className="flex items-center space-x-2 bg-brand-dark text-white px-5 py-2 rounded-full text-sm font-bold hover:opacity-90 transition-all shadow-md">
+              <Link to="/login" className="flex items-center space-x-2 bg-brand-dark text-white px-5 py-2 rounded-full text-xs font-bold hover:opacity-90 shadow-md">
                 <LogIn className="h-4 w-4" />
-                <span>Login</span>
+                <span>Kyçu</span>
               </Link>
             )}
           </div>
 
-          {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-slate-500 hover:text-slate-900 focus:outline-none"
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
+            <button onClick={() => setIsOpen(!isOpen)} className="text-slate-500"><Menu className="h-6 w-6" /></button>
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link to="/" className="block px-3 py-2 text-base font-bold text-slate-700 hover:bg-slate-50">Home</Link>
-            <div className="px-3 py-2">
-              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Rreth Nesh</p>
-              <div className="pl-4 space-y-1">
-                <Link to="/about/mission" className="block py-1 text-sm font-bold text-slate-600">Misioni & Vlerat</Link>
-                <Link to="/about/staff" className="block py-1 text-sm font-bold text-slate-600">Stafi & Struktura</Link>
-              </div>
-            </div>
-            <Link to="/projects" className="block px-3 py-2 text-base font-bold text-slate-700 hover:bg-slate-50">Projekte</Link>
-            <div className="px-3 py-2">
-              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Lajmet</p>
-              <div className="pl-4 space-y-1">
-                <Link to="/news/latest" className="block py-1 text-sm font-bold text-slate-600">Lajmet e Fundit</Link>
-                <Link to="/news/media" className="block py-1 text-sm font-bold text-slate-600">Media</Link>
-                <Link to="/news/reports" className="block py-1 text-sm font-bold text-slate-600">Raportet</Link>
-              </div>
-            </div>
-            {user?.role === UserRole.ADMIN && (
-              <Link to="/admin" className="block px-3 py-2 text-base font-bold text-brand-cyan hover:bg-slate-50">Dashboard</Link>
-            )}
-            {user ? (
-              <button 
-                onClick={onLogout}
-                className="w-full text-left block px-3 py-2 text-base font-bold text-red-600 hover:bg-slate-50"
-              >
-                Logout
-              </button>
-            ) : (
-              <Link to="/login" className="block px-3 py-2 text-base font-bold text-brand-pink hover:bg-slate-50">Login</Link>
-            )}
-          </div>
-        </div>
-      )}
     </nav>
   );
 };

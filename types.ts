@@ -49,11 +49,14 @@ export interface Event {
 
 export interface VolunteerApplication {
   id: string;
-  userId: string;
+  userId?: string;
   userName: string;
   userEmail: string;
-  projectId: string;
-  projectTitle: string;
+  phone: string;
+  interests: string[];
+  motivation: string;
+  projectId?: string;
+  projectTitle?: string;
   status: ApplicationStatus;
   dateApplied: string;
 }
