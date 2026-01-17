@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   LayoutDashboard, FolderKanban, Users, 
-  Plus, Edit2, Trash2, Check, X, Newspaper, Briefcase, Camera, Image as ImageIcon, Phone, Mail, FileText, Link as LinkIcon, Globe,
-  Upload, LayoutList
+  Plus, Edit2, Trash2, X, Newspaper, Briefcase, Camera, 
+  LayoutList
 } from 'lucide-react';
 import { getDb, saveDb } from '../services/mockDb';
 import { Project, ApplicationStatus, ProjectStatus, NewsItem, StaffMember, VolunteerApplication } from '../types';
@@ -13,39 +13,27 @@ const AdminDashboard: React.FC = () => {
   const [db, setDb] = useState(getDb());
   
   const [showProjectModal, setShowProjectModal] = useState(false);
-  const [showAppModal, setShowAppModal] = useState(false);
   const [showNewsModal, setShowNewsModal] = useState(false);
   const [showStaffModal, setShowStaffModal] = useState(false);
-
+  const [showAppModal, setShowAppModal] = useState(false);
   const [selectedApp, setSelectedApp] = useState<VolunteerApplication | null>(null);
+
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [editingNews, setEditingNews] = useState<NewsItem | null>(null);
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
   
-  const mainImageRef = useRef<HTMLInputElement>(null);
-  const galleryImagesRef = useRef<HTMLInputElement>(null);
-  const newsFileRef = useRef<HTMLInputElement>(null);
   const staffImageRef = useRef<HTMLInputElement>(null);
 
-  const [projectForm, setProjectForm] = useState({
-    title: '', description: '', longDescription: '', startDate: '', endDate: '', image: '', gallery: [] as string[]
-  });
-
-  const [newsForm, setNewsForm] = useState({
-    title: '', content: '', category: 'Lajmet e fundit', datePosted: new Date().toISOString().split('T')[0], fileUrl: ''
-  });
-
   const [staffForm, setStaffForm] = useState({
-    name: '', role: '', category: 'Stafi Aktual', bio: '', image: '', socials: { facebook: '', instagram: '', linkedin: '' }
+    name: '', role: '', category: 'Stafi Aktual', bio: '', image: '', socials: {}
   });
 
-  // Fixed categories for organization
   const staffCategories = [
     'Kuvendi i Anëtarëve',
-    'Bordi Drejtues',
+    'Bordi i Drejtorëve',
     'Drejtor Ekzekutiv',
     'Stafi Aktual',
-    'Vullnetar'
+    'Vullnetarët'
   ];
 
   useEffect(() => {
@@ -60,108 +48,42 @@ const AdminDashboard: React.FC = () => {
     });
   };
 
-  const handleOpenProjectModal = (proj?: Project) => {
-    if (proj) {
-      setEditingProject(proj);
-      setProjectForm({
-        title: proj.title, description: proj.description, longDescription: proj.longDescription || '',
-        startDate: proj.startDate, endDate: proj.endDate, image: proj.image, gallery: proj.gallery || []
-      });
-    } else {
-      setEditingProject(null);
-      setProjectForm({ title: '', description: '', longDescription: '', startDate: '', endDate: '', image: '', gallery: [] });
-    }
-    setShowProjectModal(true);
-  };
-
-  const handleSaveProject = () => {
-    if (!projectForm.title || !projectForm.image) return alert("Plotësoni titullin dhe foton.");
-    const newProjects = editingProject 
-      ? db.projects.map(p => p.id === editingProject.id ? { ...p, ...projectForm } : p)
-      : [...db.projects, { id: 'p' + Date.now(), ...projectForm, status: ProjectStatus.ACTIVE, volunteerCount: 0 }];
-    
-    updateDb({ ...db, projects: newProjects });
-    setShowProjectModal(false);
-  };
-
-  const handleOpenNewsModal = (item?: NewsItem) => {
-    if (item) {
-      setEditingNews(item);
-      setNewsForm({
-        title: item.title,
-        content: item.content,
-        category: item.category,
-        datePosted: item.datePosted,
-        fileUrl: item.fileUrl || ''
-      });
-    } else {
-      setEditingNews(null);
-      setNewsForm({ title: '', content: '', category: 'Lajmet e fundit', datePosted: new Date().toISOString().split('T')[0], fileUrl: '' });
-    }
-    setShowNewsModal(true);
-  };
-
-  const handleSaveNews = () => {
-    if (!newsForm.title || !newsForm.content) return alert("Plotësoni të gjitha fushat.");
-    const newNews = editingNews
-      ? db.news.map(n => n.id === editingNews.id ? { ...n, ...newsForm } : n)
-      : [...db.news, { id: 'n' + Date.now(), ...newsForm }];
-    
-    updateDb({ ...db, news: newNews });
-    setShowNewsModal(false);
-  };
-
   const handleOpenStaffModal = (member?: StaffMember) => {
     if (member) {
       setEditingStaff(member);
-      // Try to determine category from the role or bio if we had it, 
-      // but for now we'll let admin re-pick if editing
-      let initialCategory = 'Stafi Aktual';
-      if (member.role.includes('Kuvendi')) initialCategory = 'Kuvendi i Anëtarëve';
-      else if (member.role.includes('Bord')) initialCategory = 'Bordi Drejtues';
-      else if (member.role.includes('Drejtor Ekzekutiv')) initialCategory = 'Drejtor Ekzekutiv';
-      else if (member.role.includes('Vullnetar')) initialCategory = 'Vullnetar';
-
       setStaffForm({
         name: member.name,
         role: member.role,
-        category: initialCategory,
-        bio: member.bio,
-        image: member.image,
-        socials: {
-          facebook: member.socials?.facebook || '',
-          instagram: member.socials?.instagram || '',
-          linkedin: member.socials?.linkedin || '',
-        }
+        category: member.category || 'Stafi Aktual',
+        bio: member.bio || '',
+        image: member.image || '',
+        socials: member.socials || {}
       });
     } else {
       setEditingStaff(null);
-      setStaffForm({ name: '', role: '', category: 'Stafi Aktual', bio: '', image: '', socials: { facebook: '', instagram: '', linkedin: '' } });
+      setStaffForm({ name: '', role: '', category: 'Stafi Aktual', bio: '', image: '', socials: {} });
     }
     setShowStaffModal(true);
   };
 
   const handleSaveStaff = () => {
-    if (!staffForm.name || !staffForm.image || !staffForm.role) return alert("Plotësoni emrin, foton dhe pozitën.");
+    if (!staffForm.name || !staffForm.role) return alert("Ju lutem plotësoni emrin dhe pozitën.");
     
-    // We combine category knowledge into the role string for simple filtering on About page
-    // If it's a fixed category, we make sure that keyword is in the role
-    let finalRole = staffForm.role;
-    if (staffForm.category === 'Kuvendi i Anëtarëve' && !finalRole.includes('Kuvendi')) {
-        finalRole = `Anëtar i Kuvendit (${finalRole})`;
-    } else if (staffForm.category === 'Bordi Drejtues' && !finalRole.includes('Bord')) {
-        finalRole = `Anëtar i Bordit (${finalRole})`;
-    } else if (staffForm.category === 'Drejtor Ekzekutiv') {
-        finalRole = 'Drejtor Ekzekutiv';
-    } else if (staffForm.category === 'Vullnetar' && !finalRole.includes('Vullnetar')) {
-        finalRole = `Vullnetar (${finalRole})`;
-    }
+    const newStaffMember: StaffMember = {
+      id: editingStaff ? editingStaff.id : 's_' + Date.now(),
+      name: staffForm.name,
+      role: staffForm.role,
+      category: staffForm.category,
+      bio: staffForm.bio,
+      image: staffForm.image || 'https://images.unsplash.com/photo-1550525811-e5869dd03032?auto=format&fit=crop&q=80&w=100',
+      socials: staffForm.socials
+    };
 
-    const newStaff = editingStaff
-      ? db.staff.map(s => s.id === editingStaff.id ? { ...s, ...staffForm, role: finalRole } : s)
-      : [...db.staff, { id: 's' + Date.now(), ...staffForm, role: finalRole }];
+    const updatedStaff = editingStaff
+      ? db.staff.map(s => s.id === editingStaff.id ? newStaffMember : s)
+      : [...db.staff, newStaffMember];
     
-    updateDb({ ...db, staff: newStaff });
+    updateDb({ ...db, staff: updatedStaff });
     setShowStaffModal(false);
   };
 
@@ -178,14 +100,13 @@ const AdminDashboard: React.FC = () => {
 
   const stats = [
     { label: 'Projekte', value: db.projects.length, icon: FolderKanban, color: 'bg-brand-pink' },
-    { label: 'Aplikime', value: db.applications?.filter(a => a.status === ApplicationStatus.PENDING).length || 0, icon: Users, color: 'bg-brand-cyan' },
+    { label: 'Aplikime', value: db.applications?.length || 0, icon: Users, color: 'bg-brand-cyan' },
     { label: 'Staff', value: db.staff.length, icon: Briefcase, color: 'bg-brand-blue' },
     { label: 'Lajme', value: db.news.length, icon: Newspaper, color: 'bg-brand-lime' },
   ];
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
-      {/* Sidebar */}
       <aside className="w-full md:w-72 bg-brand-dark border-r border-slate-800 flex-shrink-0 text-white z-20">
         <div className="p-8 sticky top-0">
           <div className="flex items-center space-x-3 mb-10">
@@ -198,7 +119,7 @@ const AdminDashboard: React.FC = () => {
             {[
               { id: 'overview', icon: LayoutDashboard, label: 'Pasqyra' },
               { id: 'projects', icon: FolderKanban, label: 'Projektet' },
-              { id: 'staff', icon: Briefcase, label: 'Stafi' },
+              { id: 'staff', icon: Briefcase, label: 'Stafi & Ekipi' },
               { id: 'news', icon: Newspaper, label: 'Lajmet' },
               { id: 'applications', icon: Users, label: 'Aplikimet' },
             ].map(item => (
@@ -215,13 +136,11 @@ const AdminDashboard: React.FC = () => {
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-grow p-8 md:p-12 overflow-x-hidden">
+      <main className="flex-grow p-8 md:p-12">
         <div className="max-w-6xl mx-auto">
           
-          {/* OVERVIEW */}
           {activeTab === 'overview' && (
-            <div className="space-y-12 animate-in fade-in duration-500">
+            <div className="space-y-12 animate-in fade-in">
               <h1 className="text-4xl font-black text-brand-dark uppercase tracking-tight">Menaxhimi i VRSH</h1>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {stats.map((stat, i) => (
@@ -237,45 +156,36 @@ const AdminDashboard: React.FC = () => {
             </div>
           )}
 
-          {/* PROJECTS, STAFF, NEWS ... (the sections are same but we update modal) */}
-          {activeTab === 'projects' && (
-             <div className="space-y-8 animate-in fade-in">
-               <div className="flex items-center justify-between">
-                 <h1 className="text-3xl font-black text-brand-dark uppercase">Projektet</h1>
-                 <button onClick={() => handleOpenProjectModal()} className="bg-brand-pink text-white px-8 py-3 rounded-full font-black uppercase text-[10px] tracking-widest flex items-center">
-                   <Plus className="h-4 w-4 mr-2" /> Shto Projekt
-                 </button>
-               </div>
-               {/* table here as before... */}
-             </div>
-          )}
-
           {activeTab === 'staff' && (
             <div className="space-y-8 animate-in fade-in">
               <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-black text-brand-dark uppercase">Stafi & Bordi</h1>
-                <button onClick={() => handleOpenStaffModal()} className="bg-brand-cyan text-white px-8 py-3 rounded-full font-black uppercase text-[10px] tracking-widest flex items-center">
-                  <Plus className="h-4 w-4 mr-2" /> Shto Anëtar
+                <h1 className="text-3xl font-black text-brand-dark uppercase">Stafi & Ekipi</h1>
+                <button onClick={() => handleOpenStaffModal()} className="bg-brand-cyan text-white px-8 py-3 rounded-full font-black uppercase text-[10px] tracking-widest flex items-center shadow-lg shadow-brand-cyan/20">
+                  <Plus className="h-4 w-4 mr-2" /> Shto Person
                 </button>
               </div>
               <div className="bg-white rounded-[2rem] border border-slate-100 overflow-hidden shadow-sm">
                 <table className="w-full text-left">
                   <thead className="bg-slate-50/50 border-b border-slate-100">
                     <tr>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Anëtari</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Roli / Pozita</th>
+                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Emri</th>
+                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Kategoria</th>
+                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Pozita</th>
                       <th className="px-8 py-5 text-right">Veprimet</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
                     {db.staff.map(s => (
-                      <tr key={s.id}>
+                      <tr key={s.id} className="hover:bg-slate-50/50 transition-colors">
                         <td className="px-8 py-6 flex items-center space-x-3">
                            <img src={s.image} className="w-10 h-10 rounded-full object-cover bg-slate-100" />
-                           <span className="font-bold">{s.name}</span>
+                           <span className="font-bold text-sm">{s.name}</span>
                         </td>
                         <td className="px-8 py-6">
-                           <span className="text-[10px] font-black uppercase text-slate-500">{s.role}</span>
+                           <span className="text-[10px] font-bold uppercase text-slate-400">{s.category}</span>
+                        </td>
+                        <td className="px-8 py-6">
+                           <span className="text-[10px] font-black uppercase text-brand-pink">{s.role}</span>
                         </td>
                         <td className="px-8 py-6 text-right space-x-2">
                           <button onClick={() => handleOpenStaffModal(s)} className="p-2 text-slate-400 hover:text-brand-pink transition-colors"><Edit2 className="h-4 w-4" /></button>
@@ -288,21 +198,18 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
           )}
-          
-          {/* applications, news tabs as before... */}
         </div>
       </main>
 
-      {/* --- STAFF MODAL (UPDATED) --- */}
       {showStaffModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-brand-dark/60 backdrop-blur-md">
           <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden">
              <div className="p-10 border-b border-slate-100 flex items-center justify-between">
-               <h2 className="text-2xl font-black text-brand-dark uppercase">{editingStaff ? 'Edito Anëtarin' : 'Shto Anëtar të Ri'}</h2>
+               <h2 className="text-2xl font-black text-brand-dark uppercase">{editingStaff ? 'Edito Personin' : 'Shto Person të Ri'}</h2>
                <button onClick={() => setShowStaffModal(false)}><X className="h-8 w-8 text-slate-300" /></button>
              </div>
              <div className="p-10 space-y-6 max-h-[70vh] overflow-y-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase text-slate-400">Emri Mbiemri</label>
                     <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold focus:ring-2 focus:ring-brand-cyan outline-none" value={staffForm.name} onChange={e => setStaffForm({...staffForm, name: e.target.value})} />
@@ -323,7 +230,7 @@ const AdminDashboard: React.FC = () => {
                    <label className="text-[10px] font-black uppercase text-slate-400">Pozita / Roli (Shkruaj manualisht)</label>
                    <input 
                       type="text" 
-                      placeholder="P.sh. Financier, Web Developer, Anëtar i Bordit..."
+                      placeholder="P.sh. Asistente e Projekteve, Anëtar i Bordit..."
                       className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold focus:ring-2 focus:ring-brand-cyan outline-none" 
                       value={staffForm.role} 
                       onChange={e => setStaffForm({...staffForm, role: e.target.value})}
@@ -342,12 +249,7 @@ const AdminDashboard: React.FC = () => {
                   }} />
                 </div>
                 
-                <div className="space-y-2">
-                   <label className="text-[10px] font-black uppercase text-slate-400">Bio e Shkurtër</label>
-                   <textarea rows={2} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium focus:ring-2 focus:ring-brand-cyan outline-none" value={staffForm.bio} onChange={e => setStaffForm({...staffForm, bio: e.target.value})} />
-                </div>
-
-                <button onClick={handleSaveStaff} className="w-full py-5 bg-brand-cyan text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-brand-cyan/20">Ruaj Anëtarin</button>
+                <button onClick={handleSaveStaff} className="w-full py-5 bg-brand-cyan text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-brand-cyan/20">Ruaj Të Dhënat</button>
              </div>
           </div>
         </div>

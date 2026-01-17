@@ -6,9 +6,9 @@ export enum UserRole {
 }
 
 export enum ProjectStatus {
-  ACTIVE = 'Active',
-  COMPLETED = 'Completed',
-  UPCOMING = 'Upcoming'
+  Active = 'Active',
+  Completed = 'Completed',
+  Upcoming = 'Upcoming'
 }
 
 export enum ApplicationStatus {
@@ -74,6 +74,7 @@ export interface StaffMember {
   id: string;
   name: string;
   role: string;
+  category: string;
   bio: string;
   image: string;
   socials: {

@@ -6,8 +6,7 @@ import { StaffMember } from '../types';
 import { 
   Target, Award, BookOpen, UserCheck, ArrowRight, 
   Users, ShieldCheck, Briefcase, LayoutList, 
-  UserRound, Wrench, Globe, Megaphone, Heart, 
-  Zap 
+  Heart, Zap 
 } from 'lucide-react';
 
 const About: React.FC = () => {
@@ -19,23 +18,8 @@ const About: React.FC = () => {
     setStaff(db.staff || []);
   }, []);
 
-  // Helper function to filter staff by a specific category tag in their role or bio (using role for grouping)
-  const getStaffByCategory = (categoryName: string) => {
-    // We assume the admin puts the category in the role or we handle it via string matching
-    // For this version, we'll match based on the role string or a hidden tag if we had one.
-    // Let's use string inclusion for the fixed categories.
-    return staff.filter(member => 
-      member.role.toLowerCase().includes(categoryName.toLowerCase())
-    );
-  };
-
-  // Staff Actual is anyone who doesn't fit the other 4 "Fixed" categories
-  const getStafiAktual = () => {
-    const fixedCategories = ['kuvendi', 'bordi', 'drejtor ekzekutiv', 'vullnetar'];
-    return staff.filter(member => {
-      const roleLower = member.role.toLowerCase();
-      return !fixedCategories.some(cat => roleLower.includes(cat));
-    });
+  const getStaffByCategory = (category: string) => {
+    return staff.filter(member => member.category === category);
   };
 
   const StaffCard = ({ member, compact = false }: { member: StaffMember, compact?: boolean }) => (
@@ -44,7 +28,7 @@ const About: React.FC = () => {
         <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
       </div>
       <div>
-        <h5 className={`font-black text-brand-dark leading-none mb-1 ${compact ? 'text-xs' : 'text-sm'}`}>{member.name}</h5>
+        <h5 className={`font-black text-brand-dark leading-none mb-1 ${compact ? 'text-[11px]' : 'text-sm'}`}>{member.name}</h5>
         <p className="text-[9px] font-bold text-brand-pink uppercase tracking-widest">{member.role}</p>
       </div>
     </div>
@@ -96,106 +80,36 @@ const About: React.FC = () => {
            </div>
         </div>
       </div>
-
-      <section className="bg-brand-dark rounded-[4rem] p-16 md:p-24 text-white relative overflow-hidden">
-        <div className="relative z-10 grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-4xl font-black uppercase mb-8 leading-tight">Veprimtaria & <span className="text-brand-lime">Ndikimi</span></h2>
-            <p className="text-slate-400 font-medium leading-relaxed mb-8">
-              Që nga themelimi, organizata ka realizuar dhjetëra aktivitete që kanë përfshirë qindra të rinj, gra dhe nxënës të fshatit Shalë dhe rrethinës në Komunën e Lipjanit.
-            </p>
-            <div className="grid grid-cols-2 gap-6">
-              <div className="flex flex-col">
-                <span className="text-3xl font-black text-white">100+</span>
-                <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Aktivitete</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-3xl font-black text-brand-pink">500+</span>
-                <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Pjesëmarrës</span>
-              </div>
-            </div>
-          </div>
-          <div className="space-y-6">
-             <div className="flex items-start space-x-4">
-               <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0"><BookOpen className="text-brand-cyan h-6 w-6" /></div>
-               <div>
-                 <h4 className="font-black uppercase text-sm mb-1">Edukimi</h4>
-                 <p className="text-xs text-slate-500">Trajnime për aftësi të buta dhe profesionale falas.</p>
-               </div>
-             </div>
-             <div className="flex items-start space-x-4">
-               <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0"><Zap className="text-brand-orange h-6 w-6" /></div>
-               <div>
-                 <h4 className="font-black uppercase text-sm mb-1">Inovacioni</h4>
-                 <p className="text-xs text-slate-500">Aftësimi i të rinjve në teknologji dhe media digjitale.</p>
-               </div>
-             </div>
-             <div className="flex items-start space-x-4">
-               <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0"><UserCheck className="text-brand-lime h-6 w-6" /></div>
-               <div>
-                 <h4 className="font-black uppercase text-sm mb-1">Pjesëmarrja</h4>
-                 <p className="text-xs text-slate-500">Nxitja e aktivizmit dhe lidershipit në Lipjan.</p>
-               </div>
-             </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 
   const renderStaff = () => (
     <div className="space-y-16 animate-in slide-in-from-bottom-8 duration-700">
-      <section className="max-w-5xl mx-auto">
+      <section className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Ekipi & Struktura</span>
-          <h2 className="text-4xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter mb-6">Stafi dhe Udhëheqja</h2>
+          <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter mb-4">Stafi dhe Udhëheqja</h2>
           <p className="text-slate-500 max-w-2xl mx-auto font-bold text-lg leading-relaxed">
-            VRS funksionon falë një strukture të përkushtuar që ndahet në këto nivele:
+            Struktura e përkushtuar e VRSH-së që punon çdo ditë për komunitetin tonë.
           </p>
         </div>
 
-        <div className="grid gap-10">
+        <div className="grid gap-12">
           
-          {/* 1. Kuvendi i Anëtarëve */}
-          <div className="space-y-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-brand-dark text-white rounded-xl flex items-center justify-center">
-                <Users className="h-5 w-5" />
-              </div>
-              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Kuvendi i Anëtarëve <span className="text-slate-400 text-xs font-bold lowercase ml-2 tracking-normal">— organi më i lartë vendimmarrës</span></h4>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {getStaffByCategory('Kuvendi').map(m => <StaffCard key={m.id} member={m} compact />)}
-            </div>
-          </div>
-
-          {/* 2. Bordi Drejtues */}
-          <div className="space-y-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-brand-pink text-white rounded-xl flex items-center justify-center">
-                <ShieldCheck className="h-5 w-5" />
-              </div>
-              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Bordi Drejtues <span className="text-slate-400 text-xs font-bold lowercase ml-2 tracking-normal">— udhëheq strategjinë e organizatës</span></h4>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {getStaffByCategory('Bord').map(m => <StaffCard key={m.id} member={m} compact />)}
-            </div>
-          </div>
-
-          {/* 3. Drejtor Ekzekutiv */}
+          {/* 1. Drejtor Ekzekutiv */}
           <div className="space-y-6">
             <div className="flex items-center space-x-4">
               <div className="w-10 h-10 bg-brand-orange text-white rounded-xl flex items-center justify-center">
                 <Briefcase className="h-5 w-5" />
               </div>
-              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Drejtor Ekzekutiv <span className="text-slate-400 text-xs font-bold lowercase ml-2 tracking-normal">— përgjegjës për zbatimin e projekteve</span></h4>
+              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Drejtor Ekzekutiv</h4>
             </div>
-            <div className="max-w-sm">
+            <div className="max-w-md">
               {getStaffByCategory('Drejtor Ekzekutiv').map(m => <StaffCard key={m.id} member={m} />)}
             </div>
           </div>
 
-          {/* 4. Stafi Aktual (Custom Roles) */}
+          {/* 2. Stafi Aktual */}
           <div className="bg-slate-900 p-10 md:p-14 rounded-[3.5rem] text-white relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
             <div className="relative z-10">
@@ -203,10 +117,10 @@ const About: React.FC = () => {
                 <div className="w-12 h-12 bg-brand-cyan rounded-2xl flex items-center justify-center">
                   <LayoutList className="h-6 w-6 text-white" />
                 </div>
-                <h4 className="text-2xl font-black uppercase tracking-tight">Stafi Aktual</h4>
+                <h4 className="text-2xl font-black uppercase tracking-tight">Stafi Aktual & Koordinatorët</h4>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {getStafiAktual().map(m => (
+                {getStaffByCategory('Stafi Aktual').map(m => (
                   <div key={m.id} className="flex items-center space-x-4 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:bg-white/10 transition-all">
                     <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-white/20">
                       <img src={m.image} alt={m.name} className="w-full h-full object-cover" />
@@ -221,17 +135,56 @@ const About: React.FC = () => {
             </div>
           </div>
 
-          {/* 5. Vullnetarët */}
+          {/* 3. Kuvendi i Anëtarëve */}
           <div className="space-y-6">
             <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-brand-dark text-white rounded-xl flex items-center justify-center">
+                <Users className="h-5 w-5" />
+              </div>
+              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Kuvendi i Anëtarëve</h4>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {getStaffByCategory('Kuvendi i Anëtarëve').map(m => <StaffCard key={m.id} member={m} compact />)}
+            </div>
+          </div>
+
+          {/* 4. Bordi i Drejtorëve */}
+          <div className="space-y-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-brand-pink text-white rounded-xl flex items-center justify-center">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Bordi i Drejtorëve</h4>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {getStaffByCategory('Bordi i Drejtorëve').map(m => <StaffCard key={m.id} member={m} compact />)}
+            </div>
+          </div>
+
+          {/* 5. Vullnetarët */}
+          <div className="bg-brand-lime/5 p-10 rounded-[3rem] border border-brand-lime/10">
+            <div className="flex items-center space-x-4 mb-8">
               <div className="w-10 h-10 bg-brand-lime text-white rounded-xl flex items-center justify-center">
                 <Heart className="h-5 w-5" />
               </div>
-              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Vullnetarët <span className="text-slate-400 text-xs font-bold lowercase ml-2 tracking-normal">— zemra dhe energjia e VRSH</span></h4>
+              <div>
+                <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Vullnetarët</h4>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Shtylla kryesore e VRSH</p>
+              </div>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {getStaffByCategory('Vullnetar').map(m => <StaffCard key={m.id} member={m} compact />)}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {getStaffByCategory('Vullnetarët').map(m => (
+                <div key={m.id} className="text-center group">
+                  <div className="w-16 h-16 mx-auto rounded-full overflow-hidden mb-3 border-2 border-white shadow-sm group-hover:scale-110 transition-transform">
+                    <img src={m.image} alt={m.name} className="w-full h-full object-cover" />
+                  </div>
+                  <h6 className="text-[10px] font-black text-brand-dark uppercase leading-tight line-clamp-1">{m.name}</h6>
+                </div>
+              ))}
             </div>
+            <p className="mt-8 text-xs text-slate-400 italic text-center font-medium">
+              Vullnetarët janë shtylla kryesore e VRS, të përfshirë në planifikim, zbatim dhe promovim të aktiviteteve.
+            </p>
           </div>
 
         </div>
@@ -244,11 +197,9 @@ const About: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center space-x-2 mb-16 bg-white p-2 rounded-3xl inline-flex border border-slate-100 shadow-sm">
           <button onClick={() => window.location.hash = '#/about/mission'} className={`px-8 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${(!section || section === 'mission') ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>Misioni & Veprimtaria</button>
-          <button onClick={() => window.location.hash = '#/about/staff'} className={`px-8 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${section === 'staff' ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>Stafi & Struktura</button>
+          <button onClick={() => window.location.hash = '#/about/staff'} className={`px-8 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${section === 'staff' ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>Ekipi & Struktura</button>
         </div>
-        {section === 'mission' && renderMission()}
-        {section === 'staff' && renderStaff()}
-        {!section && renderMission()}
+        {section === 'staff' ? renderStaff() : renderMission()}
       </div>
     </div>
   );

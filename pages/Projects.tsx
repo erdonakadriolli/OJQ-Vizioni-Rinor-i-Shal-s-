@@ -79,10 +79,12 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/20 to-transparent"></div>
                 <div className="absolute top-8 left-8">
+                  {/* Fixed: ProjectStatus.Active instead of ProjectStatus.ACTIVE */}
                   <span className={`px-5 py-2 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] shadow-2xl ${
-                    project.status === ProjectStatus.ACTIVE ? 'bg-brand-lime text-white' : 'bg-slate-700 text-white'
+                    project.status === ProjectStatus.Active ? 'bg-brand-lime text-white' : 'bg-slate-700 text-white'
                   }`}>
-                    {project.status === ProjectStatus.ACTIVE ? 'Aktive' : 'Mbyllur'}
+                    {/* Fixed: ProjectStatus.Active instead of ProjectStatus.ACTIVE */}
+                    {project.status === ProjectStatus.Active ? 'Aktive' : 'Mbyllur'}
                   </span>
                 </div>
                 <div className="absolute bottom-8 left-8 right-8">
@@ -137,8 +139,9 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
 
               <div className="flex-1 p-10 md:p-16 overflow-y-auto flex flex-col">
                 <div className="mb-10">
+                  {/* Fixed: ProjectStatus.Active instead of ProjectStatus.ACTIVE */}
                   <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest mb-4 inline-block ${
-                    selectedProject.status === ProjectStatus.ACTIVE ? 'bg-brand-lime text-white' : 'bg-slate-200 text-slate-500'
+                    selectedProject.status === ProjectStatus.Active ? 'bg-brand-lime text-white' : 'bg-slate-200 text-slate-500'
                   }`}>
                     Statusi: {selectedProject.status}
                   </span>

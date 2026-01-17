@@ -18,66 +18,96 @@ const initialData: DbSchema = {
       id: 'p1',
       title: 'Akademia Digjitale për Rininë - Shalë',
       description: 'Program intensiv trajnimi në kodim, dizajm grafik dhe marketing digjital për të rinjtë e fshatit Shalë.',
-      longDescription: 'Ky projekt synon të thyejë barrierat gjeografike duke sjellë trendet më të fundit të teknologjisë direkt në Shalë, Lipjan. Programi përfshin 12 javë mentorim dhe punë praktike.\n\nObjektivat:\n- Aftësimi i 30 të rinjve në teknologjitë moderne.\n- Krijimi i një laboratori digjital në qendrën tonë në Shalë.\n- Mbështetja e pjesëmarrësve për punësim në distancë (Freelance).',
+      longDescription: 'Ky projekt synon të thyejë barrierat gjeografike duke sjellë trendet më të fundit të teknologjisë direkt në Shalë, Lipjan. Programi përfshin 12 javë mentorim dhe punë praktike.',
       startDate: '2024-03-01',
       endDate: '2024-09-30',
-      status: ProjectStatus.ACTIVE,
+      status: ProjectStatus.Active,
       volunteerCount: 12,
       image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800',
-      gallery: []
-    },
-    {
-      id: 'p2',
-      title: 'Lidershipi Rinor në Komunën e Lipjanit',
-      description: 'Fuqizimi i zërit të të rinjve në vendimmarrje lokale dhe aktivizëm komunitar në të gjithë zonën e Shalës.',
-      longDescription: 'Përmes këtij projekti, Vizioni Rinor i Shalës po ndërton një gjeneratë të re udhëheqësish që do të përfaqësojnë interesat e fshatit tonë në nivel komunal në Lipjan.\n\nFushat e fokusit:\n- Komunikimi publik dhe avokimi.\n- Hartimi i projekteve me ndikim social.\n- Bashkëpunimi me asamblistët e Komunës së Lipjanit.',
-      startDate: '2024-05-15',
-      endDate: '2024-11-20',
-      status: ProjectStatus.ACTIVE,
-      volunteerCount: 8,
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800',
       gallery: []
     }
   ],
   events: [],
   users: [
     { id: 'u1', name: 'Admin VRS', email: 'admin@vizionirinorishales.org', role: UserRole.ADMIN },
-    { id: 'u2', name: 'Vullnetari', email: 'vullnetari@vizionirinorishales.org', role: UserRole.VOLUNTEER }
   ],
   applications: [],
   news: [
     {
       id: 'n1',
       title: 'Bashkëpunim i ri me Komunën e Lipjanit',
-      content: 'Vizioni Rinor i Shalës ka nënshkruar memorandum bashkëpunimi për projektet e ardhshme rinore në fshatin Shalë, duke u fokusuar në edukimin joformal.',
+      content: 'Vizioni Rinor i Shalës ka nënshkruar memorandum bashkëpunimi për projektet e ardhshme rinore në fshatin Shalë.',
       datePosted: '2024-03-28',
-      category: 'Lajmet e fundit'
-    },
-    {
-      id: 'n2',
-      title: 'Hapet thirrja për vullnetarë: Akademia Digjitale 2024',
-      content: 'Jeni të interesuar për teknologjinë? VRSH fton të gjithë të rinjtë e Shalës të aplikojnë për modulin e parë të Akademisë Digjitale.',
-      datePosted: '2024-04-05',
       category: 'Lajmet e fundit'
     }
   ],
   staff: [
     {
       id: 's1',
-      name: 'Erdona Kadriolli',
-      role: 'Drejtore Ekzekutive',
-      bio: 'E përkushtuar për të sjellë ndryshim pozitiv në komunitetin e Shalës përmes inovacionit dhe edukimit.',
-      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
-      socials: { linkedin: '#' }
+      name: 'Leotrim Pajaziti',
+      role: 'Drejtor Ekzekutiv',
+      category: 'Drejtor Ekzekutiv',
+      bio: 'Udhëheqës i projekteve dhe vizionit të organizatës.',
+      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
+      socials: {}
     },
     {
       id: 's2',
-      name: 'Besnik Shaljani',
-      role: 'Menaxher i Projekteve',
-      bio: 'Me përvojë në koordinimin e aktiviteteve rinore dhe bashkëpunimin me organizatat ndërkombëtare.',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
-      socials: { facebook: '#' }
-    }
+      name: 'Bleriana Kadriolli',
+      role: 'Asistente e Projekteve',
+      category: 'Stafi Aktual',
+      bio: 'Mbështetje në koordinimin dhe zbatimin e aktiviteteve.',
+      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
+      socials: {}
+    },
+    {
+      id: 's3',
+      name: 'Dijellëza Selmani',
+      role: 'Asistente e Projekteve',
+      category: 'Stafi Aktual',
+      bio: 'Përgjegjëse për mbarëvajtjen e trajnimeve.',
+      image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400',
+      socials: {}
+    },
+    {
+      id: 's4',
+      name: 'Euresa Karpuzi',
+      role: 'Kryetare e Asamblesë së Anëtarëve',
+      category: 'Kuvendi i Anëtarëve',
+      bio: '',
+      image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400',
+      socials: {}
+    },
+    {
+      id: 's5',
+      name: 'Miranda Karpuzi',
+      role: 'Anëtare e Asamblesë',
+      category: 'Kuvendi i Anëtarëve',
+      bio: '',
+      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=400',
+      socials: {}
+    },
+    {
+      id: 's6',
+      name: 'Shkelzen Karpuzi',
+      role: 'Anëtar i Bordit të Drejtorëve',
+      category: 'Bordi i Drejtorëve',
+      bio: '',
+      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
+      socials: {}
+    },
+    {
+      id: 's7',
+      name: 'Burim Shamolli',
+      role: 'Anëtar i Bordit të Drejtorëve',
+      category: 'Bordi i Drejtorëve',
+      bio: '',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
+      socials: {}
+    },
+    { id: 'v1', name: 'Erdona Kadriolli', role: 'Vullnetare', category: 'Vullnetarët', bio: '', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 'v2', name: 'Erjona Kadriolli', role: 'Vullnetare', category: 'Vullnetarët', bio: '', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 'v3', name: 'Viola Hetemi', role: 'Vullnetare', category: 'Vullnetarët', bio: '', image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400', socials: {} }
   ]
 };
 
