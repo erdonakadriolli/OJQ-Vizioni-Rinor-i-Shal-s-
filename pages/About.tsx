@@ -7,7 +7,7 @@ import {
   Target, Award, BookOpen, UserCheck, ArrowRight, 
   Users, ShieldCheck, Briefcase, LayoutList, 
   UserRound, Wrench, Globe, Megaphone, Heart, 
-  Facebook, Instagram, Linkedin, Zap 
+  Zap 
 } from 'lucide-react';
 
 const About: React.FC = () => {
@@ -19,21 +19,33 @@ const About: React.FC = () => {
     setStaff(db.staff || []);
   }, []);
 
-  // Helper function to filter staff by role category
-  const getStaffByRole = (roleKey: string) => {
+  // Helper function to filter staff by a specific category tag in their role or bio (using role for grouping)
+  const getStaffByCategory = (categoryName: string) => {
+    // We assume the admin puts the category in the role or we handle it via string matching
+    // For this version, we'll match based on the role string or a hidden tag if we had one.
+    // Let's use string inclusion for the fixed categories.
     return staff.filter(member => 
-      member.role.toLowerCase().includes(roleKey.toLowerCase())
+      member.role.toLowerCase().includes(categoryName.toLowerCase())
     );
   };
 
-  const StaffCard = ({ member }: { member: StaffMember }) => (
-    <div className="flex items-center space-x-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 group hover:bg-white hover:shadow-md transition-all duration-300">
-      <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border-2 border-white shadow-sm">
+  // Staff Actual is anyone who doesn't fit the other 4 "Fixed" categories
+  const getStafiAktual = () => {
+    const fixedCategories = ['kuvendi', 'bordi', 'drejtor ekzekutiv', 'vullnetar'];
+    return staff.filter(member => {
+      const roleLower = member.role.toLowerCase();
+      return !fixedCategories.some(cat => roleLower.includes(cat));
+    });
+  };
+
+  const StaffCard = ({ member, compact = false }: { member: StaffMember, compact?: boolean }) => (
+    <div className={`flex items-center space-x-4 p-4 bg-white rounded-2xl border border-slate-100 group hover:shadow-md transition-all duration-300 ${compact ? 'py-3' : 'py-4'}`}>
+      <div className={`${compact ? 'w-10 h-10' : 'w-14 h-14'} rounded-full overflow-hidden flex-shrink-0 border-2 border-slate-50 shadow-sm`}>
         <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
       </div>
       <div>
-        <h5 className="font-black text-brand-dark text-sm leading-none mb-1">{member.name}</h5>
-        <p className="text-[10px] font-bold text-brand-pink uppercase tracking-widest">{member.role}</p>
+        <h5 className={`font-black text-brand-dark leading-none mb-1 ${compact ? 'text-xs' : 'text-sm'}`}>{member.name}</h5>
+        <p className="text-[9px] font-bold text-brand-pink uppercase tracking-widest">{member.role}</p>
       </div>
     </div>
   );
@@ -112,7 +124,6 @@ const About: React.FC = () => {
                </div>
              </div>
              <div className="flex items-start space-x-4">
-               {/* Fixed: Zap icon import added to lucide-react list */}
                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0"><Zap className="text-brand-orange h-6 w-6" /></div>
                <div>
                  <h4 className="font-black uppercase text-sm mb-1">Inovacioni</h4>
@@ -133,124 +144,96 @@ const About: React.FC = () => {
   );
 
   const renderStaff = () => (
-    <div className="space-y-24 animate-in slide-in-from-bottom-8 duration-700">
+    <div className="space-y-16 animate-in slide-in-from-bottom-8 duration-700">
       <section className="max-w-5xl mx-auto">
         <div className="text-center mb-16">
-          <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Struktura jonë</span>
-          <h2 className="text-4xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter mb-6">Anëtarët, Stafi dhe Vullnetarët</h2>
-          <p className="text-slate-500 max-w-3xl mx-auto font-bold text-lg leading-relaxed">
-            VRS funksionon falë një strukture të përkushtuar që përfshin:
+          <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Ekipi & Struktura</span>
+          <h2 className="text-4xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter mb-6">Stafi dhe Udhëheqja</h2>
+          <p className="text-slate-500 max-w-2xl mx-auto font-bold text-lg leading-relaxed">
+            VRS funksionon falë një strukture të përkushtuar që ndahet në këto nivele:
           </p>
         </div>
 
-        <div className="grid gap-8">
-          {/* 1. Asambleja e Anëtarëve */}
-          <div className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="w-12 h-12 bg-brand-dark text-white rounded-2xl flex items-center justify-center flex-shrink-0">
-                <Users className="h-6 w-6" />
+        <div className="grid gap-10">
+          
+          {/* 1. Kuvendi i Anëtarëve */}
+          <div className="space-y-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-brand-dark text-white rounded-xl flex items-center justify-center">
+                <Users className="h-5 w-5" />
               </div>
-              <h4 className="text-xl font-black text-brand-dark uppercase">Asamblenë e Anëtarëve <span className="text-slate-400 text-sm font-bold block normal-case">— organi më i lartë vendimmarrës</span></h4>
+              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Kuvendi i Anëtarëve <span className="text-slate-400 text-xs font-bold lowercase ml-2 tracking-normal">— organi më i lartë vendimmarrës</span></h4>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {getStaffByRole('Asamble').map(m => <StaffCard key={m.id} member={m} />)}
-              {getStaffByRole('Asamble').length === 0 && <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest italic p-4">Nuk ka anëtarë të regjistruar akoma</p>}
+              {getStaffByCategory('Kuvendi').map(m => <StaffCard key={m.id} member={m} compact />)}
             </div>
           </div>
 
-          {/* 2. Bordin e Drejtorëve */}
-          <div className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="w-12 h-12 bg-brand-pink text-white rounded-2xl flex items-center justify-center flex-shrink-0">
-                <ShieldCheck className="h-6 w-6" />
+          {/* 2. Bordi Drejtues */}
+          <div className="space-y-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-brand-pink text-white rounded-xl flex items-center justify-center">
+                <ShieldCheck className="h-5 w-5" />
               </div>
-              <h4 className="text-xl font-black text-brand-dark uppercase">Bordin e Drejtorëve <span className="text-slate-400 text-sm font-bold block normal-case">— udhëheq dhe mbikëqyr strategjinë</span></h4>
+              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Bordi Drejtues <span className="text-slate-400 text-xs font-bold lowercase ml-2 tracking-normal">— udhëheq strategjinë e organizatës</span></h4>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {getStaffByRole('Bord').map(m => <StaffCard key={m.id} member={m} />)}
-              {getStaffByRole('Bord').length === 0 && <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest italic p-4">Nuk ka anëtarë të regjistruar akoma</p>}
+              {getStaffByCategory('Bord').map(m => <StaffCard key={m.id} member={m} compact />)}
             </div>
           </div>
 
-          {/* 3. Drejtorin Ekzekutiv */}
-          <div className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="w-12 h-12 bg-brand-orange text-white rounded-2xl flex items-center justify-center flex-shrink-0">
-                <Briefcase className="h-6 w-6" />
+          {/* 3. Drejtor Ekzekutiv */}
+          <div className="space-y-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-brand-orange text-white rounded-xl flex items-center justify-center">
+                <Briefcase className="h-5 w-5" />
               </div>
-              <h4 className="text-xl font-black text-brand-dark uppercase">Drejtorin Ekzekutiv <span className="text-slate-400 text-sm font-bold block normal-case">— përgjegjës për menaxhimin dhe zbatimin</span></h4>
+              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Drejtor Ekzekutiv <span className="text-slate-400 text-xs font-bold lowercase ml-2 tracking-normal">— përgjegjës për zbatimin e projekteve</span></h4>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {getStaffByRole('Drejtor Ekzekutiv').map(m => <StaffCard key={m.id} member={m} />)}
+            <div className="max-w-sm">
+              {getStaffByCategory('Drejtor Ekzekutiv').map(m => <StaffCard key={m.id} member={m} />)}
             </div>
           </div>
 
-          {/* 4. Koordinatorët dhe Stafi i Zyrës */}
-          <div className="bg-slate-900 text-white p-10 md:p-14 rounded-[4rem] shadow-2xl relative overflow-hidden">
+          {/* 4. Stafi Aktual (Custom Roles) */}
+          <div className="bg-slate-900 p-10 md:p-14 rounded-[3.5rem] text-white relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
             <div className="relative z-10">
               <div className="flex items-center space-x-4 mb-10">
                 <div className="w-12 h-12 bg-brand-cyan rounded-2xl flex items-center justify-center">
                   <LayoutList className="h-6 w-6 text-white" />
                 </div>
-                <h4 className="text-2xl font-black uppercase">Koordinatorët e Projekteve dhe Stafi i Zyrës</h4>
+                <h4 className="text-2xl font-black uppercase tracking-tight">Stafi Aktual</h4>
               </div>
-
-              <div className="grid lg:grid-cols-2 gap-12">
-                <div className="space-y-8">
-                  <div>
-                    <h5 className="text-brand-cyan font-black text-[10px] uppercase tracking-[0.3em] mb-4 flex items-center">
-                      <UserRound className="h-3 w-3 mr-2" /> Koordinatorët e projekteve
-                    </h5>
-                    <div className="space-y-3">
-                      {getStaffByRole('Koordinator').map(m => <StaffCard key={m.id} member={m} />)}
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {getStafiAktual().map(m => (
+                  <div key={m.id} className="flex items-center space-x-4 p-4 bg-white/5 rounded-2xl border border-white/10 group hover:bg-white/10 transition-all">
+                    <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-white/20">
+                      <img src={m.image} alt={m.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <h5 className="font-black text-white text-sm leading-none mb-1">{m.name}</h5>
+                      <p className="text-[9px] font-bold text-brand-cyan uppercase tracking-widest">{m.role}</p>
                     </div>
                   </div>
-                  <div>
-                    <h5 className="text-brand-lime font-black text-[10px] uppercase tracking-[0.3em] mb-4 flex items-center">
-                      <Wrench className="h-3 w-3 mr-2" /> Asistentët e trajnimeve
-                    </h5>
-                    <div className="space-y-3">
-                      {getStaffByRole('Asistent').map(m => <StaffCard key={m.id} member={m} />)}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-8">
-                  <div>
-                    <h5 className="text-brand-orange font-black text-[10px] uppercase tracking-[0.3em] mb-4 flex items-center">
-                      <Globe className="h-3 w-3 mr-2" /> Administrata dhe logjistika
-                    </h5>
-                    <div className="space-y-3">
-                      {getStaffByRole('Administrata').map(m => <StaffCard key={m.id} member={m} />)}
-                    </div>
-                  </div>
-                  <div>
-                    <h5 className="text-brand-pink font-black text-[10px] uppercase tracking-[0.3em] mb-4 flex items-center">
-                      <Megaphone className="h-3 w-3 mr-2" /> Komunikimi dhe marketingu
-                    </h5>
-                    <div className="space-y-3">
-                      {getStaffByRole('Komunikimi').map(m => <StaffCard key={m.id} member={m} />)}
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
 
           {/* 5. Vullnetarët */}
-          <div className="bg-brand-lime/10 p-8 rounded-[3rem] border border-brand-lime/20 shadow-sm">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="w-12 h-12 bg-brand-lime text-white rounded-2xl flex items-center justify-center flex-shrink-0">
-                <Heart className="h-6 w-6" />
+          <div className="space-y-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-brand-lime text-white rounded-xl flex items-center justify-center">
+                <Heart className="h-5 w-5" />
               </div>
-              <h4 className="text-xl font-black text-brand-dark uppercase">Vullnetarët <span className="text-slate-500 text-sm font-bold block normal-case">— zemra e organizatës</span></h4>
+              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Vullnetarët <span className="text-slate-400 text-xs font-bold lowercase ml-2 tracking-normal">— zemra dhe energjia e VRSH</span></h4>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {getStaffByRole('Vullnetar').map(m => <StaffCard key={m.id} member={m} />)}
-              {getStaffByRole('Vullnetar').length === 0 && <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic p-4">Nuk ka vullnetarë zyrtarë të shfaqur akoma</p>}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {getStaffByCategory('Vullnetar').map(m => <StaffCard key={m.id} member={m} compact />)}
             </div>
           </div>
+
         </div>
       </section>
     </div>
