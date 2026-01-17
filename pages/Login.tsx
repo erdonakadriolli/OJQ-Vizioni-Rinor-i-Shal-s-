@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { LogIn, ShieldAlert } from 'lucide-react';
 import { User, UserRole } from '../types';
 import { getDb } from '../services/mockDb';
+import { useLanguage } from '../context/LanguageContext';
 
 const VizioniLogo = () => (
   <div className="relative flex items-center justify-center w-20 h-20 mx-auto">
@@ -19,6 +20,7 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
         onLogin(user);
         navigate(user.role === UserRole.ADMIN ? '/admin' : '/projects');
       } else {
-        setError('Kredencialet janë të pasakta. Provoni: admin@vizionirinorishales.org');
+        setError(t('login.error') || 'Credentials incorrect. Try: admin@vizionirinorishales.org');
       }
       setIsLoading(false);
     }, 1000);
@@ -49,8 +51,8 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
           <div className="p-10">
             <div className="text-center mb-10">
               <VizioniLogo />
-              <h2 className="text-3xl font-black text-brand-dark uppercase mt-6 tracking-tight">Mirësevini</h2>
-              <p className="text-slate-500 mt-2 font-medium">Kyçuni për të menaxhuar vullnetarizmin tuaj</p>
+              <h2 className="text-3xl font-black text-brand-dark uppercase mt-6 tracking-tight">{t('login.title')}</h2>
+              <p className="text-slate-500 mt-2 font-medium">{t('login.subtitle')}</p>
             </div>
 
             {error && (
@@ -62,11 +64,11 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
 
             <form onSubmit={handleLogin} className="space-y-6">
               <div>
-                <label className="block text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Email</label>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">{t('login.email')}</label>
                 <input 
                   type="email" 
                   required
-                  placeholder="email@vizionirinorishales.org"
+                  placeholder="admin@vizionirinorishales.org"
                   className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none transition-all font-medium"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -74,7 +76,7 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Fjalëkalimi</label>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">{t('login.password')}</label>
                 <input 
                   type="password" 
                   required
@@ -88,9 +90,9 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center">
                   <input type="checkbox" id="remember" className="h-4 w-4 text-brand-pink focus:ring-brand-pink border-slate-300 rounded" />
-                  <label htmlFor="remember" className="ml-3 block text-xs font-bold text-slate-500 uppercase">Më mbaj mend</label>
+                  <label htmlFor="remember" className="ml-3 block text-xs font-bold text-slate-500 uppercase">{t('login.remember')}</label>
                 </div>
-                <a href="#" className="text-xs font-bold text-brand-pink uppercase tracking-wider hover:underline">Harruat fjalëkalimin?</a>
+                <a href="#" className="text-xs font-bold text-brand-pink uppercase tracking-wider hover:underline">{t('login.forgot')}</a>
               </div>
 
               <button 
@@ -103,7 +105,7 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
                 ) : (
                   <>
                     <LogIn className="h-5 w-5 mr-3" />
-                    Kyçu Tani
+                    {t('login.button')}
                   </>
                 )}
               </button>
@@ -112,7 +114,7 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
           
           <div className="bg-slate-50 p-8 border-t border-slate-100 text-center">
             <p className="text-slate-500 text-sm font-medium">
-              Nuk keni llogari? <a href="#" className="font-black text-brand-pink uppercase hover:underline">Regjistrohu si Vullnetar</a>
+              {t('login.noaccount')} <Link to="/join" className="font-black text-brand-pink uppercase hover:underline">{t('login.register')}</Link>
             </p>
           </div>
         </div>

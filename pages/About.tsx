@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getDb } from '../services/mockDb';
 import { StaffMember } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 import { 
   Target, Award, BookOpen, UserCheck, ArrowRight, 
   Users, ShieldCheck, Briefcase, LayoutList, 
@@ -14,6 +15,7 @@ const About: React.FC = () => {
   const { section } = useParams<{ section: string }>();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [selectedMember, setSelectedMember] = useState<StaffMember | null>(null);
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     const db = getDb();
@@ -53,10 +55,12 @@ const About: React.FC = () => {
     <div className="space-y-16 animate-in fade-in duration-500 pb-20">
       {/* Header Section */}
       <section className="text-center max-w-4xl mx-auto py-12">
-        <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[9px] mb-3 block">Mission & Vision</span>
-        <h1 className="text-4xl md:text-7xl font-black text-brand-dark uppercase tracking-tighter mb-6 leading-none">For Youth, <br/><span className="text-brand-pink">For the Future</span></h1>
+        <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[9px] mb-3 block">{t('about.mission.tag')}</span>
+        <h1 className="text-4xl md:text-7xl font-black text-brand-dark uppercase tracking-tighter mb-6 leading-none">
+          {t('about.mission.title1')} <br/><span className="text-brand-pink">{t('about.mission.title2')}</span>
+        </h1>
         <p className="text-xl text-slate-600 leading-relaxed font-semibold italic max-w-2xl mx-auto">
-          "Youth Vision of Shale (VRSH) transforms youth potential into a driving force for community development in Shale and Lipjan."
+          {t('about.mission.quote')}
         </p>
         <div className="h-1.5 w-24 bg-gradient-to-r from-brand-pink via-brand-orange to-brand-lime mx-auto mt-8 rounded-full"></div>
       </section>
@@ -66,14 +70,14 @@ const About: React.FC = () => {
         <div className="space-y-6">
           <div className="inline-flex items-center space-x-2 px-3 py-1 bg-brand-orange/10 text-brand-orange rounded-lg text-[10px] font-black uppercase tracking-widest">
             <History className="h-3.5 w-3.5" />
-            <span>How it all began</span>
+            <span>{t('about.history.tag')}</span>
           </div>
-          <h2 className="text-3xl font-black text-brand-dark uppercase tracking-tight">Our Roots in <span className="text-brand-orange">Shale</span></h2>
+          <h2 className="text-3xl font-black text-brand-dark uppercase tracking-tight">{t('about.history.title')} <span className="text-brand-orange">Shalë</span></h2>
           <p className="text-slate-500 font-medium leading-relaxed">
-            Youth Vision of Shale was founded as a voluntary initiative by a group of enthusiastic young people who believed that change starts from home. Based in the village of Shale, the organization grew rapidly to become a powerful voice for rural youth needs in the Lipjan municipality.
+            {t('about.history.p1')}
           </p>
           <p className="text-slate-500 font-medium leading-relaxed">
-            Today, we are the intersection of innovation and tradition, offering young people tools and knowledge that were once accessible only in large urban centers.
+            {t('about.history.p2')}
           </p>
         </div>
         <div className="relative rounded-[3rem] overflow-hidden shadow-2xl h-[350px]">
@@ -89,13 +93,13 @@ const About: React.FC = () => {
       {/* Core Values Section */}
       <div className="py-12">
         <div className="text-center mb-12">
-           <h3 className="text-2xl font-black text-brand-dark uppercase tracking-tight">Values that <span className="text-brand-pink">Lead Us</span></h3>
+           <h3 className="text-2xl font-black text-brand-dark uppercase tracking-tight">{t('about.values.title')} <span className="text-brand-pink">{t('about.values.title2')}</span></h3>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[
-            { icon: Shield, title: 'Transparency', desc: 'Full accountability to our members and donors.', color: 'text-brand-pink' },
-            { icon: Zap, title: 'Innovation', desc: 'Using technology to solve community problems.', color: 'text-brand-orange' },
-            { icon: Users, title: 'Inclusion', desc: 'Equal opportunities for every young person, regardless of gender or status.', color: 'text-brand-lime' }
+            { icon: Shield, title: t('about.values.transparency'), desc: t('about.values.transparency.desc'), color: 'text-brand-pink' },
+            { icon: Zap, title: t('about.values.innovation'), desc: t('about.values.innovation.desc'), color: 'text-brand-orange' },
+            { icon: Users, title: t('about.values.inclusion'), desc: t('about.values.inclusion.desc'), color: 'text-brand-lime' }
           ].map((v, i) => (
             <div key={i} className="glass-card p-8 rounded-[2.5rem] border border-white text-center group hover:bg-white transition-all">
               <div className={`${v.color} mb-4 flex justify-center group-hover:scale-110 transition-transform`}>
@@ -115,15 +119,15 @@ const About: React.FC = () => {
             <div>
                <div className="inline-flex items-center space-x-2 px-3 py-1 bg-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest mb-6">
                  <Rocket className="h-3.5 w-3.5 text-brand-lime" />
-                 <span>Strategy 2024-2027</span>
+                 <span>{t('about.strategy.tag')}</span>
                </div>
-               <h3 className="text-3xl font-black uppercase tracking-tighter mb-8">Our Key <br/><span className="text-brand-lime">Objectives</span></h3>
+               <h3 className="text-3xl font-black uppercase tracking-tighter mb-8">{t('about.strategy.title')} <br/><span className="text-brand-lime">{t('about.strategy.key')}</span></h3>
                <ul className="space-y-6">
                  {[
-                   { t: 'Youth Digitalization', d: 'Creating the first digital lab in Shale village for IT training.' },
-                   { t: 'Youth Leadership', d: 'Empowering young people to actively participate in local decision-making processes.' },
-                   { t: 'Environment & Climate Change', d: 'Initiatives for reforestation and waste management in the region.' },
-                   { t: 'International Networking', d: 'Membership in European youth networks and Erasmus+ exchanges.' }
+                   { t: t('about.strategy.digital'), d: t('about.strategy.digital.desc') },
+                   { t: t('about.strategy.leadership'), d: t('about.strategy.leadership.desc') },
+                   { t: t('about.strategy.env'), d: t('about.strategy.env.desc') },
+                   { t: t('about.strategy.network'), d: t('about.strategy.network.desc') }
                  ].map((pill, i) => (
                    <li key={i} className="flex space-x-4 group">
                       <div className="w-1.5 h-1.5 rounded-full bg-brand-lime mt-2 group-hover:scale-150 transition-transform"></div>
@@ -137,7 +141,7 @@ const About: React.FC = () => {
             </div>
             <div className="bg-white/5 rounded-[3rem] p-10 border border-white/10 flex flex-col justify-center">
                <h4 className="text-xl font-black uppercase mb-6 flex items-center">
-                 <Target className="mr-3 h-6 w-6 text-brand-pink" /> Fields of Action
+                 <Target className="mr-3 h-6 w-6 text-brand-pink" /> {t('about.fields.title')}
                </h4>
                <div className="grid grid-cols-2 gap-4">
                  {[
@@ -156,7 +160,7 @@ const About: React.FC = () => {
       <section className="py-12 border-t border-slate-100">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
            <div className="max-w-xs">
-              <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight">Our Collaborators</h4>
+              <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight">{t('about.collab.title')}</h4>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">VRSH works with institutional and organizational partners.</p>
            </div>
            <div className="flex flex-wrap justify-center gap-10 opacity-40 grayscale hover:grayscale-0 transition-all">
@@ -178,8 +182,8 @@ const About: React.FC = () => {
          <div className="absolute inset-0 bg-brand-dark/50 backdrop-blur-[1px]"></div>
          <div className="relative z-10 text-center text-white px-6">
             <MapPin className="h-10 w-10 mx-auto mb-4 text-brand-cyan animate-bounce" />
-            <h3 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">Home of Ideas</h3>
-            <p className="text-lg font-bold text-white/80 max-w-xl mx-auto uppercase tracking-widest text-xs">Our office in Shale, Lipjan — where change begins.</p>
+            <h3 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">{t('about.office.title')}</h3>
+            <p className="text-lg font-bold text-white/80 max-w-xl mx-auto uppercase tracking-widest text-xs">{t('about.office.desc')}</p>
          </div>
       </div>
     </div>
@@ -189,10 +193,12 @@ const About: React.FC = () => {
     <div className="space-y-16 animate-in slide-in-from-bottom-4 duration-500">
       <section className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
-          <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[9px] mb-3 block">Team & Structure</span>
-          <h2 className="text-4xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter mb-3 leading-none">Vision <span className="text-brand-pink">Staff</span></h2>
+          <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[9px] mb-3 block">{t('about.team.tag')}</span>
+          <h2 className="text-4xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter mb-3 leading-none">
+            {t('about.team.title')} <span className="text-brand-pink">{t('about.team.title2')}</span>
+          </h2>
           <p className="text-slate-500 max-w-xl mx-auto font-bold text-sm uppercase tracking-widest text-center">
-            Leadership that makes a difference every day.
+            {t('about.team.desc')}
           </p>
         </div>
 
@@ -354,8 +360,8 @@ const About: React.FC = () => {
     <div className="py-16 px-6 min-h-screen relative z-10">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center space-x-2 mb-12 glass-card p-1.5 rounded-2xl inline-flex shadow-sm">
-          <button onClick={() => window.location.hash = '#/about/mission'} className={`px-6 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${(!section || section === 'mission') ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>Mission</button>
-          <button onClick={() => window.location.hash = '#/about/staff'} className={`px-6 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${section === 'staff' ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>Team</button>
+          <button onClick={() => window.location.hash = '#/about/mission'} className={`px-6 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${(!section || section === 'mission') ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>{t('nav.mission')}</button>
+          <button onClick={() => window.location.hash = '#/about/staff'} className={`px-6 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${section === 'staff' ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>{t('nav.staff')}</button>
         </div>
         {section === 'staff' ? renderStaff() : renderMission()}
       </div>

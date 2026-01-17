@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { UserCheck, Send, CheckCircle, Heart, Star, Sparkles, MapPin } from 'lucide-react';
 import { getDb, saveDb } from '../services/mockDb';
 import { VolunteerApplication, ApplicationStatus } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 const VolunteerApply: React.FC = () => {
   const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { language, t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,7 +18,16 @@ const VolunteerApply: React.FC = () => {
     motivation: ''
   });
 
-  const interestsList = [
+  const interestsList = language === 'AL' ? [
+    'Teknologji & TI',
+    'Dizajn Grafik',
+    'Marketing Digjital',
+    'Aktivizëm Qytetar',
+    'Mbrojtja e Mjedisit',
+    'Kulturë & Sport',
+    'Lidership',
+    'Edukimi'
+  ] : [
     'Technology & IT',
     'Graphic Design',
     'Digital Marketing',
@@ -65,15 +76,15 @@ const VolunteerApply: React.FC = () => {
           <div className="w-24 h-24 bg-brand-lime/20 text-brand-lime rounded-full flex items-center justify-center mx-auto mb-10">
             <CheckCircle className="h-12 w-12" />
           </div>
-          <h2 className="text-4xl font-black text-brand-dark uppercase tracking-tighter mb-6">Application Sent Successfully!</h2>
+          <h2 className="text-4xl font-black text-brand-dark uppercase tracking-tighter mb-6">{t('join.success.title')}</h2>
           <p className="text-slate-500 text-lg mb-10 font-medium">
-            Thank you for wanting to be part of Youth Vision of Shale. Our team will review your application and contact you soon in Lipjan.
+            {t('join.success.desc')}
           </p>
           <button 
             onClick={() => navigate('/')}
             className="px-12 py-5 bg-brand-dark text-white rounded-full font-black uppercase text-sm tracking-widest hover:bg-brand-pink transition-all shadow-xl"
           >
-            Return to Home
+            {t('join.success.button')}
           </button>
         </div>
       </div>
@@ -86,32 +97,32 @@ const VolunteerApply: React.FC = () => {
         <div className="text-center mb-16">
           <div className="inline-flex items-center space-x-2 px-4 py-2 bg-brand-pink/10 text-brand-pink rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-6">
             <Heart className="h-3 w-3" />
-            <span>Join Us</span>
+            <span>{t('join.tag')}</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-brand-dark uppercase tracking-tighter mb-6">
-            Become a <span className="text-brand-pink">Volunteer</span>
+            {t('join.title')}
           </h1>
           <p className="text-xl text-slate-500 font-medium max-w-2xl mx-auto">
-            Build the future of Shale village together with us. Apply today to become part of our initiatives in the Lipjan Municipality.
+            {t('join.desc')}
           </p>
         </div>
 
         <div className="bg-white rounded-[3.5rem] shadow-sm border border-slate-100 overflow-hidden">
           <div className="grid md:grid-cols-3">
             <div className="bg-brand-dark p-12 text-white">
-              <h3 className="text-2xl font-black uppercase mb-8">Why Apply?</h3>
+              <h3 className="text-2xl font-black uppercase mb-8">{t('join.why')}</h3>
               <div className="space-y-8">
                 <div className="flex space-x-4">
                   <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0 text-brand-lime"><Star className="h-5 w-5" /></div>
-                  <p className="text-sm font-medium text-slate-400">Gain work experience and volunteer certificates.</p>
+                  <p className="text-sm font-medium text-slate-400">{t('join.benefit1')}</p>
                 </div>
                 <div className="flex space-x-4">
                   <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0 text-brand-cyan"><Sparkles className="h-5 w-5" /></div>
-                  <p className="text-sm font-medium text-slate-400">Develop new professional and digital skills.</p>
+                  <p className="text-sm font-medium text-slate-400">{t('join.benefit2')}</p>
                 </div>
                 <div className="flex space-x-4">
                   <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0 text-brand-orange"><MapPin className="h-5 w-5" /></div>
-                  <p className="text-sm font-medium text-slate-400">Contribute directly to community development in Shale.</p>
+                  <p className="text-sm font-medium text-slate-400">{t('join.benefit3')}</p>
                 </div>
               </div>
             </div>
@@ -120,18 +131,18 @@ const VolunteerApply: React.FC = () => {
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Full Name</label>
+                    <label className="text-[10px] font-black uppercase text-slate-400 ml-1">{t('join.form.name')}</label>
                     <input 
                       required
                       type="text" 
-                      placeholder="John Doe"
+                      placeholder="Filan Fisteku"
                       className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-bold"
                       value={formData.name}
                       onChange={e => setFormData({...formData, name: e.target.value})}
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Email</label>
+                    <label className="text-[10px] font-black uppercase text-slate-400 ml-1">{t('join.form.email')}</label>
                     <input 
                       required
                       type="email" 
@@ -144,7 +155,7 @@ const VolunteerApply: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Phone Number</label>
+                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">{t('join.form.phone')}</label>
                   <input 
                     required
                     type="tel" 
@@ -156,7 +167,7 @@ const VolunteerApply: React.FC = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Interests</label>
+                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">{t('join.form.interests')}</label>
                   <div className="flex flex-wrap gap-2">
                     {interestsList.map(interest => (
                       <button
@@ -176,11 +187,11 @@ const VolunteerApply: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Why do you want to join VRSH?</label>
+                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">{t('join.form.motivation')}</label>
                   <textarea 
                     required
                     rows={4}
-                    placeholder="Write your motivation here..."
+                    placeholder="..."
                     className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-pink outline-none font-bold resize-none"
                     value={formData.motivation}
                     onChange={e => setFormData({...formData, motivation: e.target.value})}
@@ -192,7 +203,7 @@ const VolunteerApply: React.FC = () => {
                   className="w-full py-5 bg-brand-pink text-white rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-brand-dark transition-all shadow-xl shadow-brand-pink/20 flex items-center justify-center"
                 >
                   <Send className="h-5 w-5 mr-3" />
-                  Send Application
+                  {t('join.form.submit')}
                 </button>
               </form>
             </div>
