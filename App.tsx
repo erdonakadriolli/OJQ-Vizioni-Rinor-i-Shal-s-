@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import About from './pages/About';
 import News from './pages/News';
 import VolunteerApply from './pages/VolunteerApply';
+import DerdoChat from './pages/DerdoChat';
 import { User, UserRole } from './types';
 import { Facebook, Instagram, Mail, Phone, MapPin } from 'lucide-react';
 
@@ -46,6 +47,7 @@ const App: React.FC = () => {
             <Route path="/projects" element={<Projects user={user} />} />
             <Route path="/login" element={<Login onLogin={handleLogin} />} />
             <Route path="/join" element={<VolunteerApply />} />
+            <Route path="/derdo" element={<DerdoChat />} />
             <Route 
               path="/admin/*" 
               element={
@@ -101,7 +103,7 @@ const App: React.FC = () => {
               <ul className="space-y-3 text-sm font-bold uppercase tracking-wider text-[11px]">
                 <li><a href="#/join" className="hover:text-brand-lime transition-colors">Bëhu Vullnetar</a></li>
                 <li><a href="#/partner" className="hover:text-brand-cyan transition-colors">Partneritete</a></li>
-                <li><a href="#/news/reports" className="hover:text-brand-orange transition-colors">Raportet</a></li>
+                <li><a href="#/derdo" className="hover:text-brand-orange transition-colors">Derdo AI Chat</a></li>
               </ul>
             </div>
 

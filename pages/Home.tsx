@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Globe, Users, Target, Zap, Heart, Shield, Facebook, Instagram, Linkedin, Code, BookOpen, UserCheck, Star, MapPin, UserPlus } from 'lucide-react';
+import { ArrowRight, Globe, Users, Target, Zap, Heart, Shield, Facebook, Instagram, Linkedin, Code, BookOpen, UserCheck, Star, MapPin, UserPlus, Bot, MessageSquare, Sparkles } from 'lucide-react';
 import { getDb } from '../services/mockDb';
 import { StaffMember } from '../types';
 
@@ -44,6 +44,46 @@ const Home: React.FC = () => {
             <Link to="/projects" className="px-12 py-5 bg-white text-brand-dark rounded-full font-black uppercase text-sm hover:bg-slate-100 transition-all shadow-2xl flex items-center justify-center tracking-widest group">
               Projektet tona <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-2 transition-transform" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Assistant Promo Section */}
+      <section className="py-24 px-6 bg-slate-50 overflow-hidden relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-gradient-to-br from-brand-dark to-slate-900 rounded-[4rem] p-12 md:p-20 relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center gap-16">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-brand-pink/10 rounded-full -mr-48 -mt-48 blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-cyan/10 rounded-full -ml-48 -mb-48 blur-3xl"></div>
+            
+            <div className="flex-grow z-10 text-center md:text-left">
+              <div className="inline-flex items-center space-x-2 px-4 py-2 bg-brand-orange/20 text-brand-orange rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-8">
+                <Sparkles className="h-3 w-3" />
+                <span>Teknologjia e Re</span>
+              </div>
+              <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-8 leading-none">
+                Përshëndetje,<br/>
+                unë jam <span className="text-brand-orange">Derdo</span>
+              </h2>
+              <p className="text-slate-400 text-lg md:text-xl font-medium mb-12 max-w-xl">
+                Jam asistenti inteligjent i VRSH. Më pyet për çdo gjë rreth organizatës sonë, trajnimet digjitale, ose si mund të bëhesh pjesë e ekipit tonë.
+              </p>
+              <Link to="/derdo" className="inline-flex items-center space-x-3 bg-brand-orange text-white px-10 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 transition-all shadow-xl shadow-brand-orange/20 group">
+                <MessageSquare className="h-5 w-5" />
+                <span>Bisedo me Derdon</span>
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+
+            <div className="w-full md:w-1/3 flex justify-center z-10">
+               <div className="relative">
+                  <div className="w-64 h-64 md:w-80 md:h-80 bg-white/5 rounded-[3rem] border border-white/10 flex items-center justify-center animate-pulse">
+                     <Bot className="h-32 w-32 md:h-48 md:w-48 text-brand-orange" />
+                  </div>
+                  <div className="absolute -top-4 -right-4 bg-white p-6 rounded-3xl shadow-2xl rotate-12">
+                     <p className="text-brand-dark font-black text-sm uppercase">AI Powered</p>
+                  </div>
+               </div>
+            </div>
           </div>
         </div>
       </section>

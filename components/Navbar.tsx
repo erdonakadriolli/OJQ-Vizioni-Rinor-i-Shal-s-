@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, LayoutDashboard, LogOut, LogIn, ChevronDown, UserPlus } from 'lucide-react';
+import { Menu, X, LayoutDashboard, LogOut, LogIn, ChevronDown, UserPlus, MessageSquare } from 'lucide-react';
 import { User, UserRole } from '../types';
 
 // Define the NavbarProps interface
@@ -61,16 +61,10 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
               Projekte
             </Link>
 
-            <div className="relative group" onMouseEnter={() => setActiveDropdown('news')} onMouseLeave={() => setActiveDropdown(null)}>
-              <button className={`flex items-center space-x-1 text-sm font-semibold transition-colors ${isActive('/news') ? 'text-brand-pink' : 'text-slate-600 hover:text-brand-pink'}`}>
-                <span>Lajmet</span>
-                <ChevronDown className="h-3 w-3" />
-              </button>
-              <div className={`absolute left-0 mt-0 w-48 bg-white border border-slate-100 shadow-xl rounded-2xl py-2 transition-all transform origin-top ${activeDropdown === 'news' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-                <Link to="/news/latest" className="block px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-wider">Lajmet e Fundit</Link>
-                <Link to="/news/reports" className="block px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-wider">Raportet</Link>
-              </div>
-            </div>
+            <Link to="/derdo" className={`flex items-center space-x-1 text-sm font-semibold transition-colors ${isActive('/derdo') ? 'text-brand-orange' : 'text-slate-600 hover:text-brand-orange'}`}>
+              <MessageSquare className="h-4 w-4" />
+              <span>Derdo AI</span>
+            </Link>
             
             <Link to="/join" className={`flex items-center space-x-2 px-6 py-2 rounded-full text-xs font-bold transition-all border-2 ${isActive('/join') ? 'bg-brand-lime border-brand-lime text-white' : 'border-brand-lime text-brand-lime hover:bg-brand-lime hover:text-white'}`}>
               <UserPlus className="h-4 w-4" />
