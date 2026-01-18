@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, User, Bot, MessageSquare, Trash2, ChevronLeft } from 'lucide-react';
+import { Send, User, Bot, Trash2, ChevronLeft } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
@@ -11,11 +11,7 @@ interface Message {
 }
 
 const DerdoChat: React.FC = () => {
-  const { language } = useLanguage();
-  
-  const initialMessage = language === 'AL' 
-    ? 'Përshëndetje! Unë jam Derdo, asistenti yt inteligjent nga Vizioni Rinor i Shalës. Si mund të të ndihmoj sot?'
-    : 'Hello! I am Derdo, your intelligent assistant from Youth Vision of Shale. How can I help you today?';
+  const initialMessage = 'Përshëndetje! Unë jam Derdo, asistenti yt inteligjent nga Vizioni Rinor i Shalës. Si mund të të ndihmoj sot?';
 
   const [messages, setMessages] = useState<Message[]>([
     { role: 'model', text: initialMessage }
@@ -40,9 +36,7 @@ const DerdoChat: React.FC = () => {
 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const systemPrompt = language === 'AL'
-        ? "Ju jeni Derdo, një asistent inteligjent për organizatën VRSH (Vizioni Rinor i Shalës) në fshatin Shalë, Lipjan. Përgjigjuni gjithmonë në gjuhën shqipe, jini miqësor dhe pozitiv."
-        : "You are Derdo, an intelligent assistant for VRSH (Youth Vision of Shale) in Shale village, Lipjan. Always respond in English, be friendly and professional.";
+      const systemPrompt = "Ju jeni Derdo, një asistent inteligjent për organizatën VRSH (Vizioni Rinor i Shalës) në fshatin Shalë, Lipjan. Përgjigjuni gjithmonë në gjuhën shqipe, jini miqësor dhe pozitiv.";
 
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
@@ -56,11 +50,11 @@ const DerdoChat: React.FC = () => {
         }
       });
 
-      const botResponse = response.text || (language === 'AL' ? "Më falni, kam një problem teknik." : "Sorry, I am having technical issues.");
+      const botResponse = response.text || "Më falni, kam një problem teknik.";
       setMessages(prev => [...prev, { role: 'model', text: botResponse }]);
     } catch (error) {
       console.error("Gemini Error:", error);
-      setMessages(prev => [...prev, { role: 'model', text: language === 'AL' ? "Gabim në lidhje!" : "Connection error!" }]);
+      setMessages(prev => [...prev, { role: 'model', text: "Gabim në lidhje!" }]);
     } finally {
       setIsLoading(false);
     }
@@ -79,16 +73,12 @@ const DerdoChat: React.FC = () => {
             <Link to="/" className="p-2 hover:bg-white/10 rounded-full transition-colors">
               <ChevronLeft className="h-6 w-6" />
             </Link>
-            <div className="relative">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg ${language === 'AL' ? 'bg-brand-pink' : 'bg-brand-cyan'}`}>
-                <Bot className="h-7 w-7 text-white" />
-              </div>
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg bg-brand-pink`}>
+              <Bot className="h-7 w-7 text-white" />
             </div>
             <div>
               <h2 className="text-xl font-black uppercase tracking-tight">Derdo AI</h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                {language === 'AL' ? 'Asistenti i VRSH' : 'VRSH Assistant'}
-              </p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Asistenti i VRSH</p>
             </div>
           </div>
           <button onClick={clearChat} className="p-3 text-slate-400 hover:text-red-400 transition-colors">
@@ -97,7 +87,7 @@ const DerdoChat: React.FC = () => {
         </div>
 
         {/* Chat Area */}
-        <div ref={scrollRef} className="flex-grow overflow-y-auto p-8 space-y-6 bg-slate-50/30 custom-scrollbar">
+        <div ref={scrollRef} className="flex-grow overflow-y-auto p-8 space-y-6 bg-slate-50/30">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2`}>
               <div className={`flex max-w-[80%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-end space-x-2`}>
@@ -116,11 +106,7 @@ const DerdoChat: React.FC = () => {
           ))}
           {isLoading && (
             <div className="flex justify-start animate-pulse">
-              <div className="flex items-center space-x-2 bg-white p-4 rounded-full border border-slate-100 shadow-sm">
-                <div className="w-2 h-2 bg-brand-pink rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-brand-orange rounded-full animate-bounce delay-100"></div>
-                <div className="w-2 h-2 bg-brand-lime rounded-full animate-bounce delay-200"></div>
-              </div>
+              <div className="flex items-center space-x-2 bg-white p-4 rounded-full border border-slate-100 shadow-sm text-xs font-bold text-slate-400">Derdo po shkruan...</div>
             </div>
           )}
         </div>
@@ -130,7 +116,7 @@ const DerdoChat: React.FC = () => {
           <div className="relative flex items-center">
             <input
               type="text"
-              placeholder={language === 'AL' ? "Pyet Derdon..." : "Ask Derdo..."}
+              placeholder="Pyet Derdon..."
               className="w-full pl-8 pr-20 py-5 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-brand-pink font-bold text-sm transition-all"
               value={input}
               onChange={(e) => setInput(e.target.value)}

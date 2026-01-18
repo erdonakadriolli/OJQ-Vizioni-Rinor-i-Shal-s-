@@ -5,17 +5,16 @@ import { getDb } from '../services/mockDb';
 import { StaffMember } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { 
-  Target, Award, BookOpen, UserCheck, ArrowRight, 
-  Users, ShieldCheck, Briefcase, LayoutList, 
-  Heart, Zap, X, Facebook, Instagram, Linkedin, Mail, MapPin, 
-  History, Rocket, Shield, Star, Globe
+  Users, Shield, Rocket, Target, 
+  Heart, X, Facebook, Instagram, Linkedin, 
+  Sparkles, Mail, Star, Quote, Award, Zap
 } from 'lucide-react';
 
 const About: React.FC = () => {
   const { section } = useParams<{ section: string }>();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [selectedMember, setSelectedMember] = useState<StaffMember | null>(null);
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const db = getDb();
@@ -26,328 +25,237 @@ const About: React.FC = () => {
     return staff.filter(member => member.category === category);
   };
 
-  const StaffCard = ({ member, size = 'md' }: { member: StaffMember, size?: 'sm' | 'md' | 'lg' }) => {
-    const isLarge = size === 'lg';
-    const isSmall = size === 'sm';
-
-    return (
-      <div 
-        onClick={() => setSelectedMember(member)}
-        className={`group cursor-pointer glass-card rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col items-center text-center p-5 ${isLarge ? 'md:p-7' : ''}`}
-      >
-        <div className={`relative mb-4 ${isLarge ? 'w-24 h-24' : isSmall ? 'w-14 h-14' : 'w-20 h-20'} rounded-full overflow-hidden border-2 border-white group-hover:border-brand-pink transition-colors duration-300 shadow-sm`}>
-          <img src={member.image} alt={member.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        </div>
-        <div>
-          <h5 className={`font-black text-brand-dark leading-tight mb-1 uppercase tracking-tight ${isLarge ? 'text-lg' : isSmall ? 'text-[10px]' : 'text-sm'}`}>{member.name}</h5>
-          <p className="text-[9px] font-bold text-brand-pink uppercase tracking-[0.15em] mb-3">{member.role}</p>
-          {!isSmall && (
-             <span className="inline-flex items-center text-[8px] font-black text-slate-400 uppercase tracking-widest group-hover:text-brand-dark transition-colors">
-               Profile <ArrowRight className="ml-1 h-2.5 w-2.5" />
-             </span>
-          )}
-        </div>
-      </div>
-    );
-  };
-
   const renderMission = () => (
-    <div className="space-y-16 animate-in fade-in duration-500 pb-20">
-      {/* Header Section */}
-      <section className="text-center max-w-4xl mx-auto py-12">
-        <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[9px] mb-3 block">{t('about.mission.tag')}</span>
-        <h1 className="text-4xl md:text-7xl font-black text-brand-dark uppercase tracking-tighter mb-6 leading-none">
-          {t('about.mission.title1')} <br/><span className="text-brand-pink">{t('about.mission.title2')}</span>
-        </h1>
-        <p className="text-xl text-slate-600 leading-relaxed font-semibold italic max-w-2xl mx-auto">
-          {t('about.mission.quote')}
-        </p>
-        <div className="h-1.5 w-24 bg-gradient-to-r from-brand-pink via-brand-orange to-brand-lime mx-auto mt-8 rounded-full"></div>
-      </section>
-
-      {/* Origin Story Section */}
-      <div className="grid md:grid-cols-2 gap-12 items-center">
-        <div className="space-y-6">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 bg-brand-orange/10 text-brand-orange rounded-lg text-[10px] font-black uppercase tracking-widest">
-            <History className="h-3.5 w-3.5" />
-            <span>{t('about.history.tag')}</span>
+    <div className="space-y-24 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20">
+      {/* Premium Hero Mission Split */}
+      <section className="grid lg:grid-cols-12 gap-16 items-center pt-8">
+        <div className="lg:col-span-5 space-y-8">
+          <div className="inline-flex items-center space-x-2 px-3 py-1 bg-brand-pink/5 text-brand-pink rounded-full text-[8px] font-black uppercase tracking-[0.4em]">
+            <Zap className="h-3 w-3 fill-current" />
+            <span>Misioni ynë</span>
           </div>
-          <h2 className="text-3xl font-black text-brand-dark uppercase tracking-tight">{t('about.history.title')} <span className="text-brand-orange">Shalë</span></h2>
-          <p className="text-slate-500 font-medium leading-relaxed">
-            {t('about.history.p1')}
+          <h1 className="text-4xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter leading-[0.9]">
+            Fuqizimi i <br/>
+            <span className="text-brand-pink italic underline decoration-brand-lime/30 underline-offset-8">Gjeneratës</span> <br/>
+            së re
+          </h1>
+          <p className="text-lg text-slate-500 font-medium leading-relaxed">
+            {t('about.main.desc')}
           </p>
-          <p className="text-slate-500 font-medium leading-relaxed">
-            {t('about.history.p2')}
-          </p>
+          <div className="flex items-center space-x-4 pt-4">
+             <div className="w-12 h-12 rounded-2xl bg-brand-dark flex items-center justify-center text-white shadow-xl shadow-brand-dark/20">
+                <Target className="h-6 w-6" />
+             </div>
+             <div className="h-px flex-1 bg-slate-200"></div>
+          </div>
         </div>
-        <div className="relative rounded-[3rem] overflow-hidden shadow-2xl h-[350px]">
-           <img 
-              src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=800" 
-              alt="Youth Collaboration" 
-              className="w-full h-full object-cover"
-           />
-           <div className="absolute inset-0 bg-brand-dark/20 backdrop-blur-[1px]"></div>
-        </div>
-      </div>
 
-      {/* Core Values Section */}
-      <div className="py-12">
-        <div className="text-center mb-12">
-           <h3 className="text-2xl font-black text-brand-dark uppercase tracking-tight">{t('about.values.title')} <span className="text-brand-pink">{t('about.values.title2')}</span></h3>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {[
-            { icon: Shield, title: t('about.values.transparency'), desc: t('about.values.transparency.desc'), color: 'text-brand-pink' },
-            { icon: Zap, title: t('about.values.innovation'), desc: t('about.values.innovation.desc'), color: 'text-brand-orange' },
-            { icon: Users, title: t('about.values.inclusion'), desc: t('about.values.inclusion.desc'), color: 'text-brand-lime' }
-          ].map((v, i) => (
-            <div key={i} className="glass-card p-8 rounded-[2.5rem] border border-white text-center group hover:bg-white transition-all">
-              <div className={`${v.color} mb-4 flex justify-center group-hover:scale-110 transition-transform`}>
-                <v.icon className="h-10 w-10" />
-              </div>
-              <h4 className="font-black text-brand-dark uppercase text-sm mb-2">{v.title}</h4>
-              <p className="text-xs text-slate-400 font-medium">{v.desc}</p>
+        {/* Micro-Bento Compact Grid */}
+        <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="col-span-2 micro-bento-card bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col justify-between group">
+            <div className="w-10 h-10 bg-brand-pink/10 rounded-xl flex items-center justify-center text-brand-pink mb-12 group-hover:scale-110 transition-transform">
+              <Award className="h-5 w-5" />
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Strategic Pillars Section */}
-      <div className="bg-brand-dark/95 p-10 md:p-16 rounded-[4rem] text-white relative overflow-hidden shadow-2xl">
-         <div className="absolute top-0 right-0 w-64 h-64 bg-brand-pink/20 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-         <div className="relative z-10 grid md:grid-cols-2 gap-16">
             <div>
-               <div className="inline-flex items-center space-x-2 px-3 py-1 bg-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest mb-6">
-                 <Rocket className="h-3.5 w-3.5 text-brand-lime" />
-                 <span>{t('about.strategy.tag')}</span>
-               </div>
-               <h3 className="text-3xl font-black uppercase tracking-tighter mb-8">{t('about.strategy.title')} <br/><span className="text-brand-lime">{t('about.strategy.key')}</span></h3>
-               <ul className="space-y-6">
-                 {[
-                   { t: t('about.strategy.digital'), d: t('about.strategy.digital.desc') },
-                   { t: t('about.strategy.leadership'), d: t('about.strategy.leadership.desc') },
-                   { t: t('about.strategy.env'), d: t('about.strategy.env.desc') },
-                   { t: t('about.strategy.network'), d: t('about.strategy.network.desc') }
-                 ].map((pill, i) => (
-                   <li key={i} className="flex space-x-4 group">
-                      <div className="w-1.5 h-1.5 rounded-full bg-brand-lime mt-2 group-hover:scale-150 transition-transform"></div>
-                      <div>
-                        <h5 className="font-black uppercase text-xs text-brand-lime mb-1">{pill.t}</h5>
-                        <p className="text-xs text-white/60 font-medium leading-relaxed">{pill.d}</p>
-                      </div>
-                   </li>
-                 ))}
-               </ul>
+              <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight mb-2">{t('about.fields.1')}</h4>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{t('about.main.goal')}</p>
             </div>
-            <div className="bg-white/5 rounded-[3rem] p-10 border border-white/10 flex flex-col justify-center">
-               <h4 className="text-xl font-black uppercase mb-6 flex items-center">
-                 <Target className="mr-3 h-6 w-6 text-brand-pink" /> {t('about.fields.title')}
-               </h4>
-               <div className="grid grid-cols-2 gap-4">
-                 {[
-                   'Coding & Web', 'Graphic Design', 'Media & PR', 'Volunteerism', 'Culture', 'Sports', 'Debate', 'Eco-Activism'
-                 ].map((field, i) => (
-                   <div key={i} className="px-4 py-3 bg-white/5 rounded-xl border border-white/5 text-[9px] font-bold uppercase tracking-widest hover:bg-brand-pink hover:border-brand-pink transition-all text-center">
-                     {field}
-                   </div>
-                 ))}
-               </div>
-            </div>
-         </div>
-      </div>
+          </div>
 
-      {/* Partners Section */}
-      <section className="py-12 border-t border-slate-100">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-           <div className="max-w-xs">
-              <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight">{t('about.collab.title')}</h4>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">VRSH works with institutional and organizational partners.</p>
-           </div>
-           <div className="flex flex-wrap justify-center gap-10 opacity-40 grayscale hover:grayscale-0 transition-all">
-              <span className="font-black text-sm uppercase tracking-tighter">Lipjan Municipality</span>
-              <span className="font-black text-sm uppercase tracking-tighter">Ministry of Youth</span>
-              <span className="font-black text-sm uppercase tracking-tighter">Erasmus+</span>
-              <span className="font-black text-sm uppercase tracking-tighter">UNICEF Kosovo</span>
-           </div>
+          <div className="col-span-1 micro-bento-card bg-brand-dark p-8 rounded-[2.5rem] text-white flex flex-col justify-between group relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-lime/20 blur-3xl -mr-16 -mt-16"></div>
+            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-brand-lime mb-12">
+              <Rocket className="h-5 w-5" />
+            </div>
+            <h4 className="text-sm font-black uppercase tracking-tight leading-tight">{t('about.fields.2')}</h4>
+          </div>
+
+          <div className="micro-bento-card bg-brand-cyan/5 p-6 rounded-[2rem] border border-brand-cyan/10 group hover:bg-brand-cyan hover:text-white transition-all">
+             <div className="w-8 h-8 bg-brand-cyan rounded-lg flex items-center justify-center text-white mb-8 group-hover:bg-white group-hover:text-brand-cyan">
+               <Sparkles className="h-4 w-4" />
+             </div>
+             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">{t('about.fields.3')}</h4>
+          </div>
+
+          <div className="micro-bento-card bg-brand-orange/5 p-6 rounded-[2rem] border border-brand-orange/10 group hover:bg-brand-orange hover:text-white transition-all">
+             <div className="w-8 h-8 bg-brand-orange rounded-lg flex items-center justify-center text-white mb-8 group-hover:bg-white group-hover:text-brand-orange">
+               <Users className="h-4 w-4" />
+             </div>
+             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">{t('about.fields.4')}</h4>
+          </div>
+
+          <div className="micro-bento-card bg-brand-pink/5 p-6 rounded-[2rem] border border-brand-pink/10 group hover:bg-brand-pink hover:text-white transition-all">
+             <div className="w-8 h-8 bg-brand-pink rounded-lg flex items-center justify-center text-white mb-8 group-hover:bg-white group-hover:text-brand-pink">
+               <Shield className="h-4 w-4" />
+             </div>
+             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">{t('about.fields.5')}</h4>
+          </div>
         </div>
       </section>
 
-      {/* Office Photo Background Section */}
-      <div className="relative rounded-[3rem] overflow-hidden shadow-2xl border border-white/20 h-[450px] flex items-center justify-center group mt-10">
-         <img 
-            src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200" 
-            alt="VRSH Office" 
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-         />
-         <div className="absolute inset-0 bg-brand-dark/50 backdrop-blur-[1px]"></div>
-         <div className="relative z-10 text-center text-white px-6">
-            <MapPin className="h-10 w-10 mx-auto mb-4 text-brand-cyan animate-bounce" />
-            <h3 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">{t('about.office.title')}</h3>
-            <p className="text-lg font-bold text-white/80 max-w-xl mx-auto uppercase tracking-widest text-xs">{t('about.office.desc')}</p>
-         </div>
-      </div>
+      {/* Simplified Banner for Activities */}
+      <section className="bg-white rounded-[3.5rem] p-10 md:p-14 border border-slate-100 flex flex-col md:flex-row items-center gap-12 shadow-sm relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-1 h-full bg-brand-pink"></div>
+        <div className="md:w-1/3">
+           <h3 className="text-2xl font-black text-brand-dark uppercase tracking-tight mb-4">{t('about.activities.title')}</h3>
+           <p className="text-xs text-slate-400 font-bold uppercase tracking-widest leading-relaxed">{t('about.activities.desc')}</p>
+        </div>
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+           {[1, 2, 3, 4, 5].map(i => (
+             <div key={i} className="flex items-center space-x-4 p-4 bg-slate-50/50 rounded-2xl group hover:bg-white hover:shadow-lg hover:shadow-brand-pink/5 transition-all">
+                <div className="w-1.5 h-1.5 rounded-full bg-brand-pink group-hover:scale-150 transition-transform"></div>
+                <span className="text-[10px] font-black text-slate-600 uppercase tracking-tight group-hover:text-brand-dark">{t(`about.activities.list${i}`)}</span>
+             </div>
+           ))}
+        </div>
+      </section>
     </div>
   );
 
   const renderStaff = () => (
-    <div className="space-y-16 animate-in slide-in-from-bottom-4 duration-500">
-      <section className="max-w-5xl mx-auto">
-        <div className="text-center mb-12">
-          <span className="text-brand-pink font-black uppercase tracking-[0.3em] text-[9px] mb-3 block">{t('about.team.tag')}</span>
-          <h2 className="text-4xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter mb-3 leading-none">
-            {t('about.team.title')} <span className="text-brand-pink">{t('about.team.title2')}</span>
-          </h2>
-          <p className="text-slate-500 max-w-xl mx-auto font-bold text-sm uppercase tracking-widest text-center">
-            {t('about.team.desc')}
-          </p>
+    <div className="space-y-32 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20">
+      {/* Executive Spotlight */}
+      <section>
+        <div className="flex flex-col items-center mb-24">
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-brand-pink/5 text-brand-pink rounded-full text-[9px] font-black uppercase tracking-[0.4em] mb-4">
+            <Sparkles className="h-3 w-3" />
+            <span>Ekipi</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter text-center">Ekipi Ekzekutiv</h2>
         </div>
-
-        <div className="space-y-16">
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {getStaffByCategory('Executive Director').map(m => (
+            <div key={m.id} onClick={() => setSelectedMember(m)} className="group relative pt-16">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-brand-pink/10 rounded-full blur-[70px] group-hover:bg-brand-pink/20 transition-all"></div>
+              <div className="relative bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col items-center text-center overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-brand-pink scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-700"></div>
+                <div className="w-32 h-32 rounded-[2.5rem] overflow-hidden -mt-24 mb-6 shadow-xl border-4 border-white transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-2">
+                  <img src={m.image} className="w-full h-full object-cover" />
+                </div>
+                <h3 className="font-black text-brand-dark uppercase text-xl mb-1">{m.name}</h3>
+                <p className="text-[9px] font-black text-brand-pink uppercase tracking-[0.3em] mb-6 bg-brand-pink/5 px-4 py-1 rounded-full">{m.role}</p>
+                <div className="flex space-x-3 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                  <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-brand-pink hover:text-white transition-all"><Facebook className="h-4 w-4" /></div>
+                  <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-brand-pink hover:text-white transition-all"><Instagram className="h-4 w-4" /></div>
+                </div>
+              </div>
+            </div>
+          ))}
           
-          {/* 1. Executive Director */}
-          <div className="space-y-6">
-            <div className="flex items-center space-x-3 justify-center md:justify-start">
-              <div className="w-10 h-10 bg-brand-orange text-white rounded-xl flex items-center justify-center shadow-lg shadow-brand-orange/20">
-                <Briefcase className="h-5 w-5" />
-              </div>
-              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Executive Director</h4>
-            </div>
-            <div className="max-w-xs mx-auto md:mx-0">
-              {getStaffByCategory('Executive Director').map(m => <StaffCard key={m.id} member={m} size="md" />)}
-            </div>
-          </div>
-
-          {/* 2. Current Staff */}
-          <div className="bg-brand-dark/95 p-10 md:p-14 rounded-[3.5rem] text-white relative overflow-hidden shadow-2xl backdrop-blur-md">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/20 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-            <div className="relative z-10">
-              <div className="flex items-center space-x-3 mb-10">
-                <div className="w-10 h-10 bg-brand-cyan rounded-xl flex items-center justify-center">
-                  <LayoutList className="h-5 w-5 text-white" />
+          {getStaffByCategory('Current Staff').map(m => (
+            <div key={m.id} onClick={() => setSelectedMember(m)} className="group relative pt-16">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-brand-cyan/10 rounded-full blur-[60px] group-hover:bg-brand-cyan/20 transition-all"></div>
+              <div className="relative bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col items-center text-center overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-brand-cyan scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-700"></div>
+                <div className="w-28 h-28 rounded-[2.2rem] overflow-hidden -mt-20 mb-6 shadow-lg border-4 border-white transition-transform duration-500 group-hover:scale-105 group-hover:rotate-2">
+                  <img src={m.image} className="w-full h-full object-cover" />
                 </div>
-                <h4 className="text-xl font-black uppercase tracking-tight">Current Staff & Coordinators</h4>
-              </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {getStaffByCategory('Current Staff').map(m => (
-                  <div 
-                    key={m.id} 
-                    onClick={() => setSelectedMember(m)}
-                    className="flex flex-col items-center text-center p-6 bg-white/5 rounded-[2.5rem] border border-white/10 group hover:bg-white/10 transition-all cursor-pointer hover:shadow-2xl"
-                  >
-                    <div className="w-16 h-16 rounded-full overflow-hidden mb-4 border-2 border-white/10 group-hover:border-brand-cyan transition-colors">
-                      <img src={m.image} alt={m.name} className="w-full h-full object-cover" />
-                    </div>
-                    <h5 className="font-black text-white text-base uppercase tracking-tight mb-1">{m.name}</h5>
-                    <p className="text-[8px] font-bold text-brand-cyan uppercase tracking-widest">{m.role}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* 3 & 4. Assembly and Board */}
-          <div className="grid md:grid-cols-2 gap-10">
-            <div className="space-y-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 bg-brand-dark text-white rounded-xl flex items-center justify-center">
-                  <Users className="h-5 w-5" />
+                <h3 className="font-black text-brand-dark uppercase text-lg mb-1">{m.name}</h3>
+                <p className="text-[9px] font-black text-brand-cyan uppercase tracking-[0.3em] mb-6 bg-brand-cyan/5 px-4 py-1 rounded-full">{m.role}</p>
+                <div className="flex space-x-3 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                   <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-brand-cyan hover:text-white transition-all"><Mail className="h-4 w-4" /></div>
                 </div>
-                <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight">Members Assembly</h4>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-4">
-                {getStaffByCategory('Members Assembly').map(m => <StaffCard key={m.id} member={m} size="sm" />)}
               </div>
             </div>
-
-            <div className="space-y-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 bg-brand-pink text-white rounded-xl flex items-center justify-center">
-                  <ShieldCheck className="h-5 w-5" />
-                </div>
-                <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight">Board of Directors</h4>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-4">
-                {getStaffByCategory('Board of Directors').map(m => <StaffCard key={m.id} member={m} size="sm" />)}
-              </div>
-            </div>
-          </div>
-
-          {/* 5. Volunteers */}
-          <div className="glass-card p-10 rounded-[3rem] border border-white shadow-sm">
-            <div className="flex items-center space-x-3 mb-8">
-              <div className="w-10 h-10 bg-brand-lime text-white rounded-xl flex items-center justify-center shadow-lg shadow-brand-lime/20">
-                <Heart className="h-5 w-5" />
-              </div>
-              <div>
-                <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight">Volunteers</h4>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-5">
-              {getStaffByCategory('Volunteers').map(m => (
-                <div 
-                  key={m.id} 
-                  onClick={() => setSelectedMember(m)}
-                  className="text-center group cursor-pointer"
-                >
-                  <div className="w-16 h-16 mx-auto rounded-2xl overflow-hidden mb-3 border-2 border-white group-hover:border-brand-lime transition-all shadow-sm">
-                    <img src={m.image} alt={m.name} className="w-full h-full object-cover" />
-                  </div>
-                  <h6 className="text-[9px] font-black text-brand-dark uppercase leading-tight group-hover:text-brand-lime">{m.name}</h6>
-                </div>
-              ))}
-            </div>
-          </div>
-
+          ))}
         </div>
       </section>
 
-      {/* Profile Detail Modal */}
-      {selectedMember && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-brand-dark/90 backdrop-blur-xl animate-in fade-in duration-300">
-           <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row relative animate-in zoom-in duration-200">
-              <button 
-                onClick={() => setSelectedMember(null)}
-                className="absolute top-5 right-5 z-[70] bg-slate-100 p-2 rounded-full hover:bg-brand-pink hover:text-white transition-all"
-              >
-                <X className="h-5 w-5" />
-              </button>
-
-              <div className="w-full md:w-1/3 h-64 md:h-auto bg-slate-50">
-                <img src={selectedMember.image} alt={selectedMember.name} className="w-full h-full object-cover" />
+      {/* Assembly & Board */}
+      <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+        <section className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-brand-purple/5 rounded-full blur-3xl"></div>
+          <div className="flex items-center space-x-4 mb-10 relative z-10">
+            <div className="w-10 h-10 rounded-xl bg-brand-purple/10 flex items-center justify-center text-brand-purple"><Users className="h-5 w-5" /></div>
+            <h2 className="text-xl font-black text-brand-dark uppercase tracking-tight">{t('about.structure.assembly')}</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative z-10">
+            {getStaffByCategory('Members Assembly').map(m => (
+              <div key={m.id} onClick={() => setSelectedMember(m)} className="p-3 rounded-2xl flex items-center space-x-4 cursor-pointer hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
+                <img src={m.image} className="w-11 h-11 rounded-xl object-cover grayscale group-hover:grayscale-0 transition-all" />
+                <div>
+                  <h5 className="text-[10px] font-black text-brand-dark uppercase tracking-tight">{m.name}</h5>
+                  <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest">{m.role}</p>
+                </div>
               </div>
+            ))}
+          </div>
+        </section>
 
-              <div className="flex-1 p-8 md:p-10 flex flex-col">
-                 <div className="mb-6">
-                   <span className="text-[8px] font-black text-brand-pink uppercase tracking-[0.2em] mb-2 block">{selectedMember.category}</span>
-                   <h3 className="text-2xl font-black text-brand-dark uppercase tracking-tight mb-1">{selectedMember.name}</h3>
-                   <p className="text-xs font-bold text-slate-400 uppercase">{selectedMember.role}</p>
+        <section className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-brand-blue/5 rounded-full blur-3xl"></div>
+          <div className="flex items-center space-x-4 mb-10 relative z-10">
+            <div className="w-10 h-10 rounded-xl bg-brand-blue/10 flex items-center justify-center text-brand-blue"><Shield className="h-5 w-5" /></div>
+            <h2 className="text-xl font-black text-brand-dark uppercase tracking-tight">{t('about.structure.board')}</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative z-10">
+            {getStaffByCategory('Board of Directors').map(m => (
+              <div key={m.id} onClick={() => setSelectedMember(m)} className="p-3 rounded-2xl flex items-center space-x-4 cursor-pointer hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
+                <img src={m.image} className="w-11 h-11 rounded-xl object-cover grayscale group-hover:grayscale-0 transition-all" />
+                <div>
+                  <h5 className="text-[10px] font-black text-brand-dark uppercase tracking-tight">{m.name}</h5>
+                  <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest">{m.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* Volunteer Galaxy */}
+      <section className="relative py-24 px-10 rounded-[4rem] bg-brand-dark text-white text-center overflow-hidden shadow-2xl">
+        <div className="absolute top-0 left-0 w-full h-full opacity-10">
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-pink rounded-full blur-[100px] animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-lime rounded-full blur-[100px] animate-pulse-slow"></div>
+        </div>
+        
+        <div className="relative z-10">
+          <Heart className="h-10 w-10 text-brand-pink mx-auto mb-8 animate-float" />
+          <h2 className="text-4xl font-black uppercase tracking-tighter mb-4">{t('about.structure.volunteers')}</h2>
+          <p className="text-slate-400 font-medium text-base max-w-2xl mx-auto mb-16 italic opacity-80">"{t('about.structure.volunteers.desc')}"</p>
+          
+          <div className="flex flex-wrap justify-center gap-10 max-w-5xl mx-auto">
+            {getStaffByCategory('Volunteers').map(m => (
+              <div key={m.id} className="group cursor-pointer flex flex-col items-center" onClick={() => setSelectedMember(m)}>
+                 <div className="relative w-20 h-20 mb-4">
+                    <img src={m.image} className="w-full h-full rounded-full object-cover border-2 border-brand-dark group-hover:border-brand-pink shadow-lg relative z-10 grayscale group-hover:grayscale-0 transition-all duration-500" />
+                    <div className="absolute -bottom-1 -right-1 bg-brand-pink text-white p-1.5 rounded-full scale-0 group-hover:scale-100 transition-all duration-300 z-20">
+                      <Star className="h-3 w-3 fill-current" />
+                    </div>
                  </div>
+                 <h6 className="text-[9px] font-black uppercase mt-1 tracking-widest group-hover:text-brand-pink transition-colors">{m.name}</h6>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-                 <div className="flex-grow">
-                   <h4 className="text-[9px] font-black text-brand-dark uppercase tracking-widest mb-3 flex items-center">
-                     <BookOpen className="h-3.5 w-3.5 mr-2 text-brand-pink" /> Biography
-                   </h4>
-                   <p className="text-xs text-slate-500 font-medium leading-relaxed italic">
-                     {selectedMember.bio || "This dedicated member contributes to VRSH for community empowerment."}
-                   </p>
+      {/* Luxury Modal */}
+      {selectedMember && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-brand-dark/95 backdrop-blur-xl animate-in fade-in duration-500">
+           <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden relative animate-in zoom-in duration-400">
+              <button onClick={() => setSelectedMember(null)} className="absolute top-8 right-8 p-4 bg-slate-50 hover:bg-brand-pink hover:text-white rounded-full transition-all z-20 shadow-sm"><X className="h-5 w-5" /></button>
+              <div className="flex flex-col md:flex-row h-full">
+                 <div className="w-full md:w-1/2 aspect-square bg-slate-100">
+                    <img src={selectedMember.image} className="w-full h-full object-cover" />
                  </div>
-
-                 <div className="mt-8 pt-6 border-t border-slate-100 flex space-x-3">
-                      {selectedMember.socials?.facebook && (
-                        <a href={selectedMember.socials.facebook} target="_blank" className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:bg-brand-pink hover:text-white transition-all">
-                          <Facebook className="h-4 w-4" />
-                        </a>
-                      )}
-                      {selectedMember.socials?.instagram && (
-                        <a href={selectedMember.socials.instagram} target="_blank" className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:bg-brand-pink hover:text-white transition-all">
-                          <Instagram className="h-4 w-4" />
-                        </a>
-                      )}
-                      {selectedMember.socials?.linkedin && (
-                        <a href={selectedMember.socials.linkedin} target="_blank" className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:bg-brand-pink hover:text-white transition-all">
-                          <Linkedin className="h-4 w-4" />
-                        </a>
-                      )}
+                 <div className="flex-1 p-10 md:p-12 flex flex-col justify-center">
+                    <div className="mb-8">
+                      <span className="text-[9px] font-black text-brand-pink uppercase tracking-[0.4em] mb-3 block">{selectedMember.category}</span>
+                      <h3 className="text-3xl font-black text-brand-dark uppercase tracking-tighter mb-2 leading-none">{selectedMember.name}</h3>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">{selectedMember.role}</p>
+                    </div>
+                    <div className="relative mb-10">
+                       <Quote className="absolute -top-6 -left-6 h-12 w-12 text-slate-50 -z-10" />
+                       <p className="text-base text-slate-600 font-medium leading-relaxed italic relative z-10">
+                          {selectedMember.bio || "Një vizionar/e që punon pa rreshtur për të fuqizuar rininë e Shalës."}
+                       </p>
+                    </div>
+                    <div className="flex items-center space-x-4 pt-8 border-t border-slate-100">
+                       <a href="#" className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-brand-pink hover:text-white transition-all"><Facebook className="h-4 w-4" /></a>
+                       <a href="#" className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-brand-pink hover:text-white transition-all"><Instagram className="h-4 w-4" /></a>
+                    </div>
                  </div>
               </div>
            </div>
@@ -357,12 +265,32 @@ const About: React.FC = () => {
   );
 
   return (
-    <div className="py-16 px-6 min-h-screen relative z-10">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center space-x-2 mb-12 glass-card p-1.5 rounded-2xl inline-flex shadow-sm">
-          <button onClick={() => window.location.hash = '#/about/mission'} className={`px-6 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${(!section || section === 'mission') ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>{t('nav.mission')}</button>
-          <button onClick={() => window.location.hash = '#/about/staff'} className={`px-6 py-2.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${section === 'staff' ? 'bg-brand-dark text-white' : 'text-slate-400 hover:text-brand-dark'}`}>{t('nav.staff')}</button>
+    <div className="min-h-screen pt-40 px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Modern Compact Switcher */}
+        <div className="flex items-center justify-center mb-24">
+          <div className="bg-white/60 backdrop-blur-md p-1.5 rounded-[2.5rem] border border-slate-100 shadow-lg flex items-center group">
+            <button 
+              onClick={() => window.location.hash = '#/about/mission'} 
+              className={`px-10 py-4 rounded-[2rem] text-[10px] font-black uppercase tracking-widest transition-all duration-500 ${(!section || section === 'mission') ? 'bg-brand-dark text-white shadow-xl scale-105' : 'text-slate-400 hover:text-brand-dark hover:bg-white'}`}
+            >
+              <div className="flex items-center space-x-2">
+                <Target className="h-4 w-4" />
+                <span>Misioni</span>
+              </div>
+            </button>
+            <button 
+              onClick={() => window.location.hash = '#/about/staff'} 
+              className={`px-10 py-4 rounded-[2rem] text-[10px] font-black uppercase tracking-widest transition-all duration-500 ${section === 'staff' ? 'bg-brand-dark text-white shadow-xl scale-105' : 'text-slate-400 hover:text-brand-dark hover:bg-white'}`}
+            >
+              <div className="flex items-center space-x-2">
+                <Users className="h-4 w-4" />
+                <span>Ekipi</span>
+              </div>
+            </button>
+          </div>
         </div>
+        
         {section === 'staff' ? renderStaff() : renderMission()}
       </div>
     </div>

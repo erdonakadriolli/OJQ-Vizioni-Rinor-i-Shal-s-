@@ -35,79 +35,39 @@ const initialData: DbSchema = {
   news: [
     {
       id: 'n1',
-      title: 'New Partnership with Lipjan Municipality',
-      content: 'Youth Vision of Shale has signed a memorandum of cooperation for future youth projects in Shale village.',
+      title: 'Bashkëpunim i ri me Komunën e Lipjanit',
+      content: 'Vizioni Rinor i Shalës ka nënshkruar memorandum bashkëpunimi për projektet e ardhshme rinore në fshatin Shalë.',
       datePosted: '2024-03-28',
       category: 'Latest News'
     }
   ],
   staff: [
-    {
-      id: 's1',
-      name: 'Leotrim Pajaziti',
-      role: 'Executive Director',
-      category: 'Executive Director',
-      bio: 'Leader of the organization\'s projects and vision.',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
-      socials: {}
-    },
-    {
-      id: 's2',
-      name: 'Bleriana Kadriolli',
-      role: 'Project Assistant',
-      category: 'Current Staff',
-      bio: 'Support in coordinating and implementing activities.',
-      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
-      socials: {}
-    },
-    {
-      id: 's3',
-      name: 'Dijellëza Selmani',
-      role: 'Project Assistant',
-      category: 'Current Staff',
-      bio: 'Responsible for the smooth running of trainings.',
-      image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400',
-      socials: {}
-    },
-    {
-      id: 's4',
-      name: 'Euresa Karpuzi',
-      role: 'Head of Members Assembly',
-      category: 'Members Assembly',
-      bio: '',
-      image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400',
-      socials: {}
-    },
-    {
-      id: 's5',
-      name: 'Miranda Karpuzi',
-      role: 'Assembly Member',
-      category: 'Members Assembly',
-      bio: '',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=400',
-      socials: {}
-    },
-    {
-      id: 's6',
-      name: 'Shkelzen Karpuzi',
-      role: 'Board Director',
-      category: 'Board of Directors',
-      bio: '',
-      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
-      socials: {}
-    },
-    {
-      id: 's7',
-      name: 'Burim Shamolli',
-      role: 'Board Director',
-      category: 'Board of Directors',
-      bio: '',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
-      socials: {}
-    },
-    { id: 'v1', name: 'Erdona Kadriolli', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400', socials: {} },
-    { id: 'v2', name: 'Erjona Kadriolli', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400', socials: {} },
-    { id: 'v3', name: 'Viola Hetemi', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400', socials: {} }
+    // Stafi i Zyrës
+    { id: 's1', name: 'Leotrim Pajaziti', role: 'Executive Director', category: 'Executive Director', bio: 'Udhëheqësi i vizionit dhe projekteve të organizatës.', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 's2', name: 'Bleriana Kadriolli', role: 'Project Assistant', category: 'Current Staff', bio: 'Mbështetje në koordinimin dhe zbatimin e aktiviteteve.', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 's3', name: 'Dijellëza Selmani', role: 'Project Assistant', category: 'Current Staff', bio: 'Përgjegjëse për mbarëvajtjen e trajnimeve.', image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400', socials: {} },
+    
+    // Asambleja
+    { id: 's4', name: 'Euresa Karpuzi', role: 'Head of Members Assembly', category: 'Members Assembly', bio: 'Kryetare e Asamblesë së Anëtarëve.', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 's5', name: 'Miranda Karpuzi', role: 'Assembly Member', category: 'Members Assembly', bio: '', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 's8', name: 'Erdona Kadriolli', role: 'Assembly Member', category: 'Members Assembly', bio: '', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 's9', name: 'Erjona Kadriolli', role: 'Assembly Member', category: 'Members Assembly', bio: '', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 's10', name: 'Dielleza Selmanii', role: 'Assembly Member', category: 'Members Assembly', bio: '', image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=400', socials: {} },
+
+    // Bordi
+    { id: 's6', name: 'Shkelzen Karpuzi', role: 'Board Director', category: 'Board of Directors', bio: '', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 's7', name: 'Burim Shamolli', role: 'Board Director', category: 'Board of Directors', bio: '', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400', socials: {} },
+    
+    // Vullnetarët
+    { id: 'v1', name: 'Viola Hetemi', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 'v4', name: 'Egzona Hetemi', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 'v5', name: 'Haxhi Hetemi', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 'v6', name: 'Loresa Gashi', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 'v7', name: 'Laureta Gashi', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 'v8', name: 'Arbenita Krasniqi', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 'v9', name: 'Anisa Bajraktari', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 'v10', name: 'Blinera Gashi', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?auto=format&fit=crop&q=80&w=400', socials: {} },
+    { id: 'v11', name: 'Elton Shala', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400', socials: {} }
   ]
 };
 
