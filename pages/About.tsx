@@ -2,15 +2,22 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getDb } from '../services/mockDb';
-import { StaffMember } from '../types';
+import { StaffMember, User } from '../types';
 import { useLanguage } from '../context/LanguageContext';
+import Logo from '../components/Logo';
+import EditableText from '../components/EditableText';
+import EditableImage from '../components/EditableImage';
 import { 
   Users, Shield, Rocket, Target, 
   Heart, X, Facebook, Instagram, Linkedin, 
   Sparkles, Mail, Star, Quote, Award, Zap
 } from 'lucide-react';
 
-const About: React.FC = () => {
+interface AboutProps {
+  user: User | null;
+}
+
+const About: React.FC<AboutProps> = ({ user }) => {
   const { section } = useParams<{ section: string }>();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [selectedMember, setSelectedMember] = useState<StaffMember | null>(null);
@@ -40,13 +47,23 @@ const About: React.FC = () => {
             së re
           </h1>
           <p className="text-lg text-slate-500 font-medium leading-relaxed">
-            {t('about.main.desc')}
+            <EditableText translationKey="about.main.desc" user={user} multiline />
           </p>
           <div className="flex items-center space-x-4 pt-4">
              <div className="w-12 h-12 rounded-2xl bg-brand-dark flex items-center justify-center text-white shadow-xl shadow-brand-dark/20">
                 <Target className="h-6 w-6" />
              </div>
              <div className="h-px flex-1 bg-slate-200"></div>
+          </div>
+          
+          {/* Mission Image */}
+          <div className="pt-8">
+            <EditableImage 
+              translationKey="about.mission.image" 
+              user={user} 
+              className="w-full h-64 rounded-[2.5rem] shadow-xl"
+              alt="Misioni ynë"
+            />
           </div>
         </div>
 
@@ -57,8 +74,12 @@ const About: React.FC = () => {
               <Award className="h-5 w-5" />
             </div>
             <div>
-              <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight mb-2">{t('about.fields.1')}</h4>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{t('about.main.goal')}</p>
+              <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight mb-2">
+                <EditableText translationKey="about.fields.1" user={user} />
+              </h4>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                <EditableText translationKey="about.main.goal" user={user} multiline />
+              </p>
             </div>
           </div>
 
@@ -67,28 +88,36 @@ const About: React.FC = () => {
             <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-brand-lime mb-12">
               <Rocket className="h-5 w-5" />
             </div>
-            <h4 className="text-sm font-black uppercase tracking-tight leading-tight">{t('about.fields.2')}</h4>
+            <h4 className="text-sm font-black uppercase tracking-tight leading-tight">
+              <EditableText translationKey="about.fields.2" user={user} />
+            </h4>
           </div>
 
           <div className="micro-bento-card bg-brand-cyan/5 p-6 rounded-[2rem] border border-brand-cyan/10 group hover:bg-brand-cyan hover:text-white transition-all">
              <div className="w-8 h-8 bg-brand-cyan rounded-lg flex items-center justify-center text-white mb-8 group-hover:bg-white group-hover:text-brand-cyan">
                <Sparkles className="h-4 w-4" />
              </div>
-             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">{t('about.fields.3')}</h4>
+             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">
+               <EditableText translationKey="about.fields.3" user={user} />
+             </h4>
           </div>
 
           <div className="micro-bento-card bg-brand-orange/5 p-6 rounded-[2rem] border border-brand-orange/10 group hover:bg-brand-orange hover:text-white transition-all">
              <div className="w-8 h-8 bg-brand-orange rounded-lg flex items-center justify-center text-white mb-8 group-hover:bg-white group-hover:text-brand-orange">
                <Users className="h-4 w-4" />
              </div>
-             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">{t('about.fields.4')}</h4>
+             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">
+               <EditableText translationKey="about.fields.4" user={user} />
+             </h4>
           </div>
 
           <div className="micro-bento-card bg-brand-pink/5 p-6 rounded-[2rem] border border-brand-pink/10 group hover:bg-brand-pink hover:text-white transition-all">
              <div className="w-8 h-8 bg-brand-pink rounded-lg flex items-center justify-center text-white mb-8 group-hover:bg-white group-hover:text-brand-pink">
                <Shield className="h-4 w-4" />
              </div>
-             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">{t('about.fields.5')}</h4>
+             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">
+               <EditableText translationKey="about.fields.5" user={user} />
+             </h4>
           </div>
         </div>
       </section>
@@ -97,14 +126,20 @@ const About: React.FC = () => {
       <section className="bg-white rounded-[3.5rem] p-10 md:p-14 border border-slate-100 flex flex-col md:flex-row items-center gap-12 shadow-sm relative overflow-hidden">
         <div className="absolute top-0 left-0 w-1 h-full bg-brand-pink"></div>
         <div className="md:w-1/3">
-           <h3 className="text-2xl font-black text-brand-dark uppercase tracking-tight mb-4">{t('about.activities.title')}</h3>
-           <p className="text-xs text-slate-400 font-bold uppercase tracking-widest leading-relaxed">{t('about.activities.desc')}</p>
+           <h3 className="text-2xl font-black text-brand-dark uppercase tracking-tight mb-4">
+             <EditableText translationKey="about.activities.title" user={user} />
+           </h3>
+           <p className="text-xs text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
+             <EditableText translationKey="about.activities.desc" user={user} multiline />
+           </p>
         </div>
         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
            {[1, 2, 3, 4, 5].map(i => (
              <div key={i} className="flex items-center space-x-4 p-4 bg-slate-50/50 rounded-2xl group hover:bg-white hover:shadow-lg hover:shadow-brand-pink/5 transition-all">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-pink group-hover:scale-150 transition-transform"></div>
-                <span className="text-[10px] font-black text-slate-600 uppercase tracking-tight group-hover:text-brand-dark">{t(`about.activities.list${i}`)}</span>
+                <span className="text-[10px] font-black text-slate-600 uppercase tracking-tight group-hover:text-brand-dark">
+                  <EditableText translationKey={`about.activities.list${i}`} user={user} />
+                </span>
              </div>
            ))}
         </div>
@@ -155,6 +190,11 @@ const About: React.FC = () => {
             <span>Struktura</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter text-center mb-8">{t('about.structure.assembly')}</h2>
+          
+          {/* Logo Section */}
+          <div className="mb-12">
+            <Logo size="lg" />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">

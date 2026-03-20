@@ -3,10 +3,11 @@ import React, { createContext, useContext, useCallback, useMemo, useState } from
 
 interface LanguageContextType {
   t: (key: string) => string;
+  updateTranslation: (key: string, value: string) => void;
   language: string;
 }
 
-const translations: Record<string, string> = {
+const initialTranslations: Record<string, string> = {
   // Navigimi
   'nav.home': 'Kryefaqja',
   'nav.about': 'Rreth Nesh',
@@ -163,17 +164,34 @@ const translations: Record<string, string> = {
   'admin.partnerWebsite': 'Uebfaqja (Opsionale)',
   'home.partners.title': 'Partnerët & Donatorët tanë',
   'ui.ask': 'Pyet',
-  'ui.upload': 'Ngarko'
+  'ui.upload': 'Ngarko',
+
+  // Imazhet
+  'home.hero.image': 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1200',
+  'about.mission.image': 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=1200'
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [currentTranslations, setCurrentTranslations] = useState<Record<string, string>>(() => {
+    const saved = localStorage.getItem('ngo_translations');
+    return saved ? JSON.parse(saved) : initialTranslations;
+  });
+
   const t = useCallback((key: string) => {
-    return translations[key] || key;
+    return currentTranslations[key] || key;
+  }, [currentTranslations]);
+
+  const updateTranslation = useCallback((key: string, value: string) => {
+    setCurrentTranslations(prev => {
+      const next = { ...prev, [key]: value };
+      localStorage.setItem('ngo_translations', JSON.stringify(next));
+      return next;
+    });
   }, []);
 
-  const value = useMemo(() => ({ t, language: 'AL' }), [t]);
+  const value = useMemo(() => ({ t, updateTranslation, language: 'AL' }), [t, updateTranslation]);
 
   return (
     <LanguageContext.Provider value={value}>

@@ -6,9 +6,15 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { getDb } from '../services/mockDb';
-import { Partner } from '../types';
+import { Partner, User } from '../types';
+import EditableText from '../components/EditableText';
+import EditableImage from '../components/EditableImage';
 
-const Home: React.FC = () => {
+interface HomeProps {
+  user: User | null;
+}
+
+const Home: React.FC<HomeProps> = ({ user }) => {
   const { t } = useLanguage();
   const [partners, setPartners] = useState<Partner[]>([]);
 
@@ -32,16 +38,16 @@ const Home: React.FC = () => {
           <div className="text-left">
             <div className="inline-flex items-center space-x-2 px-5 py-2 bg-white/60 backdrop-blur-md border border-slate-100 text-brand-pink rounded-full font-black uppercase text-[10px] tracking-[0.3em] mb-8 animate-in slide-in-from-left duration-700">
               <Sparkles className="h-3 w-3" />
-              <span>{t('hero.subtitle')}</span>
+              <EditableText translationKey="hero.subtitle" user={user} />
             </div>
             <h1 className="text-6xl md:text-[7.5rem] font-black text-brand-dark leading-[0.9] mb-10 uppercase tracking-tighter animate-in slide-in-from-left duration-1000">
-              {t('hero.title1')}<br/>
+              <EditableText translationKey="hero.title1" user={user} /><br/>
               <span className="gradient-text">
-                {t('hero.title2')}
+                <EditableText translationKey="hero.title2" user={user} />
               </span>
             </h1>
             <p className="text-lg md:text-xl text-slate-500 max-w-xl mb-12 font-medium leading-relaxed animate-in fade-in duration-1000 delay-300">
-              {t('hero.desc')}
+              <EditableText translationKey="hero.desc" user={user} multiline />
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 animate-in slide-in-from-bottom-8 duration-1000 delay-500">
               <Link to="/join" className="px-12 py-5 bg-brand-pink text-white rounded-full font-black uppercase text-xs btn-glow-pink transition-all shadow-2xl shadow-brand-pink/30 tracking-widest flex items-center justify-center">
@@ -58,10 +64,11 @@ const Home: React.FC = () => {
              <div className="absolute inset-0 bg-brand-pink rounded-[4rem] rotate-3 translate-x-4 translate-y-4 opacity-10"></div>
              <div className="absolute inset-0 bg-brand-lime rounded-[4rem] -rotate-3 -translate-x-4 -translate-y-4 opacity-10"></div>
              <div className="relative h-full w-full rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white">
-                <img 
-                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1200" 
-                  alt="Rinia e Shalës" 
+                <EditableImage 
+                  translationKey="home.hero.image" 
+                  user={user} 
                   className="w-full h-full object-cover transition-all duration-1000"
+                  alt="Rinia e Shalës"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent"></div>
                 <div className="absolute bottom-12 left-12 right-12">
@@ -84,17 +91,19 @@ const Home: React.FC = () => {
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
           {[
-            { value: '500+', label: t('stats.trained'), color: 'text-brand-pink', icon: Star, bg: 'bg-brand-pink/5' },
-            { value: '25+', label: t('stats.completed'), color: 'text-brand-lime', icon: Globe, bg: 'bg-brand-lime/5' },
-            { value: '100+', label: t('stats.volunteers'), color: 'text-brand-cyan', icon: UserPlus, bg: 'bg-brand-cyan/5' },
-            { value: 'Lipjan', label: t('stats.region'), color: 'text-brand-orange', icon: Sparkles, bg: 'bg-brand-orange/5' }
+            { value: '500+', labelKey: 'stats.trained', color: 'text-brand-pink', icon: Star, bg: 'bg-brand-pink/5' },
+            { value: '25+', labelKey: 'stats.completed', color: 'text-brand-lime', icon: Globe, bg: 'bg-brand-lime/5' },
+            { value: '100+', labelKey: 'stats.volunteers', color: 'text-brand-cyan', icon: UserPlus, bg: 'bg-brand-cyan/5' },
+            { value: 'Lipjan', labelKey: 'stats.region', color: 'text-brand-orange', icon: Sparkles, bg: 'bg-brand-orange/5' }
           ].map((stat, i) => (
             <div key={i} className="flex flex-col items-center text-center p-10 rounded-[3.5rem] bg-white border border-slate-50 shadow-sm hover:shadow-2xl transition-all group">
               <div className={`mb-8 p-5 rounded-2xl ${stat.bg} group-hover:scale-110 transition-transform ${stat.color}`}>
                 <stat.icon className="h-7 w-7" />
               </div>
               <div className={`text-5xl font-black uppercase tracking-tighter mb-2 ${stat.color}`}>{stat.value}</div>
-              <div className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{stat.label}</div>
+              <div className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                <EditableText translationKey={stat.labelKey} user={user} />
+              </div>
             </div>
           ))}
         </div>

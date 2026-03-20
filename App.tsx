@@ -10,6 +10,7 @@ import About from './pages/About';
 import News from './pages/News';
 import VolunteerApply from './pages/VolunteerApply';
 import DerdoChat from './pages/DerdoChat';
+import Logo from './components/Logo';
 import { User, UserRole } from './types';
 import { Facebook, Instagram, Mail, Phone, MapPin, ArrowRight, Heart } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
@@ -23,9 +24,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 relative z-10">
         <div className="col-span-1 md:col-span-1 space-y-8">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center bg-white/5">
-               <div className="w-4 h-4 bg-brand-pink rounded-full shadow-[0_0_15px_#e11d74]"></div>
-            </div>
+            <Logo size="md" className="bg-white/5 p-1 rounded-2xl border border-white/10" />
             <div className="flex flex-col">
               <span className="text-2xl font-black text-white uppercase tracking-tighter leading-none">Vizioni</span>
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Rinor i Shalës</span>
@@ -130,9 +129,9 @@ const App: React.FC = () => {
           <Navbar user={user} onLogout={handleLogout} />
           <main className="flex-grow">
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/about/:section" element={<About />} />
+              <Route path="/" element={<Home user={user} />} />
+              <Route path="/about" element={<About user={user} />} />
+              <Route path="/about/:section" element={<About user={user} />} />
               <Route path="/news" element={<News />} />
               <Route path="/news/:category" element={<News />} />
               <Route path="/projects" element={<Projects user={user} />} />
