@@ -39,6 +39,37 @@ const initialData: DbSchema = {
       content: 'Vizioni Rinor i Shalës ka nënshkruar memorandum bashkëpunimi për projektet e ardhshme rinore në fshatin Shalë.',
       datePosted: '2024-03-28',
       category: 'Latest News'
+    },
+    {
+      id: 'n2',
+      title: 'Raporti Vjetor i Punës 2023',
+      content: 'Ky raport përmbledh të gjitha aktivitetet, arritjet dhe sfidat e organizatës sonë gjatë vitit 2023.',
+      datePosted: '2024-01-15',
+      category: 'Reports',
+      fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+    },
+    {
+      id: 'n3',
+      title: 'VRSH në RTK: Fuqizimi i të rinjve në zonat rurale',
+      content: 'Intervista e plotë e Drejtorit Ekzekutiv në RTK rreth ndikimit të projekteve tona në komunitet.',
+      datePosted: '2024-02-10',
+      category: 'Media',
+      fileUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+    },
+    {
+      id: 'n4',
+      title: 'Trajnimi në Coding dhe Design',
+      content: 'Fillon cikli i ri i trajnimeve për 50 të rinj nga rajoni i Shalës në fushën e teknologjisë.',
+      datePosted: '2024-03-05',
+      category: 'Latest News'
+    },
+    {
+      id: 'n5',
+      title: 'Raporti i Monitorimit: Rinia dhe Vendimmarrja',
+      content: 'Një studim i detajuar mbi pjesëmarrjen e të rinjve të Lipjanit në proceset vendimmarrëse lokale.',
+      datePosted: '2023-11-20',
+      category: 'Reports',
+      fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
     }
   ],
   staff: [

@@ -29,7 +29,7 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
   });
 
   return (
-    <div className="py-24 px-6 bg-slate-50 min-h-screen">
+    <div className="pt-32 pb-24 px-6 bg-slate-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-20">
           <div>

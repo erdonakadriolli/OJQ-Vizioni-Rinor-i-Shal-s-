@@ -92,6 +92,48 @@ const Home: React.FC = () => {
         </div>
       </section>
 
+      {/* Latest News & Media Section */}
+      <section className="py-24 px-6 bg-slate-50/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+            <div className="space-y-4">
+              <span className="text-[10px] font-black uppercase text-brand-pink tracking-[0.3em] block">{t('nav.news')}</span>
+              <h2 className="text-5xl md:text-7xl font-black text-brand-dark uppercase tracking-tighter leading-none">
+                {t('news.title.latest')} & <span className="text-brand-orange">Media</span>
+              </h2>
+            </div>
+            <Link to="/news" className="group flex items-center space-x-3 text-brand-dark font-black uppercase text-[10px] tracking-widest hover:text-brand-pink transition-all">
+              <span>{t('news.title.all')}</span>
+              <div className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:bg-brand-pink group-hover:border-brand-pink group-hover:text-white transition-all">
+                <ArrowRight className="h-4 w-4" />
+              </div>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { id: 'n1', title: 'Bashkëpunim i ri me Komunën e Lipjanit', date: '2024-03-28', cat: 'Latest News', color: 'border-brand-pink' },
+              { id: 'n3', title: 'VRSH në RTK: Fuqizimi i të rinjve', date: '2024-02-10', cat: 'Media', color: 'border-brand-orange' },
+              { id: 'n2', title: 'Raporti Vjetor i Punës 2023', date: '2024-01-15', cat: 'Reports', color: 'border-brand-cyan' }
+            ].map((item, i) => (
+              <Link to={`/news`} key={i} className={`bg-white p-10 rounded-[3rem] border-b-4 ${item.color} shadow-sm hover:shadow-2xl transition-all group flex flex-col h-full`}>
+                <div className="flex items-center justify-between mb-8">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{item.date}</span>
+                  <span className="px-3 py-1 bg-slate-50 rounded-full text-[8px] font-black uppercase tracking-widest text-slate-500">{item.cat}</span>
+                </div>
+                <h3 className="text-2xl font-black text-brand-dark uppercase leading-tight mb-6 group-hover:text-brand-pink transition-colors flex-grow">
+                  {item.title}
+                </h3>
+                <div className="flex items-center text-brand-pink font-black uppercase text-[9px] tracking-widest opacity-0 group-hover:opacity-100 transition-all">
+                  <span>Lexo më shumë</span>
+                  <ArrowRight className="ml-2 h-3 w-3" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* AI Bot Section - Deep Dark with Orange Glow (Logo Right) */}
       <section className="py-24 px-6 relative">
         <div className="max-w-7xl mx-auto">

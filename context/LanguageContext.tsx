@@ -8,10 +8,10 @@ interface LanguageContextType {
 
 const translations: Record<string, string> = {
   // Navigimi
-  'nav.home': 'Kreu',
+  'nav.home': 'Kryefaqja',
   'nav.about': 'Rreth Nesh',
-  'nav.mission': 'Misioni & Vizioni',
-  'nav.staff': 'Ekipi ynë',
+  'nav.mission': 'Misioni',
+  'nav.staff': 'Stafi',
   'nav.projects': 'Projektet',
   'nav.news': 'Lajmet',
   'nav.join': 'Vullnetarizimi',
@@ -121,12 +121,39 @@ const translations: Record<string, string> = {
 
   // Lajmet
   'news.title.all': 'Të gjitha lajmet',
-  'news.title.latest': 'Lajmet e fundit',
-  'news.title.media': 'Media & TV',
-  'news.title.reports': 'Publikimet & Raportet',
+  'news.title.latest': 'Lajmet',
+  'news.title.media': 'Media',
+  'news.title.reports': 'Raportet',
   'news.empty': 'Nuk u gjet asnjë lajm në këtë kategori.',
   'news.download': 'Shkarko dokumentin',
-  'news.source': 'Burimi i lajmit'
+  'news.source': 'Burimi i lajmit',
+
+  // Admin Panel
+  'admin.panel': 'Paneli i Adminit',
+  'admin.overview': 'Përmbledhja',
+  'admin.projects': 'Projektet',
+  'admin.news': 'Lajmet & Raportet',
+  'admin.staff': 'Stafi & Ekipi',
+  'admin.applications': 'Aplikimet',
+  'admin.management': 'Menaxhimi i Organizatës',
+  'admin.addProject': 'Shto Projekt',
+  'admin.editProject': 'Edito Projektin',
+  'admin.addNews': 'Shto Lajm/Raport',
+  'admin.editNews': 'Edito Lajmin',
+  'admin.addStaff': 'Shto Anëtar Stafi',
+  'admin.editStaff': 'Edito Stafin',
+  'admin.title': 'Titulli',
+  'admin.status': 'Statusi',
+  'admin.actions': 'Veprimet',
+  'admin.deleteConfirm': 'A jeni të sigurt që dëshironi ta fshini këtë zë?',
+  'admin.save': 'Ruaj Ndryshimet',
+  'admin.cancel': 'Anulo',
+  'admin.generateAi': 'Gjenero me AI',
+  'admin.mainImage': 'Imazhi Kryesor',
+  'admin.gallery': 'Galeria e Fotos',
+  'admin.category': 'Kategoria',
+  'admin.date': 'Data',
+  'admin.applicant': 'Aplikuesi'
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

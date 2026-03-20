@@ -68,6 +68,7 @@ export interface NewsItem {
   datePosted: string;
   category: string;
   fileUrl?: string;
+  fileName?: string;
 }
 
 export interface StaffMember {

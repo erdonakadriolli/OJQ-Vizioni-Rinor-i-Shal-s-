@@ -42,7 +42,7 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-6 bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center pt-32 pb-12 px-6 bg-slate-50 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-96 h-96 bg-brand-pink/5 rounded-full -mr-48 -mt-48 blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-cyan/5 rounded-full -ml-48 -mb-48 blur-3xl"></div>
       

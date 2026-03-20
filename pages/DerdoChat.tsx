@@ -65,7 +65,7 @@ const DerdoChat: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-6">
+    <div className="min-h-screen bg-slate-50 pt-32 pb-12 px-6">
       <div className="max-w-4xl mx-auto flex flex-col h-[80vh] bg-white rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden">
         {/* Header */}
         <div className="p-8 border-b border-slate-100 bg-brand-dark text-white flex items-center justify-between">

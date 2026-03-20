@@ -121,113 +121,86 @@ const About: React.FC = () => {
             <Sparkles className="h-3 w-3" />
             <span>Ekipi</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter text-center">Ekipi Ekzekutiv</h2>
+          <h2 className="text-4xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter text-center">Meet The Team</h2>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {getStaffByCategory('Executive Director').map(m => (
-            <div key={m.id} onClick={() => setSelectedMember(m)} className="group relative pt-16">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-brand-pink/10 rounded-full blur-[70px] group-hover:bg-brand-pink/20 transition-all"></div>
-              <div className="relative bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col items-center text-center overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-brand-pink scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-700"></div>
-                <div className="w-32 h-32 rounded-[2.5rem] overflow-hidden -mt-24 mb-6 shadow-xl border-4 border-white transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-2">
-                  <img src={m.image} className="w-full h-full object-cover" />
-                </div>
-                <h3 className="font-black text-brand-dark uppercase text-xl mb-1">{m.name}</h3>
-                <p className="text-[9px] font-black text-brand-pink uppercase tracking-[0.3em] mb-6 bg-brand-pink/5 px-4 py-1 rounded-full">{m.role}</p>
-                <div className="flex space-x-3 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                  <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-brand-pink hover:text-white transition-all"><Facebook className="h-4 w-4" /></div>
-                  <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-brand-pink hover:text-white transition-all"><Instagram className="h-4 w-4" /></div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-16 max-w-6xl mx-auto px-4">
+          {[...getStaffByCategory('Executive Director'), ...getStaffByCategory('Current Staff')].map(m => (
+            <div key={m.id} onClick={() => setSelectedMember(m)} className="group cursor-pointer flex flex-col items-center text-center">
+              <div className="relative mb-8">
+                <div className="w-64 h-64 border-[12px] border-brand-pink transition-all duration-500 group-hover:scale-105 group-hover:rotate-2 shadow-2xl overflow-hidden bg-slate-100">
+                  <img src={m.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                 </div>
               </div>
-            </div>
-          ))}
-          
-          {getStaffByCategory('Current Staff').map(m => (
-            <div key={m.id} onClick={() => setSelectedMember(m)} className="group relative pt-16">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-brand-cyan/10 rounded-full blur-[60px] group-hover:bg-brand-cyan/20 transition-all"></div>
-              <div className="relative bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col items-center text-center overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-brand-cyan scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-700"></div>
-                <div className="w-28 h-28 rounded-[2.2rem] overflow-hidden -mt-20 mb-6 shadow-lg border-4 border-white transition-transform duration-500 group-hover:scale-105 group-hover:rotate-2">
-                  <img src={m.image} className="w-full h-full object-cover" />
-                </div>
-                <h3 className="font-black text-brand-dark uppercase text-lg mb-1">{m.name}</h3>
-                <p className="text-[9px] font-black text-brand-cyan uppercase tracking-[0.3em] mb-6 bg-brand-cyan/5 px-4 py-1 rounded-full">{m.role}</p>
-                <div className="flex space-x-3 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                   <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-brand-cyan hover:text-white transition-all"><Mail className="h-4 w-4" /></div>
-                </div>
+              <h3 className="font-black text-brand-dark uppercase text-2xl mb-1 tracking-tight">{m.name}</h3>
+              <p className="text-xs font-black text-brand-pink uppercase tracking-[0.2em] mb-4">{m.role}</p>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed mb-6 line-clamp-3 px-4">
+                {m.bio || "Një vizionar/e që punon pa rreshtur për të fuqizuar rininë e Shalës."}
+              </p>
+              <div className="flex space-x-6">
+                <Facebook className="h-5 w-5 text-brand-dark hover:text-brand-pink transition-colors" />
+                <Instagram className="h-5 w-5 text-brand-dark hover:text-brand-pink transition-colors" />
+                <Linkedin className="h-5 w-5 text-brand-dark hover:text-brand-pink transition-colors" />
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Assembly & Board */}
-      <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-        <section className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-brand-purple/5 rounded-full blur-3xl"></div>
-          <div className="flex items-center space-x-4 mb-10 relative z-10">
-            <div className="w-10 h-10 rounded-xl bg-brand-purple/10 flex items-center justify-center text-brand-purple"><Users className="h-5 w-5" /></div>
-            <h2 className="text-xl font-black text-brand-dark uppercase tracking-tight">{t('about.structure.assembly')}</h2>
+      {/* Board of Directors */}
+      <section>
+        <div className="flex flex-col items-center mb-24">
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-brand-blue/5 text-brand-blue rounded-full text-[9px] font-black uppercase tracking-[0.4em] mb-4">
+            <Shield className="h-3 w-3" />
+            <span>Bordi</span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative z-10">
-            {getStaffByCategory('Members Assembly').map(m => (
-              <div key={m.id} onClick={() => setSelectedMember(m)} className="p-3 rounded-2xl flex items-center space-x-4 cursor-pointer hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
-                <img src={m.image} className="w-11 h-11 rounded-xl object-cover grayscale group-hover:grayscale-0 transition-all" />
-                <div>
-                  <h5 className="text-[10px] font-black text-brand-dark uppercase tracking-tight">{m.name}</h5>
-                  <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest">{m.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-brand-blue/5 rounded-full blur-3xl"></div>
-          <div className="flex items-center space-x-4 mb-10 relative z-10">
-            <div className="w-10 h-10 rounded-xl bg-brand-blue/10 flex items-center justify-center text-brand-blue"><Shield className="h-5 w-5" /></div>
-            <h2 className="text-xl font-black text-brand-dark uppercase tracking-tight">{t('about.structure.board')}</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative z-10">
-            {getStaffByCategory('Board of Directors').map(m => (
-              <div key={m.id} onClick={() => setSelectedMember(m)} className="p-3 rounded-2xl flex items-center space-x-4 cursor-pointer hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100">
-                <img src={m.image} className="w-11 h-11 rounded-xl object-cover grayscale group-hover:grayscale-0 transition-all" />
-                <div>
-                  <h5 className="text-[10px] font-black text-brand-dark uppercase tracking-tight">{m.name}</h5>
-                  <p className="text-[7px] font-bold text-slate-400 uppercase tracking-widest">{m.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-
-      {/* Volunteer Galaxy */}
-      <section className="relative py-24 px-10 rounded-[4rem] bg-brand-dark text-white text-center overflow-hidden shadow-2xl">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10">
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-pink rounded-full blur-[100px] animate-pulse"></div>
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-lime rounded-full blur-[100px] animate-pulse-slow"></div>
+          <h2 className="text-3xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter text-center">{t('about.structure.board')}</h2>
         </div>
         
-        <div className="relative z-10">
-          <Heart className="h-10 w-10 text-brand-pink mx-auto mb-8 animate-float" />
-          <h2 className="text-4xl font-black uppercase tracking-tighter mb-4">{t('about.structure.volunteers')}</h2>
-          <p className="text-slate-400 font-medium text-base max-w-2xl mx-auto mb-16 italic opacity-80">"{t('about.structure.volunteers.desc')}"</p>
-          
-          <div className="flex flex-wrap justify-center gap-10 max-w-5xl mx-auto">
-            {getStaffByCategory('Volunteers').map(m => (
-              <div key={m.id} className="group cursor-pointer flex flex-col items-center" onClick={() => setSelectedMember(m)}>
-                 <div className="relative w-20 h-20 mb-4">
-                    <img src={m.image} className="w-full h-full rounded-full object-cover border-2 border-brand-dark group-hover:border-brand-pink shadow-lg relative z-10 grayscale group-hover:grayscale-0 transition-all duration-500" />
-                    <div className="absolute -bottom-1 -right-1 bg-brand-pink text-white p-1.5 rounded-full scale-0 group-hover:scale-100 transition-all duration-300 z-20">
-                      <Star className="h-3 w-3 fill-current" />
-                    </div>
-                 </div>
-                 <h6 className="text-[9px] font-black uppercase mt-1 tracking-widest group-hover:text-brand-pink transition-colors">{m.name}</h6>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-16 max-w-6xl mx-auto px-4">
+          {getStaffByCategory('Board of Directors').map(m => (
+            <div key={m.id} onClick={() => setSelectedMember(m)} className="group cursor-pointer flex flex-col items-center text-center">
+              <div className="relative mb-8">
+                <div className="w-56 h-56 border-[10px] border-brand-blue transition-all duration-500 group-hover:scale-105 group-hover:-rotate-2 shadow-xl overflow-hidden bg-slate-100">
+                  <img src={m.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                </div>
               </div>
-            ))}
+              <h3 className="font-black text-brand-dark uppercase text-xl mb-1 tracking-tight">{m.name}</h3>
+              <p className="text-[10px] font-black text-brand-blue uppercase tracking-[0.2em] mb-4">{m.role}</p>
+              <p className="text-xs text-slate-500 font-medium leading-relaxed mb-6 line-clamp-2 px-4">
+                {m.bio || "Anëtar i bordit drejtues me përvojë të gjerë në menaxhim."}
+              </p>
+              <div className="flex space-x-4">
+                <Facebook className="h-4 w-4 text-brand-dark hover:text-brand-blue transition-colors" />
+                <Linkedin className="h-4 w-4 text-brand-dark hover:text-brand-blue transition-colors" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Volunteers */}
+      <section>
+        <div className="flex flex-col items-center mb-24">
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-brand-lime/5 text-brand-lime rounded-full text-[9px] font-black uppercase tracking-[0.4em] mb-4">
+            <Heart className="h-3 w-3" />
+            <span>Vullnetarët</span>
           </div>
+          <h2 className="text-3xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter text-center">{t('about.structure.volunteers')}</h2>
+        </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 max-w-6xl mx-auto px-4">
+          {getStaffByCategory('Volunteers').map(m => (
+            <div key={m.id} onClick={() => setSelectedMember(m)} className="group cursor-pointer flex flex-col items-center text-center">
+              <div className="relative mb-6">
+                <div className="w-40 h-40 border-[8px] border-brand-lime transition-all duration-500 group-hover:scale-105 shadow-lg overflow-hidden bg-slate-100">
+                  <img src={m.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                </div>
+              </div>
+              <h3 className="font-black text-brand-dark uppercase text-sm mb-1 tracking-tight">{m.name}</h3>
+              <p className="text-[8px] font-black text-brand-lime uppercase tracking-[0.2em]">{m.role}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -265,7 +238,7 @@ const About: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen pt-40 px-6">
+    <div className="min-h-screen pt-24 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Modern Compact Switcher */}
         <div className="flex items-center justify-center mb-24">

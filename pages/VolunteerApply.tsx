@@ -92,7 +92,7 @@ const VolunteerApply: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen py-24 px-6 bg-slate-50">
+    <div className="min-h-screen pt-32 pb-24 px-6 bg-slate-50">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
           <div className="inline-flex items-center space-x-2 px-4 py-2 bg-brand-pink/10 text-brand-pink rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-6">

@@ -22,6 +22,7 @@ const AdminDashboard: React.FC = () => {
   const [showNewsModal, setShowNewsModal] = useState(false);
   const [showStaffModal, setShowStaffModal] = useState(false);
   const [showAppDetails, setShowAppDetails] = useState<VolunteerApplication | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
   const [isAiGenerating, setIsAiGenerating] = useState(false);
   const [newsSearch, setNewsSearch] = useState('');
@@ -67,6 +68,8 @@ const AdminDashboard: React.FC = () => {
   const updateDb = (newDb: any) => {
     setDb(newDb);
     saveDb(newDb);
+    setSuccessMessage('Veprimi u krye me sukses!');
+    setTimeout(() => setSuccessMessage(null), 3000);
   };
 
   const handleFileRead = (file: File): Promise<string> => {
@@ -85,7 +88,7 @@ const AdminDashboard: React.FC = () => {
         return;
       }
       const base64 = await handleFileRead(file);
-      setNewsForm({ ...newsForm, fileUrl: base64, fileName: file.name });
+      setNewsForm(prev => ({ ...prev, fileUrl: base64, fileName: file.name }));
     }
   };
 
@@ -136,7 +139,7 @@ const AdminDashboard: React.FC = () => {
         datePosted: item.datePosted,
         category: item.category,
         fileUrl: item.fileUrl || '',
-        fileName: (item as any).fileName || ''
+        fileName: item.fileName || ''
       });
     } else {
       setEditingNews(null);
@@ -150,10 +153,20 @@ const AdminDashboard: React.FC = () => {
 
   const handleSaveNews = () => {
     if (!newsForm.title) return;
-    const newItem = { id: editingNews ? editingNews.id : 'n_' + Date.now(), ...newsForm };
-    const updated = editingNews ? db.news.map(n => n.id === editingNews.id ? newItem : n) : [...db.news, newItem];
-    updateDb({ ...db, news: updated });
+    const dbData = getDb();
+    const newItem: NewsItem = { 
+      id: editingNews ? editingNews.id : 'n_' + Date.now(), 
+      title: newsForm.title,
+      content: newsForm.content,
+      datePosted: newsForm.datePosted,
+      category: newsForm.category,
+      fileUrl: newsForm.fileUrl,
+      fileName: newsForm.fileName
+    };
+    const updated = editingNews ? dbData.news.map(n => n.id === editingNews.id ? newItem : n) : [...dbData.news, newItem];
+    updateDb({ ...dbData, news: updated });
     setShowNewsModal(false);
+    setEditingNews(null);
   };
 
   const handleOpenProjectModal = (p?: Project) => {
@@ -176,10 +189,23 @@ const AdminDashboard: React.FC = () => {
 
   const handleSaveProject = () => {
     if (!projectForm.title) return;
-    const newP = { id: editingProject ? editingProject.id : 'p_' + Date.now(), ...projectForm };
-    const updated = editingProject ? db.projects.map(p => p.id === editingProject.id ? newP : p) : [...db.projects, newP];
-    updateDb({ ...db, projects: updated });
+    const dbData = getDb();
+    const newP: Project = { 
+      id: editingProject ? editingProject.id : 'p_' + Date.now(), 
+      title: projectForm.title,
+      description: projectForm.description,
+      longDescription: projectForm.longDescription,
+      startDate: projectForm.startDate,
+      endDate: projectForm.endDate,
+      status: projectForm.status,
+      image: projectForm.image || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800',
+      volunteerCount: projectForm.volunteerCount,
+      gallery: projectForm.gallery
+    };
+    const updated = editingProject ? dbData.projects.map(p => p.id === editingProject.id ? newP : p) : [...dbData.projects, newP];
+    updateDb({ ...dbData, projects: updated });
     setShowProjectModal(false);
+    setEditingProject(null);
   };
 
   const handleOpenStaffModal = (s?: StaffMember) => {
@@ -198,10 +224,20 @@ const AdminDashboard: React.FC = () => {
 
   const handleSaveStaff = () => {
     if (!staffForm.name) return;
-    const newS = { id: editingStaff ? editingStaff.id : 's_' + Date.now(), ...staffForm };
-    const updated = editingStaff ? db.staff.map(s => s.id === editingStaff.id ? newS : s) : [...db.staff, newS];
-    updateDb({ ...db, staff: updated });
+    const dbData = getDb();
+    const newS: StaffMember = { 
+      id: editingStaff ? editingStaff.id : 's_' + Date.now(), 
+      name: staffForm.name,
+      role: staffForm.role,
+      category: staffForm.category,
+      bio: staffForm.bio,
+      image: staffForm.image || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
+      socials: staffForm.socials
+    };
+    const updated = editingStaff ? dbData.staff.map(s => s.id === editingStaff.id ? newS : s) : [...dbData.staff, newS];
+    updateDb({ ...dbData, staff: updated });
     setShowStaffModal(false);
+    setEditingStaff(null);
   };
 
   const handleAppAction = (appId: string, status: ApplicationStatus) => {
@@ -224,61 +260,84 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
       {/* Sidebar Nav */}
-      <aside className="w-full md:w-72 bg-brand-dark flex-shrink-0 text-white z-20">
+      <aside className="w-full md:w-64 bg-brand-dark flex-shrink-0 text-white z-20 shadow-2xl">
         <div className="p-8 sticky top-0 h-screen flex flex-col">
-          <div className="flex items-center space-x-3 mb-10">
-            <div className="w-8 h-8 rounded-full border-2 border-brand-pink flex items-center justify-center">
-              <div className="w-3 h-3 bg-brand-pink rounded-full"></div>
+          <div className="flex items-center space-x-4 mb-12 group cursor-pointer">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-pink to-brand-orange flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+              <Sparkles className="h-5 w-5 text-white" />
             </div>
-            <span className="text-sm font-black uppercase tracking-[0.2em]">{t('admin.panel')}</span>
+            <div>
+              <span className="text-[10px] font-black uppercase text-white/40 tracking-[0.3em] block leading-none mb-1">NGO Portal</span>
+              <span className="text-sm font-black uppercase tracking-widest block leading-none">{t('admin.panel')}</span>
+            </div>
           </div>
-          <nav className="space-y-2 flex-grow">
+          <nav className="space-y-3 flex-grow">
             {[
-              { id: 'overview', icon: LayoutDashboard, label: t('admin.overview') },
-              { id: 'projects', icon: FolderKanban, label: t('admin.projects') },
-              { id: 'news', icon: Newspaper, label: t('admin.news') },
-              { id: 'staff', icon: Briefcase, label: t('admin.staff') },
-              { id: 'applications', icon: Users, label: t('admin.applications') },
+              { id: 'overview', icon: LayoutDashboard, label: t('admin.overview'), color: 'text-brand-pink', bg: 'hover:bg-brand-pink/10' },
+              { id: 'projects', icon: FolderKanban, label: t('admin.projects'), color: 'text-brand-cyan', bg: 'hover:bg-brand-cyan/10' },
+              { id: 'news', icon: Newspaper, label: t('admin.news'), color: 'text-brand-lime', bg: 'hover:bg-brand-lime/10' },
+              { id: 'staff', icon: Briefcase, label: t('admin.staff'), color: 'text-brand-blue', bg: 'hover:bg-brand-blue/10' },
+              { id: 'applications', icon: Users, label: t('admin.applications'), color: 'text-brand-orange', bg: 'hover:bg-brand-orange/10' },
             ].map(item => (
               <button 
                 key={item.id}
                 onClick={() => setActiveTab(item.id as any)}
-                className={`w-full flex items-center space-x-4 px-6 py-4 rounded-2xl transition-all font-bold uppercase text-[10px] tracking-widest ${activeTab === item.id ? 'bg-white/10 text-brand-pink shadow-lg' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                className={`w-full flex items-center space-x-4 px-6 py-4 rounded-2xl transition-all font-black uppercase text-[10px] tracking-[0.15em] relative group ${activeTab === item.id ? 'bg-white/10 text-white shadow-xl' : `text-white/40 ${item.bg} hover:text-white`}`}
               >
-                <item.icon className="h-5 w-5" />
+                {activeTab === item.id && (
+                  <div className={`absolute left-0 w-1.5 h-6 rounded-r-full ${item.color.replace('text-', 'bg-')} shadow-[0_0_15px_rgba(255,255,255,0.3)]`}></div>
+                )}
+                <item.icon className={`h-5 w-5 transition-transform group-hover:scale-110 ${activeTab === item.id ? item.color : 'text-white/20 group-hover:text-white/60'}`} />
                 <span>{item.label}</span>
               </button>
             ))}
           </nav>
+          
+          <div className="mt-auto pt-8 border-t border-white/5">
+            <div className="bg-white/5 rounded-2xl p-4 flex items-center space-x-3">
+              <div className="w-8 h-8 rounded-xl bg-brand-pink/20 flex items-center justify-center text-brand-pink font-black text-xs">A</div>
+              <div className="overflow-hidden">
+                <p className="text-[10px] font-black text-white truncate">Admin User</p>
+                <p className="text-[8px] font-bold text-white/30 uppercase tracking-widest truncate">Administrator</p>
+              </div>
+            </div>
+          </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-grow p-8 md:p-12 overflow-x-hidden">
+      <main className="flex-grow p-6 md:p-10 pt-28 md:pt-28 overflow-x-hidden">
         <div className="max-w-6xl mx-auto">
+          {successMessage && (
+            <div className="fixed top-6 right-6 z-[100] bg-brand-lime text-white px-6 py-3 rounded-xl font-black uppercase text-[9px] tracking-widest shadow-2xl animate-in slide-in-from-right duration-300 flex items-center">
+              <CheckCircle className="h-3.5 w-3.5 mr-2" /> {successMessage}
+            </div>
+          )}
+          
           {/* Overview Tab */}
           {activeTab === 'overview' && (
-            <div className="space-y-12 animate-in fade-in">
+            <div className="space-y-10 animate-in fade-in">
               <div className="flex items-center justify-between">
-                <h1 className="text-4xl font-black text-brand-dark uppercase tracking-tight">{t('admin.management')}</h1>
-                <div className="bg-white px-6 py-2 rounded-full border border-slate-100 flex items-center shadow-sm">
-                  <Globe className="h-4 w-4 text-brand-cyan mr-2" />
-                  <span className="text-[10px] font-black uppercase text-slate-400">{language}</span>
+                <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tight">{t('admin.management')}</h1>
+                <div className="bg-white px-4 py-1.5 rounded-full border border-slate-100 flex items-center shadow-sm">
+                  <Globe className="h-3.5 w-3.5 text-brand-cyan mr-2" />
+                  <span className="text-[9px] font-black uppercase text-slate-400">{language}</span>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { label: t('admin.projects'), value: db.projects.length, icon: FolderKanban, color: 'bg-brand-pink' },
-                  { label: t('admin.applications'), value: db.applications?.length || 0, icon: Users, color: 'bg-brand-cyan' },
-                  { label: t('admin.staff'), value: db.staff.length, icon: Briefcase, color: 'bg-brand-blue' },
-                  { label: t('admin.news'), value: db.news.length, icon: Newspaper, color: 'bg-brand-lime' },
+                  { label: t('admin.projects'), value: db.projects.length, icon: FolderKanban, color: 'text-brand-pink', bg: 'bg-brand-pink/10', border: 'border-brand-pink/20' },
+                  { label: t('admin.applications'), value: db.applications?.length || 0, icon: Users, color: 'text-brand-cyan', bg: 'bg-brand-cyan/10', border: 'border-brand-cyan/20' },
+                  { label: t('admin.staff'), value: db.staff.length, icon: Briefcase, color: 'text-brand-blue', bg: 'bg-brand-blue/10', border: 'border-brand-blue/20' },
+                  { label: t('admin.news'), value: db.news.length, icon: Newspaper, color: 'text-brand-lime', bg: 'bg-brand-lime/10', border: 'border-brand-lime/20' },
                 ].map((stat, i) => (
-                  <div key={i} className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                    <div className={`${stat.color} w-12 h-12 rounded-2xl text-white flex items-center justify-center mb-6`}>
-                      <stat.icon className="h-6 w-6" />
+                  <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all group relative overflow-hidden">
+                    <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-700 opacity-50`}></div>
+                    <div className={`${stat.bg} ${stat.color} w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-all shadow-sm border ${stat.border}`}>
+                      <stat.icon className="h-7 w-7" />
                     </div>
-                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-1">{stat.label}</p>
-                    <p className="text-3xl font-black text-brand-dark">{stat.value}</p>
+                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.25em] mb-2 relative z-10">{stat.label}</p>
+                    <p className="text-4xl font-black text-brand-dark relative z-10 tabular-nums">{stat.value}</p>
                   </div>
                 ))}
               </div>
@@ -287,35 +346,35 @@ const AdminDashboard: React.FC = () => {
 
           {/* Projects Tab */}
           {activeTab === 'projects' && (
-            <div className="space-y-8 animate-in fade-in">
+            <div className="space-y-6 animate-in fade-in">
               <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-black text-brand-dark uppercase">{t('admin.projects')}</h1>
-                <button onClick={() => handleOpenProjectModal()} className="bg-brand-pink text-white px-8 py-3.5 rounded-full font-black uppercase text-[10px] tracking-widest flex items-center shadow-lg hover:scale-105 transition-all">
-                  <Plus className="h-4 w-4 mr-2" /> {t('admin.addProject')}
+                <h1 className="text-2xl font-black text-brand-dark uppercase">{t('admin.projects')}</h1>
+                <button onClick={() => handleOpenProjectModal()} className="bg-brand-pink text-white px-6 py-3 rounded-full font-black uppercase text-[9px] tracking-widest flex items-center shadow-lg hover:scale-105 transition-all">
+                  <Plus className="h-3.5 w-3.5 mr-2" /> {t('admin.addProject')}
                 </button>
               </div>
-              <div className="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-sm">
+              <div className="bg-white rounded-[2rem] border border-slate-100 overflow-hidden shadow-sm">
                 <table className="w-full text-left">
                   <thead className="bg-slate-50 border-b border-slate-100">
                     <tr>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase">{t('admin.title')}</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase">{t('admin.status')}</th>
-                      <th className="px-8 py-5 text-right">{t('admin.actions')}</th>
+                      <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase">{t('admin.title')}</th>
+                      <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase">{t('admin.status')}</th>
+                      <th className="px-6 py-4 text-right text-[9px] font-black text-slate-400 uppercase">{t('admin.actions')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
                     {db.projects.map(p => (
                       <tr key={p.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-8 py-6 flex items-center space-x-4">
-                           <img src={p.image} className="w-12 h-12 rounded-2xl object-cover" />
-                           <span className="font-bold text-sm text-brand-dark">{p.title}</span>
+                        <td className="px-6 py-4 flex items-center space-x-3">
+                           <img src={p.image} className="w-10 h-10 rounded-xl object-cover" />
+                           <span className="font-bold text-xs text-brand-dark">{p.title}</span>
                         </td>
-                        <td className="px-8 py-6">
-                           <span className="px-3 py-1 bg-slate-100 rounded-full text-[8px] font-black uppercase tracking-widest text-slate-500">{p.status}</span>
+                        <td className="px-6 py-4">
+                           <span className="px-2.5 py-1 bg-slate-100 rounded-full text-[7px] font-black uppercase tracking-widest text-slate-500">{p.status}</span>
                         </td>
-                        <td className="px-8 py-6 text-right space-x-1">
-                          <button onClick={() => handleOpenProjectModal(p)} className="p-2.5 text-slate-400 hover:text-brand-pink rounded-xl"><Edit2 className="h-4 w-4" /></button>
-                          <button onClick={() => deleteItem('projects', p.id)} className="p-2.5 text-slate-400 hover:text-red-500 rounded-xl"><Trash2 className="h-4 w-4" /></button>
+                        <td className="px-6 py-4 text-right space-x-1">
+                          <button onClick={() => handleOpenProjectModal(p)} className="p-2 text-slate-400 hover:text-brand-pink rounded-lg"><Edit2 className="h-3.5 w-3.5" /></button>
+                          <button onClick={() => deleteItem('projects', p.id)} className="p-2 text-slate-400 hover:text-red-500 rounded-lg"><Trash2 className="h-3.5 w-3.5" /></button>
                         </td>
                       </tr>
                     ))}
@@ -349,13 +408,13 @@ const AdminDashboard: React.FC = () => {
 
               <div className="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-sm">
                 <table className="w-full text-left">
-                  <thead className="bg-slate-50 border-b border-slate-100">
-                    <tr>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('admin.title')}</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('admin.category')}</th>
-                      <th className="px-8 py-5 text-right">{t('admin.actions')}</th>
-                    </tr>
-                  </thead>
+                    <thead className="bg-slate-50 border-b border-slate-100">
+                      <tr>
+                        <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('admin.title')}</th>
+                        <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('admin.category')}</th>
+                        <th className="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('admin.actions')}</th>
+                      </tr>
+                    </thead>
                   <tbody className="divide-y divide-slate-50">
                     {filteredAdminNews.map(n => (
                       <tr key={n.id} className="hover:bg-slate-50 transition-colors">
@@ -383,29 +442,66 @@ const AdminDashboard: React.FC = () => {
           {activeTab === 'staff' && (
             <div className="space-y-8 animate-in fade-in">
               <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-black text-brand-dark uppercase">{t('admin.staff')}</h1>
+                <div>
+                  <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tight">{t('admin.staff')}</h1>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Menaxhimi i ekipit dhe bashkëpunëtorëve</p>
+                </div>
                 <button onClick={() => handleOpenStaffModal()} className="bg-brand-cyan text-white px-8 py-3.5 rounded-full font-black uppercase text-[10px] tracking-widest flex items-center shadow-lg hover:scale-105 transition-all">
                   <Plus className="h-4 w-4 mr-2" /> {t('admin.addStaff')}
                 </button>
               </div>
-              <div className="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-sm">
-                <table className="w-full text-left">
-                  <tbody className="divide-y divide-slate-50">
-                    {db.staff.map(s => (
-                      <tr key={s.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-8 py-6 flex items-center space-x-4">
-                           <img src={s.image} className="w-12 h-12 rounded-full object-cover" />
-                           <span className="font-bold text-sm text-brand-dark">{s.name}</span>
-                        </td>
-                        <td className="px-8 py-6 text-xs font-bold text-slate-600">{s.role}</td>
-                        <td className="px-8 py-6 text-right space-x-2">
-                          <button onClick={() => handleOpenStaffModal(s)} className="p-2.5 text-slate-400 hover:text-brand-pink rounded-xl"><Edit2 className="h-4 w-4" /></button>
-                          <button onClick={() => deleteItem('staff', s.id)} className="p-2.5 text-slate-400 hover:text-red-500 rounded-xl"><Trash2 className="h-4 w-4" /></button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {db.staff.map(s => (
+                  <div key={s.id} className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden flex flex-col h-full">
+                    <div className="absolute top-6 right-6 flex space-x-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                      <button onClick={() => handleOpenStaffModal(s)} className="p-2.5 bg-white shadow-lg rounded-xl text-slate-400 hover:text-brand-cyan transition-colors"><Edit2 className="h-4 w-4" /></button>
+                      <button onClick={() => deleteItem('staff', s.id)} className="p-2.5 bg-white shadow-lg rounded-xl text-slate-400 hover:text-red-500 transition-colors"><Trash2 className="h-4 w-4" /></button>
+                    </div>
+                    
+                    <div className="flex items-start space-x-5 mb-6">
+                      <div className="relative flex-shrink-0">
+                        <img src={s.image} className="w-20 h-20 rounded-[2rem] object-cover border-4 border-slate-50 shadow-inner" />
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-brand-cyan rounded-lg flex items-center justify-center text-white shadow-lg">
+                          <Briefcase className="h-3 w-3" />
+                        </div>
+                      </div>
+                      <div className="pt-2">
+                        <h3 className="font-black text-lg text-brand-dark leading-tight">{s.name}</h3>
+                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight mt-0.5">{s.role}</p>
+                        <span className="inline-block mt-2 px-3 py-1 bg-brand-blue/10 text-brand-blue rounded-full text-[8px] font-black uppercase tracking-widest">{s.category}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex-grow">
+                      {s.bio && (
+                        <p className="text-xs text-slate-500 leading-relaxed line-clamp-3 mb-6 font-medium italic">
+                          "{s.bio}"
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                      <div className="flex space-x-3">
+                        {s.socials?.facebook && (
+                          <a href={s.socials.facebook} target="_blank" rel="noreferrer" className="p-2 bg-slate-50 text-brand-blue rounded-xl hover:bg-brand-blue hover:text-white transition-all">
+                            <Facebook className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        {s.socials?.instagram && (
+                          <a href={s.socials.instagram} target="_blank" rel="noreferrer" className="p-2 bg-slate-50 text-brand-pink rounded-xl hover:bg-brand-pink hover:text-white transition-all">
+                            <Instagram className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        {s.socials?.linkedin && (
+                          <a href={s.socials.linkedin} target="_blank" rel="noreferrer" className="p-2 bg-slate-50 text-brand-cyan rounded-xl hover:bg-brand-cyan hover:text-white transition-all">
+                            <Linkedin className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                      </div>
+                      <div className="w-2 h-2 rounded-full bg-brand-cyan/20"></div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -446,72 +542,81 @@ const AdminDashboard: React.FC = () => {
 
       {/* NEWS & REPORTS MODAL */}
       {showNewsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-brand-dark/80 backdrop-blur-md">
-          <div className="bg-white w-full max-w-3xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
-             <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-               <h2 className="text-2xl font-black text-brand-dark uppercase tracking-tight">
-                 {editingNews ? t('admin.editNews') : t('admin.addNews')}
-               </h2>
-               <button onClick={() => setShowNewsModal(false)} className="p-2 hover:bg-slate-200 rounded-full transition-all"><X className="h-8 w-8 text-slate-300" /></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/80 backdrop-blur-md">
+          <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
+             <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+               <div>
+                 <h2 className="text-xl font-black text-brand-dark uppercase tracking-tight">
+                   {editingNews ? t('admin.editNews') : t('admin.addNews')}
+                 </h2>
+                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Menaxhoni lajmet dhe raportet</p>
+               </div>
+               <button onClick={() => setShowNewsModal(false)} className="p-2 hover:bg-slate-200 rounded-full transition-all group">
+                 <X className="h-6 w-6 text-slate-400 group-hover:text-brand-dark transition-colors" />
+               </button>
              </div>
-             <div className="p-10 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
+             <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{t('admin.title')}</label>
-                  <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none" value={newsForm.title} onChange={e => setNewsForm({...newsForm, title: e.target.value})} />
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">{t('admin.title')}</label>
+                  <input type="text" className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-lime/20 focus:border-brand-lime transition-all" value={newsForm.title} onChange={e => setNewsForm(prev => ({...prev, title: e.target.value}))} />
                 </div>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{t('admin.category')}</label>
-                    <select className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none" value={newsForm.category} onChange={e => setNewsForm({...newsForm, category: e.target.value})}>
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">{t('admin.category')}</label>
+                    <select className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-lime/20 focus:border-brand-lime transition-all appearance-none" value={newsForm.category} onChange={e => setNewsForm(prev => ({...prev, category: e.target.value}))}>
                       <option value="Latest News">{t('news.title.latest')}</option>
                       <option value="Media">{t('news.title.media')}</option>
                       <option value="Reports">{t('news.title.reports')}</option>
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{t('admin.date')}</label>
-                    <input type="date" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold" value={newsForm.datePosted} onChange={e => setNewsForm({...newsForm, datePosted: e.target.value})} />
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">{t('admin.date')}</label>
+                    <input type="date" className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-lime/20 focus:border-brand-lime transition-all" value={newsForm.datePosted} onChange={e => setNewsForm(prev => ({...prev, datePosted: e.target.value}))} />
                   </div>
                 </div>
-                <div className="space-y-4">
-                   <div className="flex justify-between items-center">
+                <div className="space-y-3">
+                   <div className="flex justify-between items-center px-1">
                      <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Përmbajtja</label>
-                     <button onClick={() => generateWithAi('news')} disabled={isAiGenerating} className="text-[9px] font-black text-brand-orange uppercase flex items-center">
-                       {isAiGenerating ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Sparkles className="h-3 w-3 mr-1" />}
+                     <button onClick={() => generateWithAi('news')} disabled={isAiGenerating} className="text-[9px] font-black text-brand-orange uppercase flex items-center hover:scale-105 transition-transform">
+                       {isAiGenerating ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" /> : <Sparkles className="h-3.5 w-3.5 mr-1.5" />}
                        {t('admin.generateAi')}
                      </button>
                    </div>
-                   <textarea rows={6} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium outline-none resize-none" value={newsForm.content} onChange={e => setNewsForm({...newsForm, content: e.target.value})} />
+                   <textarea rows={4} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium text-sm outline-none resize-none focus:ring-2 focus:ring-brand-lime/20 focus:border-brand-lime transition-all" value={newsForm.content} onChange={e => setNewsForm(prev => ({...prev, content: e.target.value}))} />
                 </div>
-                <div className="space-y-4 p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                <div className="space-y-4 p-6 bg-slate-50/50 rounded-3xl border border-slate-100 shadow-inner">
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">
                     {newsForm.category === 'Reports' ? 'Ngarko Dokument (PDF/DOC)' : 'Linku i Burimit / URL'}
                   </label>
                   {newsForm.category === 'Reports' ? (
-                    <div className="space-y-4">
-                      <div onClick={() => reportFileRef.current?.click()} className="cursor-pointer py-8 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center bg-white hover:bg-slate-100 transition-all">
+                    <div className="space-y-3">
+                      <div onClick={() => reportFileRef.current?.click()} className="cursor-pointer py-8 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center bg-white hover:bg-slate-100 transition-all relative group shadow-sm">
                         {newsForm.fileName ? (
                           <div className="flex items-center text-brand-cyan">
-                            <File className="h-6 w-6 mr-2" />
-                            <span className="text-xs font-bold">{newsForm.fileName}</span>
+                            <File className="h-6 w-6 mr-3" />
+                            <span className="text-sm font-bold">{newsForm.fileName}</span>
+                            <button onClick={(e) => { e.stopPropagation(); setNewsForm(prev => ({...prev, fileName: '', fileUrl: ''})); }} className="ml-3 p-1.5 bg-red-500 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-all"><X className="h-4 w-4" /></button>
                           </div>
                         ) : (
                           <>
-                            <Upload className="h-6 w-6 text-slate-300 mb-2" />
-                            <span className="text-[10px] font-black uppercase text-slate-400">{t('ui.upload')}</span>
+                            <Upload className="h-6 w-6 text-slate-300 mb-2 group-hover:scale-110 transition-transform" />
+                            <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{t('ui.upload')}</span>
                           </>
                         )}
                       </div>
                       <input type="file" hidden ref={reportFileRef} accept=".pdf,.doc,.docx" onChange={handleDocUpload} />
                     </div>
                   ) : (
-                    <input type="text" placeholder="https://..." className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl font-bold outline-none" value={newsForm.fileUrl} onChange={e => setNewsForm({...newsForm, fileUrl: e.target.value})} />
+                    <div className="relative group">
+                      <Globe className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-brand-lime transition-colors" />
+                      <input type="text" placeholder="https://..." className="w-full pl-12 pr-6 py-3.5 bg-white border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-lime/20 focus:border-brand-lime transition-all" value={newsForm.fileUrl} onChange={e => setNewsForm(prev => ({...prev, fileUrl: e.target.value}))} />
+                    </div>
                   )}
                 </div>
                 <div className="flex gap-4 pt-4">
-                   <button onClick={() => setShowNewsModal(false)} className="flex-1 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black uppercase text-xs tracking-widest">{t('admin.cancel')}</button>
-                   <button onClick={handleSaveNews} className="flex-[2] py-4 bg-brand-lime text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl flex items-center justify-center">
-                     <Save className="h-4 w-4 mr-2" /> Ruaj Publikimin
+                   <button onClick={() => setShowNewsModal(false)} className="flex-1 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black uppercase text-[11px] tracking-widest hover:bg-slate-200 transition-all">{t('admin.cancel')}</button>
+                   <button onClick={handleSaveNews} className="flex-[2] py-4 bg-brand-lime text-white rounded-2xl font-black uppercase text-[11px] tracking-[0.2em] shadow-xl shadow-brand-lime/20 flex items-center justify-center hover:scale-[1.02] active:scale-[0.98] transition-all">
+                     <Save className="h-4 w-4 mr-2" /> {t('admin.save')}
                    </button>
                 </div>
              </div>
@@ -521,70 +626,92 @@ const AdminDashboard: React.FC = () => {
 
       {/* PROJECT MODAL */}
       {showProjectModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-brand-dark/80 backdrop-blur-md">
-          <div className="bg-white w-full max-w-4xl rounded-[3.5rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
-             <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-               <h2 className="text-2xl font-black text-brand-dark uppercase tracking-tight">{editingProject ? t('admin.editProject') : t('admin.addProject')}</h2>
-               <button onClick={() => setShowProjectModal(false)} className="p-2 hover:bg-slate-200 rounded-full transition-all"><X className="h-8 w-8 text-slate-400" /></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/80 backdrop-blur-md">
+          <div className="bg-white w-full max-w-3xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
+             <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+               <div>
+                 <h2 className="text-xl font-black text-brand-dark uppercase tracking-tight">{editingProject ? t('admin.editProject') : t('admin.addProject')}</h2>
+                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Menaxhoni projektet e organizatës</p>
+               </div>
+               <button onClick={() => setShowProjectModal(false)} className="p-2 hover:bg-slate-200 rounded-full transition-all group">
+                 <X className="h-6 w-6 text-slate-400 group-hover:text-brand-dark transition-colors" />
+               </button>
              </div>
-             <div className="p-10 space-y-8 max-h-[75vh] overflow-y-auto custom-scrollbar">
-                <div className="grid md:grid-cols-2 gap-8">
+             <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-slate-400">{t('admin.title')}</label>
-                    <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none" value={projectForm.title} onChange={e => setProjectForm({...projectForm, title: e.target.value})} />
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">{t('admin.title')}</label>
+                    <input type="text" className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink transition-all" value={projectForm.title} onChange={e => setProjectForm(prev => ({...prev, title: e.target.value}))} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-slate-400">{t('admin.status')}</label>
-                    <select className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none" value={projectForm.status} onChange={e => setProjectForm({...projectForm, status: e.target.value as ProjectStatus})}>
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">{t('admin.status')}</label>
+                    <select className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink transition-all appearance-none" value={projectForm.status} onChange={e => setProjectForm(prev => ({...prev, status: e.target.value as ProjectStatus}))}>
                       <option value={ProjectStatus.Active}>{t('projects.filter.active')}</option>
                       <option value={ProjectStatus.Completed}>{t('projects.filter.completed')}</option>
                       <option value={ProjectStatus.Upcoming}>Upcoming</option>
                     </select>
                   </div>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <label className="text-[10px] font-black uppercase text-slate-400">Përmbledhja (AI)</label>
-                    <button onClick={() => generateWithAi('project')} disabled={isAiGenerating} className="text-[9px] font-black text-brand-orange uppercase flex items-center">
-                       {isAiGenerating ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Sparkles className="h-3 w-3 mr-1" />} Gjenero
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center px-1">
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Përmbledhja (AI)</label>
+                    <button onClick={() => generateWithAi('project')} disabled={isAiGenerating} className="text-[9px] font-black text-brand-orange uppercase flex items-center hover:scale-105 transition-transform">
+                       {isAiGenerating ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" /> : <Sparkles className="h-3.5 w-3.5 mr-1.5" />} Gjenero me AI
                     </button>
                   </div>
-                  <textarea rows={3} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium outline-none resize-none" value={projectForm.description} onChange={e => setProjectForm({...projectForm, description: e.target.value})} />
+                  <textarea rows={2} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium text-sm outline-none resize-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink transition-all" value={projectForm.description} onChange={e => setProjectForm(prev => ({...prev, description: e.target.value}))} />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400">{t('projects.impl')}</label>
-                  <textarea rows={5} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium outline-none resize-none" value={projectForm.longDescription} onChange={e => setProjectForm({...projectForm, longDescription: e.target.value})} />
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">{t('projects.impl')}</label>
+                  <textarea rows={4} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium text-sm outline-none resize-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink transition-all" value={projectForm.longDescription} onChange={e => setProjectForm(prev => ({...prev, longDescription: e.target.value}))} />
                 </div>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <label className="text-[10px] font-black uppercase text-slate-400">{t('admin.mainImage')}</label>
-                    <div onClick={() => projectImageRef.current?.click()} className="cursor-pointer aspect-video border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden bg-slate-50 hover:bg-slate-100 transition-all">
-                      {projectForm.image ? <img src={projectForm.image} className="w-full h-full object-cover" /> : <Camera className="text-slate-300 h-10 w-10" />}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">{t('admin.mainImage')}</label>
+                    <div onClick={() => projectImageRef.current?.click()} className="cursor-pointer aspect-video border-2 border-dashed border-slate-200 rounded-[2.5rem] flex flex-col items-center justify-center overflow-hidden bg-slate-50 hover:bg-slate-100 transition-all relative group shadow-inner">
+                      {projectForm.image ? (
+                        <>
+                          <img src={projectForm.image} className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-brand-dark/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button onClick={(e) => { e.stopPropagation(); setProjectForm(prev => ({...prev, image: ''})); }} className="p-3 bg-red-500 text-white rounded-2xl transform scale-90 group-hover:scale-100 transition-all"><Trash2 className="h-5 w-5" /></button>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-center">
+                          <Camera className="text-slate-300 h-10 w-10 mx-auto mb-2" />
+                          <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Foto Kryesore</span>
+                        </div>
+                      )}
                     </div>
                     <input type="file" hidden ref={projectImageRef} accept="image/*" onChange={async e => {
                       const file = e.target.files?.[0];
-                      if (file) setProjectForm({...projectForm, image: await handleFileRead(file)});
+                      if (file) {
+                        const base64 = await handleFileRead(file);
+                        setProjectForm(prev => ({...prev, image: base64}));
+                      }
                     }} />
                   </div>
-                  <div className="space-y-4">
-                    <label className="text-[10px] font-black uppercase text-slate-400">{t('admin.gallery')}</label>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">{t('admin.gallery')}</label>
                     <div className="flex flex-col space-y-4">
-                      <button onClick={() => projectGalleryRef.current?.click()} className="py-4 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center bg-slate-50"><Plus className="h-4 w-4 mr-2" /> Shto Foto</button>
+                      <button onClick={() => projectGalleryRef.current?.click()} className="py-4 border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center bg-slate-50 text-[10px] font-black uppercase text-slate-400 hover:bg-slate-100 transition-all shadow-inner"><Plus className="h-4 w-4 mr-2" /> Shto Foto në Galeri</button>
                       <input type="file" hidden ref={projectGalleryRef} multiple accept="image/*" onChange={handleGalleryUpload} />
-                      <div className="grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-4 gap-3">
                         {projectForm.gallery.map((img, idx) => (
-                          <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-slate-100">
+                          <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-slate-100 group shadow-sm">
                             <img src={img} className="w-full h-full object-cover" />
-                            <button onClick={() => setProjectForm({...projectForm, gallery: projectForm.gallery.filter((_, i) => i !== idx)})} className="absolute inset-0 bg-red-500/50 opacity-0 hover:opacity-100 flex items-center justify-center text-white"><Trash2 className="h-4 w-4" /></button>
+                            <button onClick={() => setProjectForm(prev => ({...prev, gallery: prev.gallery.filter((_, i) => i !== idx)}))} className="absolute inset-0 bg-red-500/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity"><X className="h-5 w-5" /></button>
                           </div>
                         ))}
                       </div>
                     </div>
                   </div>
                 </div>
-                <button onClick={handleSaveProject} className="w-full py-5 bg-brand-pink text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl flex items-center justify-center">
-                  <Save className="h-4 w-4 mr-2" /> {t('admin.save')}
-                </button>
+                <div className="pt-4">
+                  <button onClick={handleSaveProject} className="w-full py-4.5 bg-brand-pink text-white rounded-[1.5rem] font-black uppercase text-[11px] tracking-[0.2em] shadow-xl shadow-brand-pink/20 flex items-center justify-center hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    <Save className="h-4 w-4 mr-2" /> {t('admin.save')}
+                  </button>
+                </div>
              </div>
           </div>
         </div>
@@ -592,26 +719,31 @@ const AdminDashboard: React.FC = () => {
 
       {/* STAFF MODAL */}
       {showStaffModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-brand-dark/80 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/80 backdrop-blur-md">
           <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
-             <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-               <h2 className="text-2xl font-black text-brand-dark uppercase tracking-tight">{editingStaff ? t('admin.editStaff') : t('admin.addStaff')}</h2>
-               <button onClick={() => setShowStaffModal(false)} className="p-2 hover:bg-slate-200 rounded-full transition-all"><X className="h-8 w-8 text-slate-300" /></button>
+             <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+               <div>
+                 <h2 className="text-xl font-black text-brand-dark uppercase tracking-tight">{editingStaff ? t('admin.editStaff') : t('admin.addStaff')}</h2>
+                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Plotësoni të dhënat e anëtarit</p>
+               </div>
+               <button onClick={() => setShowStaffModal(false)} className="p-2 hover:bg-slate-200 rounded-full transition-all group">
+                 <X className="h-6 w-6 text-slate-400 group-hover:text-brand-dark transition-colors" />
+               </button>
              </div>
-             <div className="p-10 space-y-6">
-                <div className="grid grid-cols-2 gap-6">
+             <div className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-slate-400">Emri i Plotë</label>
-                    <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold" value={staffForm.name} onChange={e => setStaffForm({...staffForm, name: e.target.value})} />
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Emri i Plotë</label>
+                    <input type="text" className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan transition-all" value={staffForm.name} onChange={e => setStaffForm(prev => ({...prev, name: e.target.value}))} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-slate-400">Roli / Pozita</label>
-                    <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold" value={staffForm.role} onChange={e => setStaffForm({...staffForm, role: e.target.value})} />
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Roli / Pozita</label>
+                    <input type="text" className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan transition-all" value={staffForm.role} onChange={e => setStaffForm(prev => ({...prev, role: e.target.value}))} />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Kategoria</label>
-                  <select className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none" value={staffForm.category} onChange={e => setStaffForm({...staffForm, category: e.target.value})}>
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Kategoria</label>
+                  <select className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan transition-all appearance-none" value={staffForm.category} onChange={e => setStaffForm(prev => ({...prev, category: e.target.value}))}>
                     <option value="Executive Director">Executive Director</option>
                     <option value="Current Staff">Current Staff</option>
                     <option value="Members Assembly">Members Assembly</option>
@@ -619,19 +751,65 @@ const AdminDashboard: React.FC = () => {
                     <option value="Volunteers">Volunteers</option>
                   </select>
                 </div>
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Foto e Profilat</label>
-                  <div onClick={() => staffImageRef.current?.click()} className="cursor-pointer h-40 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden bg-slate-50 hover:bg-slate-100 transition-all">
-                    {staffForm.image ? <img src={staffForm.image} className="w-full h-full object-cover" /> : <Camera className="text-slate-300 h-8 w-8" />}
-                  </div>
-                  <input type="file" hidden ref={staffImageRef} accept="image/*" onChange={async e => {
-                    const file = e.target.files?.[0];
-                    if (file) setStaffForm({...staffForm, image: await handleFileRead(file)});
-                  }} />
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Bio / Përshkrimi</label>
+                  <textarea rows={3} className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-medium text-sm outline-none resize-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan transition-all" value={staffForm.bio} onChange={e => setStaffForm(prev => ({...prev, bio: e.target.value}))} />
                 </div>
-                <button onClick={handleSaveStaff} className="w-full py-5 bg-brand-cyan text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl flex items-center justify-center">
-                  <Save className="h-4 w-4 mr-2" /> {t('admin.save')}
-                </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Foto e Profilat</label>
+                    <div onClick={() => staffImageRef.current?.click()} className="cursor-pointer h-40 border-2 border-dashed border-slate-200 rounded-[2.5rem] flex flex-col items-center justify-center overflow-hidden bg-slate-50 hover:bg-slate-100 transition-all relative group shadow-inner">
+                      {staffForm.image ? (
+                        <>
+                          <img src={staffForm.image} className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-brand-dark/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button onClick={(e) => { e.stopPropagation(); setStaffForm(prev => ({...prev, image: ''})); }} className="p-3 bg-red-500 text-white rounded-2xl transform scale-90 group-hover:scale-100 transition-all"><Trash2 className="h-5 w-5" /></button>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-center">
+                          <Camera className="text-slate-300 h-10 w-10 mx-auto mb-2" />
+                          <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Kliko për të ngarkuar</span>
+                        </div>
+                      )}
+                    </div>
+                    <input type="file" hidden ref={staffImageRef} accept="image/*" onChange={async e => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const base64 = await handleFileRead(file);
+                        setStaffForm(prev => ({...prev, image: base64}));
+                      }
+                    }} />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Rrjetet Sociale</label>
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-3 group">
+                        <div className="w-10 h-10 bg-brand-blue/10 rounded-xl flex items-center justify-center text-brand-blue group-focus-within:bg-brand-blue group-focus-within:text-white transition-all">
+                          <Facebook className="h-4 w-4" />
+                        </div>
+                        <input type="text" placeholder="Facebook URL" className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-brand-blue/20 transition-all" value={staffForm.socials.facebook} onChange={e => setStaffForm(prev => ({...prev, socials: {...prev.socials, facebook: e.target.value}}))} />
+                      </div>
+                      <div className="flex items-center space-x-3 group">
+                        <div className="w-10 h-10 bg-brand-pink/10 rounded-xl flex items-center justify-center text-brand-pink group-focus-within:bg-brand-pink group-focus-within:text-white transition-all">
+                          <Instagram className="h-4 w-4" />
+                        </div>
+                        <input type="text" placeholder="Instagram URL" className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-brand-pink/20 transition-all" value={staffForm.socials.instagram} onChange={e => setStaffForm(prev => ({...prev, socials: {...prev.socials, instagram: e.target.value}}))} />
+                      </div>
+                      <div className="flex items-center space-x-3 group">
+                        <div className="w-10 h-10 bg-brand-cyan/10 rounded-xl flex items-center justify-center text-brand-cyan group-focus-within:bg-brand-cyan group-focus-within:text-white transition-all">
+                          <Linkedin className="h-4 w-4" />
+                        </div>
+                        <input type="text" placeholder="LinkedIn URL" className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[11px] font-bold outline-none focus:ring-2 focus:ring-brand-cyan/20 transition-all" value={staffForm.socials.linkedin} onChange={e => setStaffForm(prev => ({...prev, socials: {...prev.socials, linkedin: e.target.value}}))} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="pt-4">
+                  <button onClick={handleSaveStaff} className="w-full py-4.5 bg-brand-cyan text-white rounded-[1.5rem] font-black uppercase text-[11px] tracking-[0.2em] shadow-xl shadow-brand-cyan/20 flex items-center justify-center hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    <Save className="h-4 w-4 mr-2" /> {t('admin.save')}
+                  </button>
+                </div>
              </div>
           </div>
         </div>
@@ -639,26 +817,77 @@ const AdminDashboard: React.FC = () => {
 
       {/* APPLICATION DETAILS MODAL */}
       {showAppDetails && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-brand-dark/60 backdrop-blur-md">
-           <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in">
-              <div className="p-10 border-b border-slate-100 flex items-center justify-between">
-                <div>
-                   <span className="text-[10px] font-black text-brand-pink uppercase tracking-widest mb-1 block">Aplikimi</span>
-                   <h2 className="text-2xl font-black text-brand-dark uppercase tracking-tight">{showAppDetails.userName}</h2>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-brand-dark/90 backdrop-blur-xl">
+          <div className="bg-white w-full max-w-2xl rounded-[3.5rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
+            <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <div>
+                <h2 className="text-2xl font-black text-brand-dark uppercase tracking-tight">{t('admin.applicationDetails')}</h2>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Shqyrtimi i aplikimit për vullnetarizëm</p>
+              </div>
+              <button onClick={() => setShowAppDetails(null)} className="p-3 hover:bg-slate-200 rounded-2xl transition-all group">
+                <X className="h-7 w-7 text-slate-400 group-hover:text-brand-dark transition-colors" />
+              </button>
+            </div>
+            <div className="p-10 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-inner">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Informacione Personale</p>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">Emri i Plotë</p>
+                        <p className="font-black text-brand-dark text-lg">{showAppDetails.userName}</p>
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">Email</p>
+                        <p className="font-black text-brand-dark">{showAppDetails.userEmail}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-inner">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Statusi Aktual</p>
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-3 h-3 rounded-full ${showAppDetails.status === ApplicationStatus.APPROVED ? 'bg-brand-lime animate-pulse' : 'bg-slate-300'}`}></div>
+                      <span className="font-black text-sm uppercase tracking-widest text-brand-dark">{showAppDetails.status}</span>
+                    </div>
+                  </div>
                 </div>
-                <button onClick={() => setShowAppDetails(null)}><X className="h-8 w-8 text-slate-300" /></button>
+
+                <div className="space-y-6">
+                  <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-inner">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Mesazhi / Motivimi</p>
+                    <p className="text-sm text-slate-600 leading-relaxed font-medium italic">
+                      "{showAppDetails.motivation || "Nuk ka mesazh të bashkangjitur."}"
+                    </p>
+                  </div>
+                  
+                  <div className="bg-brand-cyan/5 p-6 rounded-3xl border border-brand-cyan/10">
+                    <p className="text-[10px] font-black text-brand-cyan uppercase tracking-[0.2em] mb-3">Projekti i Synuar</p>
+                    <div className="flex items-center space-x-3">
+                      <FolderKanban className="h-5 w-5 text-brand-cyan" />
+                      <p className="font-black text-brand-dark">{db.projects.find(p => p.id === showAppDetails.projectId)?.title || "Projekt i panjohur"}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="p-10 space-y-8">
-                 <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Motivimi</h4>
-                    <p className="text-sm text-slate-600 italic">"{showAppDetails.motivation}"</p>
-                 </div>
-                 <div className="flex gap-4 pt-6">
-                    <button onClick={() => handleAppAction(showAppDetails.id, ApplicationStatus.APPROVED)} className="flex-1 py-4 bg-brand-lime text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-brand-lime/20">Prano</button>
-                    <button onClick={() => handleAppAction(showAppDetails.id, ApplicationStatus.REJECTED)} className="flex-1 py-4 bg-red-500 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-red-500/20">Refuzo</button>
-                 </div>
+
+              <div className="flex gap-4 pt-6">
+                <button 
+                  onClick={() => handleAppAction(showAppDetails.id, ApplicationStatus.REJECTED)}
+                  className="flex-1 py-4.5 bg-slate-100 text-slate-500 rounded-[1.5rem] font-black uppercase text-[11px] tracking-widest hover:bg-red-50 hover:text-red-500 transition-all flex items-center justify-center"
+                >
+                  <XCircle className="h-5 w-5 mr-2" /> {t('admin.reject')}
+                </button>
+                <button 
+                  onClick={() => handleAppAction(showAppDetails.id, ApplicationStatus.APPROVED)}
+                  className="flex-[2] py-4.5 bg-brand-lime text-white rounded-[1.5rem] font-black uppercase text-[11px] tracking-[0.2em] shadow-xl shadow-brand-lime/20 flex items-center justify-center hover:scale-[1.02] active:scale-[0.98] transition-all"
+                >
+                  <CheckCircle className="h-5 w-5 mr-2" /> {t('admin.approve')}
+                </button>
               </div>
-           </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

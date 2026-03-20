@@ -41,7 +41,7 @@ const News: React.FC = () => {
     if (item.fileUrl.startsWith('data:')) {
       const link = document.createElement('a');
       link.href = item.fileUrl;
-      link.download = (item as any).fileName || 'vrsh-publikim.pdf';
+      link.download = item.fileName || 'vrsh-publikim.pdf';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -66,7 +66,7 @@ const News: React.FC = () => {
   };
 
   return (
-    <div className="py-24 px-6 bg-slate-50 min-h-screen">
+    <div className="pt-32 pb-24 px-6 bg-slate-50 min-h-screen">
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div className="space-y-2">
