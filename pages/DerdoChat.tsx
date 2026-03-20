@@ -11,7 +11,8 @@ interface Message {
 }
 
 const DerdoChat: React.FC = () => {
-  const initialMessage = 'Përshëndetje! Unë jam Derdo, asistenti yt inteligjent nga Vizioni Rinor i Shalës. Si mund të të ndihmoj sot?';
+  const { t } = useLanguage();
+  const initialMessage = t('derdo.greeting');
 
   const [messages, setMessages] = useState<Message[]>([
     { role: 'model', text: initialMessage }
@@ -36,7 +37,7 @@ const DerdoChat: React.FC = () => {
 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const systemPrompt = "Ju jeni Derdo, një asistent inteligjent për organizatën VRSH (Vizioni Rinor i Shalës) në fshatin Shalë, Lipjan. Përgjigjuni gjithmonë në gjuhën shqipe, jini miqësor dhe pozitiv.";
+      const systemPrompt = `Ju jeni ${t('nav.derdo')}, një asistent inteligjent për organizatën VRSH (Vizioni Rinor i Shalës) në fshatin Shalë, Lipjan. Përgjigjuni gjithmonë në gjuhën shqipe, jini miqësor dhe pozitiv.`;
 
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
@@ -77,7 +78,7 @@ const DerdoChat: React.FC = () => {
               <Bot className="h-7 w-7 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-black uppercase tracking-tight">Derdo AI</h2>
+              <h2 className="text-xl font-black uppercase tracking-tight">{t('nav.derdo')}</h2>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Asistenti i VRSH</p>
             </div>
           </div>
@@ -106,7 +107,7 @@ const DerdoChat: React.FC = () => {
           ))}
           {isLoading && (
             <div className="flex justify-start animate-pulse">
-              <div className="flex items-center space-x-2 bg-white p-4 rounded-full border border-slate-100 shadow-sm text-xs font-bold text-slate-400">Derdo po shkruan...</div>
+              <div className="flex items-center space-x-2 bg-white p-4 rounded-full border border-slate-100 shadow-sm text-xs font-bold text-slate-400">{t('nav.derdo')} po shkruan...</div>
             </div>
           )}
         </div>
@@ -116,7 +117,7 @@ const DerdoChat: React.FC = () => {
           <div className="relative flex items-center">
             <input
               type="text"
-              placeholder="Pyet Derdon..."
+              placeholder={`${t('ui.ask')} ${t('nav.derdo')}...`}
               className="w-full pl-8 pr-20 py-5 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-brand-pink font-bold text-sm transition-all"
               value={input}
               onChange={(e) => setInput(e.target.value)}

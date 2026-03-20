@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
           <ul className="space-y-4 text-[10px] font-black uppercase tracking-widest">
             <li><a href="#/join" className="hover:text-brand-lime transition-all flex items-center group"><ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-all" /> {t('nav.join')}</a></li>
             <li><a href="#/partner" className="hover:text-brand-cyan transition-all flex items-center group"><ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-all" /> Partneritete</a></li>
-            <li><a href="#/derdo" className="hover:text-brand-orange transition-all flex items-center group"><ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-all" /> Derdo AI Chat</a></li>
+            <li><a href="#/derdo" className="hover:text-brand-orange transition-all flex items-center group"><ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-all" /> {t('nav.derdo')} Chat</a></li>
           </ul>
         </div>
 

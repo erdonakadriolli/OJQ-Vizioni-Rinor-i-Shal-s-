@@ -147,6 +147,31 @@ const About: React.FC = () => {
         </div>
       </section>
 
+      {/* Members Assembly Section */}
+      <section className="max-w-6xl mx-auto px-4">
+        <div className="flex flex-col items-center mb-16">
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-brand-cyan/5 text-brand-cyan rounded-full text-[9px] font-black uppercase tracking-[0.4em] mb-4">
+            <Users className="h-3 w-3" />
+            <span>Struktura</span>
+          </div>
+          <h2 className="text-3xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter text-center mb-8">{t('about.structure.assembly')}</h2>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+          {getStaffByCategory('Members Assembly').map(m => (
+            <div key={m.id} onClick={() => setSelectedMember(m)} className="group cursor-pointer flex flex-col items-center text-center">
+              <div className="relative mb-4">
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-brand-cyan/20 group-hover:border-brand-cyan transition-all duration-500 overflow-hidden bg-slate-100">
+                  <img src={m.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                </div>
+              </div>
+              <h3 className="font-black text-brand-dark uppercase text-[10px] mb-1 tracking-tight">{m.name}</h3>
+              <p className="text-[8px] font-black text-brand-cyan uppercase tracking-[0.2em]">{m.role}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Board of Directors */}
       <section>
         <div className="flex flex-col items-center mb-24">
@@ -249,7 +274,7 @@ const About: React.FC = () => {
             >
               <div className="flex items-center space-x-2">
                 <Target className="h-4 w-4" />
-                <span>Misioni</span>
+                <span>{t('nav.mission')}</span>
               </div>
             </button>
             <button 

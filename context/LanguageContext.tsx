@@ -10,13 +10,13 @@ const translations: Record<string, string> = {
   // Navigimi
   'nav.home': 'Kryefaqja',
   'nav.about': 'Rreth Nesh',
-  'nav.mission': 'Misioni',
+  'nav.mission': 'Vizioni dhe Misioni',
   'nav.staff': 'Stafi',
   'nav.projects': 'Projektet',
   'nav.news': 'Lajmet',
   'nav.join': 'Vullnetarizimi',
   'nav.login': 'Kyçu',
-  'nav.derdo': 'Derdo AI',
+  'nav.derdo': 'Vizioni AI',
 
   // Hero Section
   'hero.subtitle': 'Vizioni Rinor i Shalës',
@@ -115,15 +115,15 @@ const translations: Record<string, string> = {
 
   // Derdo AI
   'derdo.promo.tag': 'Inovacioni Digjital',
-  'derdo.greeting': 'Bisedo me Derdon',
-  'derdo.desc': 'Derdo është asistenti ynë inteligjent që ju ndihmon me informacione rreth organizatës, projekteve dhe vullnetarizmit.',
+  'derdo.greeting': 'Bisedo me Vizioni AI',
+  'derdo.desc': 'Vizioni AI është asistenti ynë inteligjent që ju ndihmon me informacione rreth organizatës, projekteve dhe vullnetarizmit.',
   'derdo.chat': 'Fillo bisedën',
 
   // Lajmet
   'news.title.all': 'Të gjitha lajmet',
   'news.title.latest': 'Lajmet',
   'news.title.media': 'Media',
-  'news.title.reports': 'Raportet',
+  'news.title.reports': 'Raporte dhe Publikime',
   'news.empty': 'Nuk u gjet asnjë lajm në këtë kategori.',
   'news.download': 'Shkarko dokumentin',
   'news.source': 'Burimi i lajmit',
@@ -132,7 +132,7 @@ const translations: Record<string, string> = {
   'admin.panel': 'Paneli i Adminit',
   'admin.overview': 'Përmbledhja',
   'admin.projects': 'Projektet',
-  'admin.news': 'Lajmet & Raportet',
+  'admin.news': 'Lajmet & Publikimet',
   'admin.staff': 'Stafi & Ekipi',
   'admin.applications': 'Aplikimet',
   'admin.management': 'Menaxhimi i Organizatës',
@@ -161,7 +161,9 @@ const translations: Record<string, string> = {
   'admin.partnerName': 'Emri i Partnerit',
   'admin.partnerLogo': 'Logo e Partnerit',
   'admin.partnerWebsite': 'Uebfaqja (Opsionale)',
-  'home.partners.title': 'Partnerët & Donatorët tanë'
+  'home.partners.title': 'Partnerët & Donatorët tanë',
+  'ui.ask': 'Pyet',
+  'ui.upload': 'Ngarko'
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
