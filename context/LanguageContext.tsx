@@ -145,6 +145,7 @@ const translations: Record<string, string> = {
   'admin.title': 'Titulli',
   'admin.status': 'Statusi',
   'admin.actions': 'Veprimet',
+  'admin.delete': 'Fshije',
   'admin.deleteConfirm': 'A jeni të sigurt që dëshironi ta fshini këtë zë?',
   'admin.save': 'Ruaj Ndryshimet',
   'admin.cancel': 'Anulo',
@@ -153,7 +154,14 @@ const translations: Record<string, string> = {
   'admin.gallery': 'Galeria e Fotos',
   'admin.category': 'Kategoria',
   'admin.date': 'Data',
-  'admin.applicant': 'Aplikuesi'
+  'admin.applicant': 'Aplikuesi',
+  'admin.partners': 'Partnerët & Donatorët',
+  'admin.addPartner': 'Shto Partner',
+  'admin.editPartner': 'Edito Partnerin',
+  'admin.partnerName': 'Emri i Partnerit',
+  'admin.partnerLogo': 'Logo e Partnerit',
+  'admin.partnerWebsite': 'Uebfaqja (Opsionale)',
+  'home.partners.title': 'Partnerët & Donatorët tanë'
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

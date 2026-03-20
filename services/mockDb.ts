@@ -1,5 +1,5 @@
 
-import { Project, Event, User, VolunteerApplication, NewsItem, ProjectStatus, UserRole, ApplicationStatus, StaffMember } from '../types';
+import { Project, Event, User, VolunteerApplication, NewsItem, ProjectStatus, UserRole, ApplicationStatus, StaffMember, Partner } from '../types';
 
 const STORAGE_KEY = 'ngo_app_data_v1';
 
@@ -10,6 +10,7 @@ interface DbSchema {
   applications: VolunteerApplication[];
   news: NewsItem[];
   staff: StaffMember[];
+  partners: Partner[];
 }
 
 const initialData: DbSchema = {
@@ -99,6 +100,10 @@ const initialData: DbSchema = {
     { id: 'v9', name: 'Anisa Bajraktari', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=400', socials: {} },
     { id: 'v10', name: 'Blinera Gashi', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?auto=format&fit=crop&q=80&w=400', socials: {} },
     { id: 'v11', name: 'Elton Shala', role: 'Volunteer', category: 'Volunteers', bio: '', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400', socials: {} }
+  ],
+  partners: [
+    { id: 'p1', name: 'Komuna e Lipjanit', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Stema_e_Komun%C3%ABs_s%C3%AB_Lipjanit.svg/1200px-Stema_e_Komun%C3%ABs_s%C3%AB_Lipjanit.svg.png' },
+    { id: 'p2', name: 'Ministria e Kulturës, Rinisë dhe Sportit', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Emblem_of_the_Republic_of_Kosovo.svg/1200px-Emblem_of_the_Republic_of_Kosovo.svg.png' }
   ]
 };
 

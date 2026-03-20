@@ -1,13 +1,21 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  ArrowRight, UserPlus, Bot, MessageSquare, Sparkles, Star, Globe, Shield 
+  ArrowRight, UserPlus, Bot, MessageSquare, Sparkles, Star, Globe, Shield, Handshake 
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { getDb } from '../services/mockDb';
+import { Partner } from '../types';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
+  const [partners, setPartners] = useState<Partner[]>([]);
+
+  useEffect(() => {
+    const db = getDb();
+    setPartners(db.partners || []);
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -91,6 +99,51 @@ const Home: React.FC = () => {
           ))}
         </div>
       </section>
+
+      {/* Partners & Donors Section */}
+      {partners.length > 0 && (
+        <section className="py-24 px-6 overflow-hidden bg-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col items-center text-center mb-16">
+              <div className="inline-flex items-center space-x-2 px-4 py-2 bg-brand-orange/10 text-brand-orange rounded-full text-[9px] font-black uppercase tracking-[0.3em] mb-4">
+                <Handshake className="h-3 w-3" />
+                <span>Bashkëpunimi</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter">
+                {t('home.partners.title')}
+              </h2>
+            </div>
+            
+            <div className="relative">
+              <div className="flex flex-wrap justify-center items-center gap-12 md:gap-20">
+                {partners.map((partner) => (
+                  <a 
+                    key={partner.id} 
+                    href={partner.website || '#'} 
+                    target={partner.website ? "_blank" : "_self"}
+                    rel="noopener noreferrer"
+                    className="group relative"
+                  >
+                    <div className="w-32 h-32 md:w-40 md:h-40 grayscale hover:grayscale-0 opacity-40 hover:opacity-100 transition-all duration-500 flex items-center justify-center p-4">
+                      <img 
+                        src={partner.logo} 
+                        alt={partner.name} 
+                        className="max-w-full max-h-full object-contain filter drop-shadow-sm group-hover:drop-shadow-xl transition-all"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-brand-orange bg-brand-orange/5 px-3 py-1 rounded-full">
+                        {partner.name}
+                      </span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Latest News & Media Section */}
       <section className="py-24 px-6 bg-slate-50/50">

@@ -5,15 +5,16 @@ import {
   Plus, Edit2, Trash2, X, Newspaper, Briefcase, Camera, 
   Facebook, Instagram, Linkedin, Calendar, Sparkles, Loader2,
   CheckCircle, XCircle, Eye, FileText, ExternalLink, Image as ImageIcon,
-  Save, Globe, Search as SearchIcon, Filter, Upload, File
+  Save, Globe, Search as SearchIcon, Filter, Upload, File,
+  Home, Info, Target, FolderKanban as ProjectIcon, Handshake
 } from 'lucide-react';
 import { getDb, saveDb } from '../services/mockDb';
-import { Project, ApplicationStatus, ProjectStatus, NewsItem, StaffMember, VolunteerApplication } from '../types';
+import { Project, ApplicationStatus, ProjectStatus, NewsItem, StaffMember, VolunteerApplication, Partner } from '../types';
 import { GoogleGenAI } from "@google/genai";
 import { useLanguage } from '../context/LanguageContext';
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'applications' | 'news' | 'staff'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'applications' | 'news' | 'staff' | 'home' | 'about' | 'mission' | 'partners'>('overview');
   const [db, setDb] = useState(getDb());
   // Fix: language property is now correctly provided by useLanguage()
   const { t, language } = useLanguage();
@@ -21,8 +22,10 @@ const AdminDashboard: React.FC = () => {
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [showNewsModal, setShowNewsModal] = useState(false);
   const [showStaffModal, setShowStaffModal] = useState(false);
+  const [showPartnerModal, setShowPartnerModal] = useState(false);
   const [showAppDetails, setShowAppDetails] = useState<VolunteerApplication | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
   const [isAiGenerating, setIsAiGenerating] = useState(false);
   const [newsSearch, setNewsSearch] = useState('');
@@ -31,15 +34,22 @@ const AdminDashboard: React.FC = () => {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
   const [editingNews, setEditingNews] = useState<NewsItem | null>(null);
+  const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ type: string, id: string } | null>(null);
   
   const staffImageRef = useRef<HTMLInputElement>(null);
   const projectImageRef = useRef<HTMLInputElement>(null);
   const projectGalleryRef = useRef<HTMLInputElement>(null);
   const reportFileRef = useRef<HTMLInputElement>(null);
+  const partnerLogoRef = useRef<HTMLInputElement>(null);
 
   const [staffForm, setStaffForm] = useState({
     name: '', role: '', category: 'Current Staff', bio: '', image: '', 
     socials: { facebook: '', instagram: '', linkedin: '' }
+  });
+
+  const [partnerForm, setPartnerForm] = useState({
+    name: '', logo: '', website: ''
   });
 
   const [projectForm, setProjectForm] = useState<{
@@ -72,6 +82,11 @@ const AdminDashboard: React.FC = () => {
     setTimeout(() => setSuccessMessage(null), 3000);
   };
 
+  const showError = (msg: string) => {
+    setErrorMessage(msg);
+    setTimeout(() => setErrorMessage(null), 4000);
+  };
+
   const handleFileRead = (file: File): Promise<string> => {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -84,11 +99,49 @@ const AdminDashboard: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2.5 * 1024 * 1024) {
-        alert(language === 'AL' ? "Skedari shumë i madh (Max 2.5MB)." : "File too large (Max 2.5MB).");
+        showError(language === 'AL' ? "Skedari shumë i madh (Max 2.5MB)." : "File too large (Max 2.5MB).");
         return;
       }
       const base64 = await handleFileRead(file);
       setNewsForm(prev => ({ ...prev, fileUrl: base64, fileName: file.name }));
+    }
+  };
+
+  const handleOpenPartnerModal = (p?: Partner) => {
+    if (p) {
+      setEditingPartner(p);
+      setPartnerForm({ name: p.name, logo: p.logo, website: p.website || '' });
+    } else {
+      setEditingPartner(null);
+      setPartnerForm({ name: '', logo: '', website: '' });
+    }
+    setShowPartnerModal(true);
+  };
+
+  const handleSavePartner = () => {
+    if (!partnerForm.name) return;
+    const dbData = getDb();
+    const newP: Partner = { 
+      id: editingPartner ? editingPartner.id : 'par_' + Date.now(), 
+      name: partnerForm.name,
+      logo: partnerForm.logo || 'https://via.placeholder.com/150',
+      website: partnerForm.website
+    };
+    const updated = editingPartner ? (dbData.partners || []).map(p => p.id === editingPartner.id ? newP : p) : [...(dbData.partners || []), newP];
+    updateDb({ ...dbData, partners: updated });
+    setShowPartnerModal(false);
+    setEditingPartner(null);
+  };
+
+  const handlePartnerLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 1 * 1024 * 1024) {
+        showError(language === 'AL' ? "Logo shumë e madhe (Max 1MB)." : "Logo too large (Max 1MB).");
+        return;
+      }
+      const base64 = await handleFileRead(file);
+      setPartnerForm(prev => ({ ...prev, logo: base64 }));
     }
   };
 
@@ -105,7 +158,7 @@ const AdminDashboard: React.FC = () => {
 
   const generateWithAi = async (promptType: 'project' | 'news') => {
     const title = promptType === 'project' ? projectForm.title : newsForm.title;
-    if (!title) return alert(t('admin.title') + " required!");
+    if (!title) return showError(t('admin.title') + " required!");
     
     setIsAiGenerating(true);
     try {
@@ -247,8 +300,14 @@ const AdminDashboard: React.FC = () => {
   };
 
   const deleteItem = (type: string, id: string) => {
-    if (!confirm(t('admin.deleteConfirm'))) return;
+    setDeleteConfirm({ type, id });
+  };
+
+  const confirmDelete = () => {
+    if (!deleteConfirm) return;
+    const { type, id } = deleteConfirm;
     updateDb({ ...db, [type]: (db as any)[type].filter((item: any) => item.id !== id) });
+    setDeleteConfirm(null);
   };
 
   const filteredAdminNews = db.news.filter(n => {
@@ -271,12 +330,16 @@ const AdminDashboard: React.FC = () => {
               <span className="text-sm font-black uppercase tracking-widest block leading-none">{t('admin.panel')}</span>
             </div>
           </div>
-          <nav className="space-y-3 flex-grow">
+          <nav className="space-y-3 flex-grow overflow-y-auto custom-scrollbar pr-2">
             {[
               { id: 'overview', icon: LayoutDashboard, label: t('admin.overview'), color: 'text-brand-pink', bg: 'hover:bg-brand-pink/10' },
-              { id: 'projects', icon: FolderKanban, label: t('admin.projects'), color: 'text-brand-cyan', bg: 'hover:bg-brand-cyan/10' },
+              { id: 'home', icon: Home, label: t('nav.home'), color: 'text-brand-blue', bg: 'hover:bg-brand-blue/10' },
+              { id: 'about', icon: Info, label: t('nav.about'), color: 'text-brand-cyan', bg: 'hover:bg-brand-cyan/10' },
+              { id: 'mission', icon: Target, label: t('nav.mission'), color: 'text-brand-lime', bg: 'hover:bg-brand-lime/10' },
+              { id: 'projects', icon: ProjectIcon, label: t('admin.projects'), color: 'text-brand-pink', bg: 'hover:bg-brand-pink/10' },
               { id: 'news', icon: Newspaper, label: t('admin.news'), color: 'text-brand-lime', bg: 'hover:bg-brand-lime/10' },
               { id: 'staff', icon: Briefcase, label: t('admin.staff'), color: 'text-brand-blue', bg: 'hover:bg-brand-blue/10' },
+              { id: 'partners', icon: Handshake, label: t('admin.partners'), color: 'text-brand-orange', bg: 'hover:bg-brand-orange/10' },
               { id: 'applications', icon: Users, label: t('admin.applications'), color: 'text-brand-orange', bg: 'hover:bg-brand-orange/10' },
             ].map(item => (
               <button 
@@ -313,6 +376,12 @@ const AdminDashboard: React.FC = () => {
               <CheckCircle className="h-3.5 w-3.5 mr-2" /> {successMessage}
             </div>
           )}
+
+          {errorMessage && (
+            <div className="fixed top-6 right-6 z-[100] bg-red-500 text-white px-6 py-3 rounded-xl font-black uppercase text-[9px] tracking-widest shadow-2xl animate-in slide-in-from-right duration-300 flex items-center">
+              <XCircle className="h-3.5 w-3.5 mr-2" /> {errorMessage}
+            </div>
+          )}
           
           {/* Overview Tab */}
           {activeTab === 'overview' && (
@@ -326,10 +395,11 @@ const AdminDashboard: React.FC = () => {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { label: t('admin.projects'), value: db.projects.length, icon: FolderKanban, color: 'text-brand-pink', bg: 'bg-brand-pink/10', border: 'border-brand-pink/20' },
+                  { label: t('admin.projects'), value: db.projects.length, icon: ProjectIcon, color: 'text-brand-pink', bg: 'bg-brand-pink/10', border: 'border-brand-pink/20' },
                   { label: t('admin.applications'), value: db.applications?.length || 0, icon: Users, color: 'text-brand-cyan', bg: 'bg-brand-cyan/10', border: 'border-brand-cyan/20' },
-                  { label: t('admin.staff'), value: db.staff.length, icon: Briefcase, color: 'text-brand-blue', bg: 'bg-brand-blue/10', border: 'border-brand-blue/20' },
-                  { label: t('admin.news'), value: db.news.length, icon: Newspaper, color: 'text-brand-lime', bg: 'bg-brand-lime/10', border: 'border-brand-lime/20' },
+                  { label: t('admin.staff'), value: db.staff.length, icon: Briefcase, color: 'text-brand-blue', bg: 'hover:bg-brand-blue/10', border: 'border-brand-blue/20' },
+                  { label: t('admin.partners'), value: db.partners?.length || 0, icon: Handshake, color: 'text-brand-orange', bg: 'hover:bg-brand-orange/10', border: 'border-brand-orange/20' },
+                  { label: t('admin.news'), value: db.news.length, icon: Newspaper, color: 'text-brand-lime', bg: 'hover:bg-brand-lime/10', border: 'border-brand-lime/20' },
                 ].map((stat, i) => (
                   <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all group relative overflow-hidden">
                     <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-700 opacity-50`}></div>
@@ -340,6 +410,74 @@ const AdminDashboard: React.FC = () => {
                     <p className="text-4xl font-black text-brand-dark relative z-10 tabular-nums">{stat.value}</p>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Home Tab */}
+          {activeTab === 'home' && (
+            <div className="space-y-10 animate-in fade-in">
+              <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tight">{t('nav.home')}</h1>
+              </div>
+              <div className="bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-100">
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Hero Title</label>
+                    <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-blue/10 transition-all" defaultValue={t('hero.title1')} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Hero Subtitle</label>
+                    <textarea rows={4} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-blue/10 transition-all resize-none" defaultValue={t('hero.desc')} />
+                  </div>
+                  <button onClick={() => setSuccessMessage('Ndryshimet u ruajtën!')} className="px-8 py-4 bg-brand-blue text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-blue/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    {t('admin.save')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* About Tab */}
+          {activeTab === 'about' && (
+            <div className="space-y-10 animate-in fade-in">
+              <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tight">{t('nav.about')}</h1>
+              </div>
+              <div className="bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-100">
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">About Title</label>
+                    <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-cyan/10 transition-all" defaultValue={t('about.main.title')} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">About Description</label>
+                    <textarea rows={6} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-cyan/10 transition-all resize-none" defaultValue={t('about.main.desc')} />
+                  </div>
+                  <button onClick={() => setSuccessMessage('Ndryshimet u ruajtën!')} className="px-8 py-4 bg-brand-cyan text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-cyan/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    {t('admin.save')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Mission Tab */}
+          {activeTab === 'mission' && (
+            <div className="space-y-10 animate-in fade-in">
+              <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tight">{t('nav.mission')}</h1>
+              </div>
+              <div className="bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-100">
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Mission Content</label>
+                    <textarea rows={8} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-lime/10 transition-all resize-none" defaultValue={t('about.main.goal')} />
+                  </div>
+                  <button onClick={() => setSuccessMessage('Ndryshimet u ruajtën!')} className="px-8 py-4 bg-brand-lime text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-lime/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    {t('admin.save')}
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -500,6 +638,40 @@ const AdminDashboard: React.FC = () => {
                       </div>
                       <div className="w-2 h-2 rounded-full bg-brand-cyan/20"></div>
                     </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Partners Tab */}
+          {activeTab === 'partners' && (
+            <div className="space-y-8 animate-in fade-in">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tight">{t('admin.partners')}</h1>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Menaxhimi i partnerëve dhe donatorëve</p>
+                </div>
+                <button onClick={() => handleOpenPartnerModal()} className="bg-brand-orange text-white px-8 py-3.5 rounded-full font-black uppercase text-[10px] tracking-widest flex items-center shadow-lg hover:scale-105 transition-all">
+                  <Plus className="h-4 w-4 mr-2" /> {t('admin.addPartner')}
+                </button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {(db.partners || []).map(p => (
+                  <div key={p.id} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden flex flex-col items-center text-center">
+                    <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-all">
+                      <button onClick={() => handleOpenPartnerModal(p)} className="p-2 text-slate-400 hover:text-brand-orange rounded-lg"><Edit2 className="h-3.5 w-3.5" /></button>
+                      <button onClick={() => deleteItem('partners', p.id)} className="p-2 text-slate-400 hover:text-red-500 rounded-lg"><Trash2 className="h-3.5 w-3.5" /></button>
+                    </div>
+                    <div className="w-24 h-24 bg-slate-50 rounded-2xl flex items-center justify-center p-4 mb-6 border border-slate-100">
+                      <img src={p.logo} alt={p.name} className="max-w-full max-h-full object-contain" />
+                    </div>
+                    <h3 className="font-black text-sm text-brand-dark uppercase tracking-tight mb-2">{p.name}</h3>
+                    {p.website && (
+                      <a href={p.website} target="_blank" rel="noreferrer" className="text-[9px] font-bold text-brand-orange uppercase tracking-widest flex items-center hover:underline">
+                        Visit Website <ExternalLink className="h-2.5 w-2.5 ml-1" />
+                      </a>
+                    )}
                   </div>
                 ))}
               </div>
@@ -884,6 +1056,121 @@ const AdminDashboard: React.FC = () => {
                   className="flex-[2] py-4.5 bg-brand-lime text-white rounded-[1.5rem] font-black uppercase text-[11px] tracking-[0.2em] shadow-xl shadow-brand-lime/20 flex items-center justify-center hover:scale-[1.02] active:scale-[0.98] transition-all"
                 >
                   <CheckCircle className="h-5 w-5 mr-2" /> {t('admin.approve')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Partner Modal */}
+      {showPartnerModal && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-brand-dark/80 backdrop-blur-sm" onClick={() => setShowPartnerModal(false)}></div>
+          <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl relative z-10 overflow-hidden animate-in zoom-in duration-300">
+            <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <h2 className="text-xl font-black text-brand-dark uppercase tracking-tight">
+                {editingPartner ? t('admin.editPartner') : t('admin.addPartner')}
+              </h2>
+              <button onClick={() => setShowPartnerModal(false)} className="p-2 hover:bg-white rounded-xl transition-colors"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+              <div>
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{t('admin.partnerName')}</label>
+                <input 
+                  type="text" 
+                  className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-orange/10 transition-all"
+                  value={partnerForm.name}
+                  onChange={(e) => setPartnerForm({...partnerForm, name: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{t('admin.partnerWebsite')}</label>
+                <input 
+                  type="url" 
+                  className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-orange/10 transition-all"
+                  value={partnerForm.website}
+                  onChange={(e) => setPartnerForm({...partnerForm, website: e.target.value})}
+                  placeholder="https://example.com"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{t('admin.partnerLogo')}</label>
+                <div className="flex items-center space-x-6">
+                  <div className="w-24 h-24 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden group relative">
+                    {partnerForm.logo ? (
+                      <>
+                        <img src={partnerForm.logo} className="w-full h-full object-contain p-2" />
+                        <div className="absolute inset-0 bg-brand-dark/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <Upload className="h-5 w-5 text-white" />
+                        </div>
+                      </>
+                    ) : (
+                      <Upload className="h-6 w-6 text-slate-300" />
+                    )}
+                    <input 
+                      type="file" 
+                      ref={partnerLogoRef}
+                      className="absolute inset-0 opacity-0 cursor-pointer" 
+                      accept="image/*"
+                      onChange={handlePartnerLogoUpload}
+                    />
+                  </div>
+                  <div className="flex-grow space-y-2">
+                    <p className="text-[9px] font-bold text-slate-400 uppercase leading-relaxed">Rekomandohet format PNG me sfond transparent.</p>
+                    <button 
+                      onClick={() => partnerLogoRef.current?.click()}
+                      className="text-[9px] font-black text-brand-orange uppercase tracking-widest hover:underline"
+                    >
+                      Zgjidh skedarin
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="p-8 bg-slate-50/50 border-t border-slate-100 flex space-x-4">
+              <button 
+                onClick={handleSavePartner}
+                className="flex-grow bg-brand-orange text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-orange/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              >
+                {t('admin.save')}
+              </button>
+              <button 
+                onClick={() => setShowPartnerModal(false)}
+                className="px-8 bg-white text-slate-400 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border border-slate-200 hover:bg-slate-50 transition-all"
+              >
+                {t('admin.cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-brand-dark/90 backdrop-blur-xl">
+          <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
+            <div className="p-10 text-center">
+              <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <Trash2 className="h-10 w-10" />
+              </div>
+              <h3 className="text-xl font-black text-brand-dark uppercase tracking-tight mb-2">{t('admin.delete')}</h3>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed">
+                {t('admin.deleteConfirm')}
+              </p>
+              
+              <div className="flex gap-4 mt-10">
+                <button 
+                  onClick={() => setDeleteConfirm(null)}
+                  className="flex-1 py-4 bg-slate-100 text-slate-500 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-200 transition-all"
+                >
+                  {t('admin.cancel')}
+                </button>
+                <button 
+                  onClick={confirmDelete}
+                  className="flex-1 py-4 bg-red-500 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-red-500/20 hover:bg-red-600 transition-all"
+                >
+                  {t('admin.delete')}
                 </button>
               </div>
             </div>
