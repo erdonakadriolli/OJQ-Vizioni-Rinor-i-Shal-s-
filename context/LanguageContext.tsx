@@ -162,6 +162,17 @@ const translations: Record<string, string> = {
   'admin.partnerLogo': 'Logo e Partnerit',
   'admin.partnerWebsite': 'Uebfaqja (Opsionale)',
   'home.partners.title': 'Partnerët & Donatorët tanë',
+  'home.testimonials.title': 'Çfarë thotë rinia',
+  'home.testimonials.subtitle': 'Feedback nga komuniteti ynë',
+  'home.testimonials.add': 'Shto Feedback',
+  'home.testimonials.form.name': 'Emri juaj',
+  'home.testimonials.form.content': 'Mesazhi juaj',
+  'home.testimonials.form.role': 'Roli (opsionale)',
+  'home.testimonials.form.submit': 'Dërgo për aprovim',
+  'home.testimonials.success': 'Faleminderit! Feedback-u juaj do të shfaqet pas aprovimit nga admini.',
+  'admin.testimonials': 'Feedback-et',
+  'admin.approve': 'Aprovo',
+  'admin.unapprove': 'Hiq Aprovimin',
   'ui.ask': 'Pyet',
   'ui.upload': 'Ngarko'
 };

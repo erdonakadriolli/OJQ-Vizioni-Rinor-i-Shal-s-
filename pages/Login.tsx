@@ -1,11 +1,13 @@
 
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogIn, ShieldAlert } from 'lucide-react';
+import { LogIn, ShieldAlert, Chrome } from 'lucide-react';
 import Logo from '../components/Logo';
 import { User, UserRole } from '../types';
 import { getDb } from '../services/mockDb';
 import { useLanguage } from '../context/LanguageContext';
+import { auth } from '../firebase';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
 const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
@@ -14,6 +16,32 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useLanguage();
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setError('');
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const firebaseUser = result.user;
+      
+      const isAdmin = firebaseUser.email === 'donakadriolli@gmail.com';
+      const userData: User = {
+        id: firebaseUser.uid,
+        name: firebaseUser.displayName || 'User',
+        email: firebaseUser.email || '',
+        role: isAdmin ? UserRole.ADMIN : UserRole.VOLUNTEER
+      };
+      
+      onLogin(userData);
+      navigate(isAdmin ? '/admin' : '/projects');
+    } catch (err: any) {
+      console.error("Google Login Error:", err);
+      setError(err.message || "Dështoi hyrja me Google.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,7 +119,7 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
               <button 
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-5 bg-brand-dark text-white rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-brand-pink transition-all shadow-xl shadow-brand-pink/10 flex items-center justify-center"
+                className="w-full py-5 bg-brand-dark text-white rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/10 flex items-center justify-center mb-4"
               >
                 {isLoading ? (
                   <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -101,6 +129,25 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
                     {t('login.button')}
                   </>
                 )}
+              </button>
+
+              <div className="relative my-8">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200"></div>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-4 text-slate-400 font-black tracking-widest">Ose</span>
+                </div>
+              </div>
+
+              <button 
+                type="button"
+                onClick={handleGoogleLogin}
+                disabled={isLoading}
+                className="w-full py-5 bg-white text-slate-700 border border-slate-200 rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center"
+              >
+                <Chrome className="h-5 w-5 mr-3 text-brand-blue" />
+                Hyr me Google
               </button>
             </form>
           </div>
