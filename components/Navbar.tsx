@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, LogOut, LogIn, ChevronDown, UserPlus, MessageSquare, LayoutDashboard, X } from 'lucide-react';
+import Logo from './Logo';
 import { User, UserRole } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -9,15 +10,6 @@ interface NavbarProps {
   user: User | null;
   onLogout: () => void;
 }
-
-const VizioniLogo = () => (
-  <div className="relative flex items-center justify-center w-10 h-10 group">
-    <div className="absolute inset-0 rounded-xl border border-slate-200 group-hover:border-transparent transition-all duration-500 rotate-45 group-hover:rotate-90"></div>
-    <div className="absolute inset-0 rounded-xl border border-transparent transition-all duration-700 -rotate-12 group-hover:rotate-45"
-         style={{ borderTopColor: '#e11d74', borderRightColor: '#f39237', borderBottomColor: '#95d03a', borderLeftColor: '#00adb5' }}></div>
-    <div className="w-2 h-2 bg-brand-dark rounded-full shadow-lg group-hover:scale-125 transition-transform"></div>
-  </div>
-);
 
 const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,12 +30,8 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
     <nav className={`absolute top-0 left-0 right-0 z-[100] transition-all duration-500 bg-white/90 backdrop-blur-xl border-b border-slate-100 shadow-sm`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         <div className="flex items-center">
-          <Link to="/" className="flex items-center space-x-4">
-            <VizioniLogo />
-            <div className="flex flex-col -space-y-1">
-              <span className="text-xl font-black text-brand-dark tracking-tighter uppercase leading-none">Vizioni</span>
-              <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.25em]">Rinor i Shalës</span>
-            </div>
+          <Link to="/" className="flex items-center">
+            <Logo size="md" />
           </Link>
         </div>
 

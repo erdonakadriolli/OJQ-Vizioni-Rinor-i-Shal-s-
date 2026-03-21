@@ -2,17 +2,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogIn, ShieldAlert } from 'lucide-react';
+import Logo from '../components/Logo';
 import { User, UserRole } from '../types';
 import { getDb } from '../services/mockDb';
 import { useLanguage } from '../context/LanguageContext';
-
-const VizioniLogo = () => (
-  <div className="relative flex items-center justify-center w-20 h-20 mx-auto">
-    <div className="absolute inset-0 rounded-full border-[6px] border-transparent" 
-         style={{ borderTopColor: '#e11d74', borderRightColor: '#f39237', borderBottomColor: '#95d03a', borderLeftColor: '#00adb5' }}></div>
-    <div className="w-8 h-8 bg-brand-dark rounded-full"></div>
-  </div>
-);
 
 const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
@@ -50,7 +43,7 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
         <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100">
           <div className="p-10">
             <div className="text-center mb-10">
-              <VizioniLogo />
+              <Logo size="lg" className="mx-auto" />
               <h2 className="text-3xl font-black text-brand-dark uppercase mt-6 tracking-tight">{t('login.title')}</h2>
               <p className="text-slate-500 mt-2 font-medium">{t('login.subtitle')}</p>
             </div>

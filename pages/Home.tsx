@@ -6,9 +6,15 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { getDb } from '../services/mockDb';
-import { Partner } from '../types';
+import { Partner, User } from '../types';
+import EditableText from '../components/EditableText';
+import EditableImage from '../components/EditableImage';
 
-const Home: React.FC = () => {
+interface HomeProps {
+  user: User | null;
+}
+
+const Home: React.FC<HomeProps> = ({ user }) => {
   const { t } = useLanguage();
   const [partners, setPartners] = useState<Partner[]>([]);
 
@@ -32,16 +38,16 @@ const Home: React.FC = () => {
           <div className="text-left">
             <div className="inline-flex items-center space-x-2 px-5 py-2 bg-white/60 backdrop-blur-md border border-slate-100 text-brand-pink rounded-full font-black uppercase text-[10px] tracking-[0.3em] mb-8 animate-in slide-in-from-left duration-700">
               <Sparkles className="h-3 w-3" />
-              <span>{t('hero.subtitle')}</span>
+              <EditableText translationKey="hero.subtitle" user={user} />
             </div>
             <h1 className="text-6xl md:text-[7.5rem] font-black text-brand-dark leading-[0.9] mb-10 uppercase tracking-tighter animate-in slide-in-from-left duration-1000">
-              {t('hero.title1')}<br/>
+              <EditableText translationKey="hero.title1" user={user} /><br/>
               <span className="gradient-text">
-                {t('hero.title2')}
+                <EditableText translationKey="hero.title2" user={user} />
               </span>
             </h1>
             <p className="text-lg md:text-xl text-slate-500 max-w-xl mb-12 font-medium leading-relaxed animate-in fade-in duration-1000 delay-300">
-              {t('hero.desc')}
+              <EditableText translationKey="hero.desc" user={user} multiline />
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 animate-in slide-in-from-bottom-8 duration-1000 delay-500">
               <Link to="/join" className="px-12 py-5 bg-brand-pink text-white rounded-full font-black uppercase text-xs btn-glow-pink transition-all shadow-2xl shadow-brand-pink/30 tracking-widest flex items-center justify-center">
@@ -58,10 +64,11 @@ const Home: React.FC = () => {
              <div className="absolute inset-0 bg-brand-pink rounded-[4rem] rotate-3 translate-x-4 translate-y-4 opacity-10"></div>
              <div className="absolute inset-0 bg-brand-lime rounded-[4rem] -rotate-3 -translate-x-4 -translate-y-4 opacity-10"></div>
              <div className="relative h-full w-full rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white">
-                <img 
-                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1200" 
-                  alt="Rinia e Shalës" 
+                <EditableImage 
+                  translationKey="home.hero.image" 
+                  user={user} 
                   className="w-full h-full object-cover transition-all duration-1000"
+                  alt="Rinia e Shalës"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent"></div>
                 <div className="absolute bottom-12 left-12 right-12">
@@ -70,8 +77,12 @@ const Home: React.FC = () => {
                          <Shield className="h-6 w-6" />
                       </div>
                       <div className="text-white">
-                         <h4 className="font-black uppercase text-xs tracking-widest">Iniciativa e Shpresës</h4>
-                         <p className="text-[10px] font-bold text-slate-300 uppercase">Fshati Shalë, Lipjan</p>
+                         <h4 className="font-black uppercase text-xs tracking-widest">
+                            <EditableText translationKey="hero.badge" user={user} />
+                          </h4>
+                         <p className="text-[10px] font-bold text-slate-300 uppercase">
+                            <EditableText translationKey="hero.location" user={user} />
+                          </p>
                       </div>
                    </div>
                 </div>
@@ -84,17 +95,21 @@ const Home: React.FC = () => {
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
           {[
-            { value: '500+', label: t('stats.trained'), color: 'text-brand-pink', icon: Star, bg: 'bg-brand-pink/5' },
-            { value: '25+', label: t('stats.completed'), color: 'text-brand-lime', icon: Globe, bg: 'bg-brand-lime/5' },
-            { value: '100+', label: t('stats.volunteers'), color: 'text-brand-cyan', icon: UserPlus, bg: 'bg-brand-cyan/5' },
-            { value: 'Lipjan', label: t('stats.region'), color: 'text-brand-orange', icon: Sparkles, bg: 'bg-brand-orange/5' }
+            { valueKey: 'stats.trained.value', labelKey: 'stats.trained', color: 'text-brand-pink', icon: Star, bg: 'bg-brand-pink/5' },
+            { valueKey: 'stats.completed.value', labelKey: 'stats.completed', color: 'text-brand-lime', icon: Globe, bg: 'bg-brand-lime/5' },
+            { valueKey: 'stats.volunteers.value', labelKey: 'stats.volunteers', color: 'text-brand-cyan', icon: UserPlus, bg: 'bg-brand-cyan/5' },
+            { valueKey: 'stats.region.value', labelKey: 'stats.region', color: 'text-brand-orange', icon: Sparkles, bg: 'bg-brand-orange/5' }
           ].map((stat, i) => (
             <div key={i} className="flex flex-col items-center text-center p-10 rounded-[3.5rem] bg-white border border-slate-50 shadow-sm hover:shadow-2xl transition-all group">
               <div className={`mb-8 p-5 rounded-2xl ${stat.bg} group-hover:scale-110 transition-transform ${stat.color}`}>
                 <stat.icon className="h-7 w-7" />
               </div>
-              <div className={`text-5xl font-black uppercase tracking-tighter mb-2 ${stat.color}`}>{stat.value}</div>
-              <div className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{stat.label}</div>
+              <div className={`text-5xl font-black uppercase tracking-tighter mb-2 ${stat.color}`}>
+                <EditableText translationKey={stat.valueKey} user={user} />
+              </div>
+              <div className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                <EditableText translationKey={stat.labelKey} user={user} />
+              </div>
             </div>
           ))}
         </div>
@@ -107,10 +122,10 @@ const Home: React.FC = () => {
             <div className="flex flex-col items-center text-center mb-16">
               <div className="inline-flex items-center space-x-2 px-4 py-2 bg-brand-orange/10 text-brand-orange rounded-full text-[9px] font-black uppercase tracking-[0.3em] mb-4">
                 <Handshake className="h-3 w-3" />
-                <span>Bashkëpunimi</span>
+                <span><EditableText translationKey="home.partners.badge" user={user} /></span>
               </div>
               <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter">
-                {t('home.partners.title')}
+                <EditableText translationKey="home.partners.title" user={user} />
               </h2>
             </div>
             
@@ -152,7 +167,7 @@ const Home: React.FC = () => {
             <div className="space-y-4">
               <span className="text-[10px] font-black uppercase text-brand-pink tracking-[0.3em] block">{t('nav.news')}</span>
               <h2 className="text-5xl md:text-7xl font-black text-brand-dark uppercase tracking-tighter leading-none">
-                {t('news.title.latest')} & <span className="text-brand-orange">Media</span>
+                <EditableText translationKey="news.title.latest" user={user} /> & <span className="text-brand-orange"><EditableText translationKey="news.title.media" user={user} /></span>
               </h2>
             </div>
             <Link to="/news" className="group flex items-center space-x-3 text-brand-dark font-black uppercase text-[10px] tracking-widest hover:text-brand-pink transition-all">
@@ -178,7 +193,7 @@ const Home: React.FC = () => {
                   {item.title}
                 </h3>
                 <div className="flex items-center text-brand-pink font-black uppercase text-[9px] tracking-widest opacity-0 group-hover:opacity-100 transition-all">
-                  <span>Lexo më shumë</span>
+                  <span><EditableText translationKey="news.readMore" user={user} /></span>
                   <ArrowRight className="ml-2 h-3 w-3" />
                 </div>
               </Link>
@@ -196,16 +211,16 @@ const Home: React.FC = () => {
             
             <div className="flex-grow z-10 text-center md:text-left">
               <div className="inline-flex items-center space-x-2 px-5 py-2 bg-white/5 text-brand-orange rounded-full text-[10px] font-black uppercase tracking-[0.3em] mb-10">
-                <Bot className="h-4 w-4" /> <span>{t('derdo.promo.tag')}</span>
+                <Bot className="h-4 w-4" /> <span><EditableText translationKey="derdo.promo.tag" user={user} /></span>
               </div>
               <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-8 leading-none">
-                {t('derdo.greeting')}
+                <EditableText translationKey="derdo.greeting" user={user} />
               </h2>
               <p className="text-slate-400 text-lg md:text-xl font-medium mb-12 max-w-xl leading-relaxed">
-                {t('derdo.desc')}
+                <EditableText translationKey="derdo.desc" user={user} multiline />
               </p>
               <Link to="/derdo" className="inline-flex items-center space-x-4 bg-white text-brand-dark px-12 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-brand-orange hover:text-white transition-all shadow-2xl shadow-white/5 btn-glow-cyan">
-                <MessageSquare className="h-5 w-5" /> <span>{t('derdo.chat')}</span>
+                <MessageSquare className="h-5 w-5" /> <span><EditableText translationKey="derdo.chat" user={user} /></span>
               </Link>
             </div>
             

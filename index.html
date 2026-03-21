@@ -6,11 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vizioni Rinor i Shalës</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300..700&family=Outfit:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Anton&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['Playfair Display', 'serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+              outfit: ['Outfit', 'sans-serif'],
+              space: ['Space Grotesk', 'sans-serif'],
+              cormorant: ['Cormorant Garamond', 'serif'],
+              anton: ['Anton', 'sans-serif'],
+              baskerville: ['Libre Baskerville', 'serif'],
+              montserrat: ['Montserrat', 'sans-serif'],
+            },
             colors: {
               brand: {
                 dark: '#12121a',

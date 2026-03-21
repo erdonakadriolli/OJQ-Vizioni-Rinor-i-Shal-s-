@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Logo from './components/Logo';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 import AdminDashboard from './pages/AdminDashboard';
@@ -23,9 +24,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 relative z-10">
         <div className="col-span-1 md:col-span-1 space-y-8">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center bg-white/5">
-               <div className="w-4 h-4 bg-brand-pink rounded-full shadow-[0_0_15px_#e11d74]"></div>
-            </div>
+            <Logo size="md" />
             <div className="flex flex-col">
               <span className="text-2xl font-black text-white uppercase tracking-tighter leading-none">Vizioni</span>
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Rinor i Shalës</span>
