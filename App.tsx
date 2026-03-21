@@ -18,33 +18,34 @@ import { LanguageProvider, useLanguage } from './context/LanguageContext';
 const Footer: React.FC = () => {
   const { t } = useLanguage();
   return (
-    <footer className="bg-brand-dark text-slate-400 py-24 px-6 relative overflow-hidden mt-20">
+    <footer className="bg-slate-50 text-slate-600 py-24 px-6 relative overflow-hidden mt-20 border-t border-slate-200">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-pink via-brand-orange to-brand-lime"></div>
       
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 relative z-10">
         <div className="col-span-1 md:col-span-1 space-y-8">
           <div className="flex items-center space-x-4">
             <Logo size="md" />
-            <div className="flex flex-col">
-              <span className="text-2xl font-black text-white uppercase tracking-tighter leading-none">Vizioni</span>
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Rinor i Shalës</span>
-            </div>
           </div>
-          <p className="text-sm leading-relaxed font-medium">
+          <p className="text-sm leading-relaxed font-medium text-slate-500">
             {t('footer.desc')}
           </p>
           <div className="flex space-x-4">
-            <a href="https://www.facebook.com/vizionirinorishales" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-brand-pink hover:text-white transition-all duration-500 border border-white/5">
+            <a href="https://www.facebook.com/vizionirinorishales" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center hover:bg-brand-pink hover:text-white transition-all duration-500 border border-slate-200 shadow-sm">
               <Facebook className="h-5 w-5" />
             </a>
-            <a href="https://www.instagram.com/vizionirinorishales/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-brand-pink hover:text-white transition-all duration-500 border border-white/5">
+            <a href="https://www.instagram.com/vizionirinorishales/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center hover:bg-brand-pink hover:text-white transition-all duration-500 border border-slate-200 shadow-sm">
               <Instagram className="h-5 w-5" />
+            </a>
+            <a href="https://www.tiktok.com/@vizionirinorishales" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center hover:bg-brand-pink hover:text-white transition-all duration-500 border border-slate-200 shadow-sm">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-1.13-.31-2.34-.25-3.41.33-.71.38-1.27 1.03-1.57 1.77-.3.72-.34 1.52-.16 2.27.18.75.58 1.44 1.14 1.96.56.52 1.28.86 2.05.97.77.11 1.57.01 2.28-.28.71-.29 1.32-.8 1.73-1.44.41-.64.62-1.4.61-2.17-.01-3.17.01-6.33-.01-9.5z"/>
+              </svg>
             </a>
           </div>
         </div>
         
         <div className="space-y-8">
-          <h4 className="text-white font-black uppercase tracking-widest text-[10px] flex items-center">
+          <h4 className="text-slate-900 font-black uppercase tracking-widest text-[10px] flex items-center">
             <div className="w-4 h-[2px] bg-brand-pink mr-3"></div>
             {t('footer.nav')}
           </h4>
@@ -57,7 +58,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="space-y-8">
-          <h4 className="text-white font-black uppercase tracking-widest text-[10px] flex items-center">
+          <h4 className="text-slate-900 font-black uppercase tracking-widest text-[10px] flex items-center">
             <div className="w-4 h-[2px] bg-brand-lime mr-3"></div>
             {t('footer.opp')}
           </h4>
@@ -69,32 +70,32 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="space-y-8">
-          <h4 className="text-white font-black uppercase tracking-widest text-[10px] flex items-center">
+          <h4 className="text-slate-900 font-black uppercase tracking-widest text-[10px] flex items-center">
             <div className="w-4 h-[2px] bg-brand-cyan mr-3"></div>
             {t('footer.find')}
           </h4>
           <ul className="space-y-5 text-sm font-medium">
             <li className="flex items-start space-x-4 group">
-              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-brand-pink border border-white/5 flex-shrink-0"><MapPin className="h-5 w-5" /></div>
-              <a href="https://maps.app.goo.gl/N5XVp95AxwZyngCq8" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors pt-1">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-brand-pink border border-slate-200 flex-shrink-0 shadow-sm"><MapPin className="h-5 w-5" /></div>
+              <a href="https://maps.app.goo.gl/N5XVp95AxwZyngCq8" target="_blank" rel="noopener noreferrer" className="hover:text-brand-pink transition-colors pt-1">
                 Fshati Shalë, Komuna Lipjan<br/>
                 Republika e Kosovës
               </a>
             </li>
             <li className="flex items-center space-x-4 group">
-              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-brand-cyan border border-white/5 flex-shrink-0"><Mail className="h-5 w-5" /></div>
-              <span className="hover:text-white transition-colors">info@vizionirinorishales.org</span>
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-brand-cyan border border-slate-200 flex-shrink-0 shadow-sm"><Mail className="h-5 w-5" /></div>
+              <span className="hover:text-brand-cyan transition-colors">info@vizionirinorishales.org</span>
             </li>
           </ul>
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto mt-24 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-        <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest">
+      <div className="max-w-7xl mx-auto mt-24 pt-10 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
            <Heart className="h-3 w-3 text-brand-pink" />
            <span>{t('footer.rights')}</span>
         </div>
-        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
           {t('footer.developedBy')} <span className="text-brand-pink">Erdona Kadriolli</span>
         </p>
       </div>
