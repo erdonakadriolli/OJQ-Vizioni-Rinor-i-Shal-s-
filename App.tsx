@@ -14,6 +14,8 @@ import DerdoChat from './pages/DerdoChat';
 import { User, UserRole } from './types';
 import { Facebook, Instagram, Mail, Phone, MapPin, ArrowRight, Heart } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import { logout as firebaseLogout, auth } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const Footer: React.FC = () => {
   const { t } = useLanguage();
@@ -111,6 +113,29 @@ const App: React.FC = () => {
     if (session) {
       setUser(JSON.parse(session));
     }
+
+    // Sync with Firebase Auth
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        // If we have a firebase user but no app user, or they differ, sync them
+        // Note: We prioritize the admin email for the role
+        const isAdmin = firebaseUser.email === 'donakadriolli@gmail.com';
+        const syncedUser: User = {
+          id: firebaseUser.uid,
+          email: firebaseUser.email || '',
+          name: firebaseUser.displayName || 'User',
+          role: isAdmin ? UserRole.ADMIN : UserRole.VOLUNTEER
+        };
+        setUser(syncedUser);
+        localStorage.setItem('ngo_user_session', JSON.stringify(syncedUser));
+      } else {
+        // If firebase signed out but we think we are logged in, we should probably sign out
+        // but only if it was a firebase-based session. 
+        // For now, we'll just let the app handle it via handleLogout.
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleLogin = (userData: User) => {
@@ -118,9 +143,14 @@ const App: React.FC = () => {
     localStorage.setItem('ngo_user_session', JSON.stringify(userData));
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setUser(null);
     localStorage.removeItem('ngo_user_session');
+    try {
+      await firebaseLogout();
+    } catch (err) {
+      console.error("Firebase Logout Error:", err);
+    }
   };
 
   return (

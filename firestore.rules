@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: testimonials
+    // Fields:
+    //   - name: string (required, size < 100)
+    //   - content: string (required, size < 1000)
+    //   - date: string (required, ISO 8601)
+    //   - approved: bool (required)
+    //   - role: string (optional, size < 100)
+    //
+    // Collection: users
+    // Fields:
+    //   - role: string (required, ['admin', 'volunteer', 'guest'])
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+             ((request.auth.token.email == "donakadriolli@gmail.com") ||
+              (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+               get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'));
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function isValidTestimonial(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.content is string && data.content.size() > 0 && data.content.size() < 1000 &&
+             data.date is string && data.date.size() > 10 &&
+             data.approved is bool &&
+             (!('role' in data) || (data.role is string && data.role.size() < 100));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    match /testimonials/{testimonialId} {
+      // Anyone can read testimonials
+      allow read: if true;
+      
+      // Anyone can create a testimonial
+      allow create: if hasRequiredFields(['name', 'content', 'date', 'approved']) &&
+                    isValidTestimonial(request.resource.data);
+      
+      // Only admins can update or delete
+      allow update: if isAdmin() && isValidTestimonial(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}
