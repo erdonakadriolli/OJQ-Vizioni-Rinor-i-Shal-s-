@@ -91,12 +91,3 @@ export interface Partner {
   logo: string;
   website?: string;
 }
-
-export interface Testimonial {
-  id: string;
-  name: string;
-  content: string;
-  date: string;
-  approved: boolean;
-  role?: string;
-}

@@ -1,24 +1,4 @@
 {
-  "entities": {
-    "Testimonial": {
-      "title": "Testimonial",
-      "description": "Feedback from the youth",
-      "type": "object",
-      "properties": {
-        "id": { "type": "string" },
-        "name": { "type": "string", "description": "Name of the person giving feedback" },
-        "content": { "type": "string", "description": "The feedback content" },
-        "date": { "type": "string", "format": "date-time" },
-        "approved": { "type": "boolean", "description": "Whether the feedback is approved by an admin" },
-        "role": { "type": "string", "description": "Optional role or title" }
-      },
-      "required": ["name", "content", "date", "approved"]
-    }
-  },
-  "firestore": {
-    "testimonials": {
-      "schema": "Testimonial",
-      "description": "Collection of feedback from the youth"
-    }
-  }
+  "entities": {},
+  "firestore": {}
 }
