@@ -2,40 +2,35 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  ArrowRight, UserPlus, Bot, MessageSquare, Sparkles, Star, Globe, Shield, Handshake, Quote, X
+  ArrowRight, UserPlus, Bot, MessageSquare, Sparkles, Star, Globe, Shield, Handshake
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { getDb } from '../services/mockDb';
-import { Partner, Testimonial } from '../types';
-import { db as firestoreDb } from '../firebase';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { Partner } from '../types';
+import { db as firestoreDb, auth } from '../firebase';
+import { collection } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
   const [partners, setPartners] = useState<Partner[]>([]);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (user && user.email === 'donakadriolli@gmail.com') {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    });
+
+    return () => unsubscribeAuth();
+  }, []);
 
   useEffect(() => {
     const db = getDb();
     setPartners(db.partners || []);
-
-    // Fetch all testimonials from Firestore
-    const testimonialsRef = collection(firestoreDb, 'testimonials');
-    const q = query(testimonialsRef, orderBy('date', 'desc'));
-    
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedTestimonials = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Testimonial[];
-      // Only show approved testimonials
-      setTestimonials(fetchedTestimonials.filter(t => t.approved));
-    }, (error) => {
-      console.error("Error fetching testimonials: ", error);
-    });
-
-    return () => unsubscribe();
   }, []);
 
   return (
@@ -164,90 +159,6 @@ const Home: React.FC = () => {
             </div>
           </div>
         </section>
-      )}
-
-      {/* Testimonials Section - Çfarë thotë rinia */}
-      {testimonials.length > 0 && (
-        <section className="py-24 px-6 bg-white overflow-hidden">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
-              <div className="space-y-4">
-                <div className="inline-flex items-center space-x-2 px-4 py-2 bg-brand-pink/10 text-brand-pink rounded-full text-[9px] font-black uppercase tracking-[0.3em]">
-                  <Quote className="h-3 w-3" />
-                  <span>{t('home.testimonials.subtitle')}</span>
-                </div>
-                <h2 className="text-5xl md:text-7xl font-black text-brand-dark uppercase tracking-tighter leading-none">
-                  {t('home.testimonials.title')}
-                </h2>
-              </div>
-            </div>
-
-            <div className="flex overflow-x-auto pb-12 gap-6 snap-x snap-mandatory no-scrollbar -mx-4 px-4">
-              {testimonials.map((t) => (
-                <div 
-                  key={t.id} 
-                  onClick={() => setSelectedTestimonial(t)}
-                  className="flex-shrink-0 w-[280px] md:w-[320px] snap-center bg-slate-50 p-8 rounded-[2.5rem] relative group hover:bg-white hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-slate-100 cursor-pointer"
-                >
-                  <Quote className="absolute top-6 right-6 h-8 w-8 text-brand-pink/10 group-hover:text-brand-pink/20 transition-colors" />
-                  <div className="h-32 overflow-hidden relative mb-6">
-                    <p className="text-sm font-medium text-slate-600 leading-relaxed italic">
-                      "{t.content.length > 120 ? t.content.substring(0, 120) + '...' : t.content}"
-                    </p>
-                    {t.content.length > 120 && (
-                      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-50 group-hover:from-white to-transparent"></div>
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-pink to-brand-orange flex items-center justify-center text-white font-black text-lg shadow-lg">
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="font-black text-brand-dark uppercase text-[10px] tracking-widest">{t.name}</h4>
-                      {t.role && <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{t.role}</p>}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Full Testimonial Modal */}
-      {selectedTestimonial && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-brand-dark/80 backdrop-blur-md">
-          <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
-            <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-pink to-brand-orange flex items-center justify-center text-white font-black text-xl shadow-lg">
-                  {selectedTestimonial.name.charAt(0)}
-                </div>
-                <div>
-                  <h2 className="text-lg font-black text-brand-dark uppercase tracking-tight">{selectedTestimonial.name}</h2>
-                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{selectedTestimonial.role || 'Vullnetar'}</p>
-                </div>
-              </div>
-              <button onClick={() => setSelectedTestimonial(null)} className="p-2 hover:bg-slate-200 rounded-full transition-all group">
-                <X className="h-6 w-6 text-slate-400 group-hover:text-brand-dark transition-colors" />
-              </button>
-            </div>
-            <div className="p-10 max-h-[60vh] overflow-y-auto custom-scrollbar">
-              <Quote className="h-10 w-10 text-brand-pink/10 mb-6" />
-              <p className="text-lg font-medium text-slate-600 leading-relaxed italic">
-                "{selectedTestimonial.content}"
-              </p>
-            </div>
-            <div className="p-8 bg-slate-50 border-t border-slate-100 text-center">
-              <button 
-                onClick={() => setSelectedTestimonial(null)}
-                className="px-8 py-3 bg-brand-dark text-white rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-brand-pink transition-all"
-              >
-                Mbyll
-              </button>
-            </div>
-          </div>
-        </div>
       )}
 
       {/* AI Bot Section - Deep Dark with Orange Glow (Logo Right) */}
