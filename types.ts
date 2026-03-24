@@ -91,3 +91,12 @@ export interface Partner {
   logo: string;
   website?: string;
 }
+
+export interface Stat {
+  id: string;
+  value: string;
+  label: string;
+  iconName: string;
+  color: string;
+  bg: string;
+}

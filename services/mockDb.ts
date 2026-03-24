@@ -1,5 +1,5 @@
 
-import { Project, Event, User, VolunteerApplication, NewsItem, ProjectStatus, UserRole, ApplicationStatus, StaffMember, Partner } from '../types';
+import { Project, Event, User, VolunteerApplication, NewsItem, ProjectStatus, UserRole, ApplicationStatus, StaffMember, Partner, Stat } from '../types';
 
 const STORAGE_KEY = 'ngo_app_data_v1';
 
@@ -11,6 +11,7 @@ interface DbSchema {
   news: NewsItem[];
   staff: StaffMember[];
   partners: Partner[];
+  stats: Stat[];
 }
 
 const initialData: DbSchema = {
@@ -104,6 +105,12 @@ const initialData: DbSchema = {
   partners: [
     { id: 'p1', name: 'Komuna e Lipjanit', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Stema_e_Komun%C3%ABs_s%C3%AB_Lipjanit.svg/1200px-Stema_e_Komun%C3%ABs_s%C3%AB_Lipjanit.svg.png' },
     { id: 'p2', name: 'Ministria e Kulturës, Rinisë dhe Sportit', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Emblem_of_the_Republic_of_Kosovo.svg/1200px-Emblem_of_the_Republic_of_Kosovo.svg.png' }
+  ],
+  stats: [
+    { id: 's1', value: '500+', label: 'TË RINJ TË TRAJNUAR', iconName: 'Star', color: 'text-brand-pink', bg: 'bg-brand-pink/5' },
+    { id: 's2', value: '25+', label: 'PROJEKTE TË PËRFUNDUARA', iconName: 'Globe', color: 'text-brand-lime', bg: 'bg-brand-lime/5' },
+    { id: 's3', value: '100+', label: 'VULLNETARË AKTIVË', iconName: 'UserPlus', color: 'text-brand-cyan', bg: 'bg-brand-cyan/5' },
+    { id: 's4', value: 'Lipjan', label: 'RAJONI I MBULUAR', iconName: 'Sparkles', color: 'text-brand-orange', bg: 'bg-brand-orange/5' }
   ]
 };
 
