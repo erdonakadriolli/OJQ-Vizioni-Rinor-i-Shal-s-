@@ -156,7 +156,10 @@ const About: React.FC<AboutProps> = ({ user }) => {
             <Sparkles className="h-3 w-3" />
             <span>{t('nav.staff')}</span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter text-center">{t('about.staff.title')}</h2>
+          <h2 className="text-4xl md:text-7xl font-black text-brand-dark uppercase tracking-tighter text-center leading-none">
+            <EditableText translationKey="about.staff.title" user={user} />
+          </h2>
+          <div className="w-24 h-1.5 bg-brand-pink mt-6 rounded-full"></div>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-16 max-w-6xl mx-auto px-4">
@@ -167,15 +170,15 @@ const About: React.FC<AboutProps> = ({ user }) => {
                   <img src={m.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                 </div>
               </div>
-              <h3 className="font-black text-brand-dark uppercase text-2xl mb-1 tracking-tight">{m.name}</h3>
-              <p className="text-xs font-black text-brand-pink uppercase tracking-[0.2em] mb-4">{m.role}</p>
-              <p className="text-sm text-slate-500 font-medium leading-relaxed mb-6 line-clamp-3 px-4">
+              <h3 className="font-black text-brand-dark uppercase text-3xl mb-1 tracking-tighter leading-none">{m.name}</h3>
+              <p className="text-[10px] font-black text-brand-pink uppercase tracking-[0.3em] mb-6">{m.role}</p>
+              <p className="text-xs text-slate-500 font-medium leading-relaxed mb-8 line-clamp-3 px-8">
                 {m.bio || "Një vizionar/e që punon pa rreshtur për të fuqizuar rininë e Shalës."}
               </p>
-              <div className="flex space-x-6">
-                <Facebook className="h-5 w-5 text-brand-dark hover:text-brand-pink transition-colors" />
-                <Instagram className="h-5 w-5 text-brand-dark hover:text-brand-pink transition-colors" />
-                <Linkedin className="h-5 w-5 text-brand-dark hover:text-brand-pink transition-colors" />
+              <div className="flex space-x-6 pt-4 border-t border-slate-100 w-full justify-center">
+                {m.socials?.facebook && <a href={m.socials.facebook} target="_blank" rel="noopener noreferrer"><Facebook className="h-4 w-4 text-brand-dark hover:text-brand-pink transition-colors" /></a>}
+                {m.socials?.instagram && <a href={m.socials.instagram} target="_blank" rel="noopener noreferrer"><Instagram className="h-4 w-4 text-brand-dark hover:text-brand-pink transition-colors" /></a>}
+                {m.socials?.linkedin && <a href={m.socials.linkedin} target="_blank" rel="noopener noreferrer"><Linkedin className="h-4 w-4 text-brand-dark hover:text-brand-pink transition-colors" /></a>}
               </div>
             </div>
           ))}
@@ -189,7 +192,10 @@ const About: React.FC<AboutProps> = ({ user }) => {
             <Users className="h-3 w-3" />
             <span>{t('about.structure.title')}</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter text-center mb-8">{t('about.structure.assembly')}</h2>
+          <h2 className="text-3xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter text-center mb-4 leading-none">
+            <EditableText translationKey="about.structure.assembly" user={user} />
+          </h2>
+          <div className="w-20 h-1 bg-brand-cyan mb-12 rounded-full"></div>
           
           {/* Logo Section */}
           <div className="mb-12">
@@ -205,7 +211,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
                   <img src={m.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                 </div>
               </div>
-              <h3 className="font-black text-brand-dark uppercase text-[10px] mb-1 tracking-tight">{m.name}</h3>
+              <h3 className="font-black text-brand-dark uppercase text-[11px] mb-1 tracking-tighter leading-none">{m.name}</h3>
               <p className="text-[8px] font-black text-brand-cyan uppercase tracking-[0.2em]">{m.role}</p>
             </div>
           ))}
@@ -219,7 +225,10 @@ const About: React.FC<AboutProps> = ({ user }) => {
             <Shield className="h-3 w-3" />
             <span>{t('about.structure.board')}</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter text-center">{t('about.structure.board')}</h2>
+          <h2 className="text-3xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter text-center leading-none">
+            <EditableText translationKey="about.structure.board" user={user} />
+          </h2>
+          <div className="w-20 h-1 bg-brand-blue mt-6 rounded-full"></div>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-16 max-w-6xl mx-auto px-4">
@@ -230,14 +239,14 @@ const About: React.FC<AboutProps> = ({ user }) => {
                   <img src={m.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                 </div>
               </div>
-              <h3 className="font-black text-brand-dark uppercase text-xl mb-1 tracking-tight">{m.name}</h3>
-              <p className="text-[10px] font-black text-brand-blue uppercase tracking-[0.2em] mb-4">{m.role}</p>
-              <p className="text-xs text-slate-500 font-medium leading-relaxed mb-6 line-clamp-2 px-4">
+              <h3 className="font-black text-brand-dark uppercase text-2xl mb-1 tracking-tighter leading-none">{m.name}</h3>
+              <p className="text-[10px] font-black text-brand-blue uppercase tracking-[0.3em] mb-4">{m.role}</p>
+              <p className="text-xs text-slate-500 font-medium leading-relaxed mb-6 line-clamp-2 px-6">
                 {m.bio || "Anëtar i bordit drejtues me përvojë të gjerë në menaxhim."}
               </p>
-              <div className="flex space-x-4">
-                <Facebook className="h-4 w-4 text-brand-dark hover:text-brand-blue transition-colors" />
-                <Linkedin className="h-4 w-4 text-brand-dark hover:text-brand-blue transition-colors" />
+              <div className="flex space-x-4 pt-4 border-t border-slate-100 w-full justify-center">
+                {m.socials?.facebook && <a href={m.socials.facebook} target="_blank" rel="noopener noreferrer"><Facebook className="h-4 w-4 text-brand-dark hover:text-brand-blue transition-colors" /></a>}
+                {m.socials?.linkedin && <a href={m.socials.linkedin} target="_blank" rel="noopener noreferrer"><Linkedin className="h-4 w-4 text-brand-dark hover:text-brand-blue transition-colors" /></a>}
               </div>
             </div>
           ))}
@@ -251,7 +260,10 @@ const About: React.FC<AboutProps> = ({ user }) => {
             <Heart className="h-3 w-3" />
             <span>{t('about.structure.volunteers')}</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter text-center">{t('about.structure.volunteers')}</h2>
+          <h2 className="text-3xl md:text-6xl font-black text-brand-dark uppercase tracking-tighter text-center leading-none">
+            <EditableText translationKey="about.structure.volunteers" user={user} />
+          </h2>
+          <div className="w-20 h-1 bg-brand-lime mt-6 rounded-full"></div>
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 max-w-6xl mx-auto px-4">
@@ -262,8 +274,8 @@ const About: React.FC<AboutProps> = ({ user }) => {
                   <img src={m.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                 </div>
               </div>
-              <h3 className="font-black text-brand-dark uppercase text-sm mb-1 tracking-tight">{m.name}</h3>
-              <p className="text-[8px] font-black text-brand-lime uppercase tracking-[0.2em]">{m.role}</p>
+              <h3 className="font-black text-brand-dark uppercase text-base mb-1 tracking-tighter leading-none">{m.name}</h3>
+              <p className="text-[9px] font-black text-brand-lime uppercase tracking-[0.2em]">{m.role}</p>
             </div>
           ))}
         </div>

@@ -68,6 +68,7 @@ const translations: Record<string, string> = {
   'about.structure.assembly': 'Asambleja e Anëtarëve',
   'about.structure.board': 'Bordi i Drejtorëve',
   'about.structure.director': 'Drejtori Ekzekutiv',
+  'about.staff.title': 'Ekipi ynë',
   'about.structure.staff': 'Stafi i Zyrës',
   'about.structure.volunteers': 'Vullnetarët tanë',
   'about.structure.volunteers.desc': 'Vullnetarët janë zemra e organizatës sonë, duke kontribuar në çdo projekt me pasion dhe përkushtim.',
