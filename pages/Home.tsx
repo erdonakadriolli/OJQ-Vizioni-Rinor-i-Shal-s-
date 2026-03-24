@@ -16,6 +16,13 @@ const Home: React.FC = () => {
   const [partners, setPartners] = useState<Partner[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  const stats = [
+    { value: '500+', label: t('stats.trained'), color: 'text-brand-pink', iconName: 'Star', bg: 'bg-brand-pink/5' },
+    { value: '25+', label: t('stats.completed'), color: 'text-brand-lime', iconName: 'Globe', bg: 'bg-brand-lime/5' },
+    { value: '100+', label: t('stats.volunteers'), color: 'text-brand-cyan', iconName: 'UserPlus', bg: 'bg-brand-cyan/5' },
+    { value: 'Lipjan', label: t('stats.region'), color: 'text-brand-orange', iconName: 'Sparkles', bg: 'bg-brand-orange/5' }
+  ];
+
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (user && user.email === 'donakadriolli@gmail.com') {
@@ -75,6 +82,7 @@ const Home: React.FC = () => {
              <div className="absolute inset-0 bg-brand-lime rounded-[4rem] -rotate-3 -translate-x-4 -translate-y-4 opacity-10"></div>
              <div className="relative h-full w-full rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white">
                 <img 
+               /* qitu o foto te home me ndrru*/ 
                   src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1200" 
                   alt="Rinia e Shalës" 
                   className="w-full h-full object-cover transition-all duration-1000"
@@ -99,20 +107,21 @@ const Home: React.FC = () => {
       {/* Stats Section - Color Coded based on Logo */}
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
-          {[
-            { value: '500+', label: t('stats.trained'), color: 'text-brand-pink', icon: Star, bg: 'bg-brand-pink/5' },
-            { value: '25+', label: t('stats.completed'), color: 'text-brand-lime', icon: Globe, bg: 'bg-brand-lime/5' },
-            { value: '100+', label: t('stats.volunteers'), color: 'text-brand-cyan', icon: UserPlus, bg: 'bg-brand-cyan/5' },
-            { value: 'Lipjan', label: t('stats.region'), color: 'text-brand-orange', icon: Sparkles, bg: 'bg-brand-orange/5' }
-          ].map((stat, i) => (
-            <div key={i} className="flex flex-col items-center text-center p-10 rounded-[3.5rem] bg-white border border-slate-50 shadow-sm hover:shadow-2xl transition-all group">
-              <div className={`mb-8 p-5 rounded-2xl ${stat.bg} group-hover:scale-110 transition-transform ${stat.color}`}>
-                <stat.icon className="h-7 w-7" />
+          {stats.map((stat, i) => {
+            const IconComponent = ({
+              Star, Globe, UserPlus, Sparkles
+            } as any)[stat.iconName] || Star;
+
+            return (
+              <div key={i} className="flex flex-col items-center text-center p-10 rounded-[3.5rem] bg-white border border-slate-50 shadow-sm hover:shadow-2xl transition-all group">
+                <div className={`mb-8 p-5 rounded-2xl ${stat.bg} group-hover:scale-110 transition-transform ${stat.color}`}>
+                  <IconComponent className="h-7 w-7" />
+                </div>
+                <div className={`text-5xl font-black uppercase tracking-tighter mb-2 ${stat.color}`}>{stat.value}</div>
+                <div className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{stat.label}</div>
               </div>
-              <div className={`text-5xl font-black uppercase tracking-tighter mb-2 ${stat.color}`}>{stat.value}</div>
-              <div className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{stat.label}</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 

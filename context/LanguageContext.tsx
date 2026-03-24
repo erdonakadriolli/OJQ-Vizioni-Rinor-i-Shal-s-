@@ -22,15 +22,32 @@ const translations: Record<string, string> = {
   'hero.subtitle': 'Vizioni Rinor i Shalës',
   'hero.title1': 'Fuqizimi i Rinisë',
   'hero.title2': 'për të ardhmen',
-  'hero.desc': 'VRSH është një organizatë joqeveritare rinore e përkushtuar fuqizimit të të rinjve dhe zhvillimit të komunitetit përmes edukimit, inovacionit dhe pjesëmarrjes aktive qytetare në Shalë dhe rrethinë.',
+  'hero.desc': 'Vizioni Rinor i Shalës (Youth Vision of Shala) është një organizatë e drejtuar nga të rinjtë që vepron jashtë fshatit Shalë, duke u shërbyer të rinjve dhe komuniteteve në Lipjan dhe më gjerë.',
   'hero.apply': 'Bëhu Vullnetar',
   'hero.projects': 'Eksploro Projektet',
 
   // Faqja Rreth Nesh
+  'about.hero.badge': 'RRETH NESH',
+  'about.hero.title1': 'FUQIZIMI I',
+  'about.hero.title2': 'GJENERATËS',
+  'about.hero.title3': 'SË RE',
   'about.main.title': 'Vizioni Rinor i Shalës (VRSH)',
-  'about.main.desc': 'Misioni ynë është të krijojmë një ambient mbështetës ku të rinjtë mund të zhvillojnë potencialin e tyre të plotë dhe të kontribuojnë në mënyrë aktive në shoqëri.',
+  'about.main.desc': 'Vizioni Rinor i Shalës (Youth Vision of Shala) është një organizatë e drejtuar nga të rinjtë që vepron jashtë fshatit Shalë, duke u shërbyer të rinjve dhe komuniteteve në Lipjan dhe më gjerë. Ne jemi të përkushtuar për të arritur të rinjtë në zona rurale dhe të vështira për t’u arritur, duke i fuqizuar ata të qëndrojnë për veten dhe të tjerët.',
   'about.main.goal': 'Ne synojmë të krijojmë mundësi konkrete për të rinjtë që të zhvillojnë aftësi personale, profesionale dhe digjitale, si dhe të nxisim lidershipin rinor dhe aktivizmin komunitar.',
   
+  'about.vision.title': 'Vizioni',
+  'about.vision.text': 'Vizioni ynë është një botë në të cilën të rinjtë janë të fuqizuar të ngrihen për veten dhe të tjerët.',
+  'about.mission.title': 'Misioni',
+  'about.mission.text': 'Misioni ynë është të avancojmë interesat e përbashkëta të të rinjve duke zhvilluar kapacitetet e tyre dhe duke rritur pjesëmarrjen e tyre në vendimmarrje.',
+  
+  'about.programs.title': 'Programet',
+  'about.programs.1.title': 'Zhvillimi i të rinjve',
+  'about.programs.1.desc': 'përqendrohet në ndërtimin e kapaciteteve të të rinjve përmes edukimit formal dhe joformal. Kjo përfshin zhvillimin e aftësive të buta dhe atyre jetësore te të rinjtë, si mendimi kritik dhe ndërtimi i vetëbesimit, si dhe ofrimin e trajnimeve tematike mbi tema si dezinformimi dhe gjuha e urrejtjes, trajnime profesionale ose në fushën e IT-së, bazuar në nevojat e identifikuara.',
+  'about.programs.2.title': 'Pjesëmarrja e të rinjve',
+  'about.programs.2.desc': 'përqendrohet në rritjen e rolit dhe angazhimit të të rinjve. Kjo përfshin zhvillimin e aftësive të tyre për të kontribuar në mënyrë domethënëse në avokim dhe vendimmarrje, si dhe lehtësimin e angazhimit të tyre si në nivelin institucional ashtu edhe në atë të shoqërisë civile.',
+  'about.programs.3.title': 'Qëndrueshmëria',
+  'about.programs.3.desc': 'përqendrohet në krijimin e një mjedisi mundësues që u lejon të rinjve të zhvillohen. Ne kontribuojmë në krijimin e një mjedisi të sigurt për të rinjtë, që inkurajon rritjen dhe lehtëson ndjenjën e përkatësisë.',
+
   'about.fields.title': 'Fushat Kryesore të Veprimit',
   'about.fields.1': 'Fuqizimi i të rinjve dhe lidershipi rinor',
   'about.fields.2': 'Edukimi joformal dhe zhvillimi profesional',
@@ -39,7 +56,7 @@ const translations: Record<string, string> = {
   'about.fields.5': 'Barazia gjinore dhe përfshirja sociale',
 
   'about.activities.title': 'Aktivitetet tona',
-  'about.activities.desc': 'VRS zbaton projekte të ndryshme të fokusuara në trajnime, punëtori dhe fushata vetëdijesimi për të rinjtë.',
+  'about.activities.desc': 'VRSH zbaton projekte të ndryshme të fokusuara në trajnime, punëtori dhe fushata vetëdijesimi për të rinjtë.',
   'about.activities.list1': 'Trajnime për aftësi të buta (soft skills)',
   'about.activities.list2': 'Kurse profesionale në teknologji dhe dizajm',
   'about.activities.list3': 'Punëtori edukative dhe forume rinore',

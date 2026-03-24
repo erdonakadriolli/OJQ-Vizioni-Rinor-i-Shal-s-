@@ -36,91 +36,89 @@ const About: React.FC<AboutProps> = ({ user }) => {
     <div className="space-y-24 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20">
       {/* Premium Hero Mission Split */}
       <section className="grid lg:grid-cols-12 gap-16 items-center pt-8">
-        <div className="lg:col-span-5 space-y-8">
+        <div className="lg:col-span-7 space-y-8">
           <div className="inline-flex items-center space-x-2 px-3 py-1 bg-brand-pink/5 text-brand-pink rounded-full text-[8px] font-black uppercase tracking-[0.4em]">
             <Zap className="h-3 w-3 fill-current" />
             <span>{t('about.hero.badge')}</span>
           </div>
-          <h1 className="text-4xl md:text-6xl text-brand-dark uppercase tracking-tighter leading-[0.9]">
+          <h1 className="text-4xl md:text-7xl text-brand-dark uppercase tracking-tighter leading-[0.9] font-black">
             <EditableText translationKey="about.hero.title1" user={user} /> <br/>
             <span className="text-brand-pink italic underline decoration-brand-lime/30 underline-offset-8">
               <EditableText translationKey="about.hero.title2" user={user} />
             </span> <br/>
             <EditableText translationKey="about.hero.title3" user={user} />
           </h1>
-          <p className="text-lg text-slate-500 font-medium leading-relaxed">
+          <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-4xl">
             <EditableText translationKey="about.main.desc" user={user} multiline />
           </p>
-          <div className="flex items-center space-x-4 pt-4">
-             <div className="w-12 h-12 rounded-2xl bg-brand-dark flex items-center justify-center text-white shadow-xl shadow-brand-dark/20">
-                <Target className="h-6 w-6" />
-             </div>
-             <div className="h-px flex-1 bg-slate-200"></div>
-          </div>
-          
-          {/* Mission Image */}
-          <div className="pt-8">
-            <EditableImage 
-              translationKey="about.mission.image" 
-              user={user} 
-              className="w-full h-64 rounded-[2.5rem] shadow-xl"
-              alt="Misioni ynë"
-            />
+        </div>
+        <div className="lg:col-span-5">
+          <div className="relative group">
+            <div className="absolute -inset-4 bg-brand-pink/10 rounded-[3rem] blur-2xl group-hover:bg-brand-pink/20 transition-all duration-500"></div>
+            <div className="relative aspect-[4/5] rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl bg-slate-100">
+              <EditableImage 
+                translationKey="about.hero.image" 
+                user={user} 
+                className="w-full h-full object-cover"
+                defaultImage="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800"
+              />
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Micro-Bento Compact Grid */}
-        <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="col-span-2 micro-bento-card bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col justify-between group">
-            <div className="w-10 h-10 bg-brand-pink/10 rounded-xl flex items-center justify-center text-brand-pink mb-12 group-hover:scale-110 transition-transform">
-              <Award className="h-5 w-5" />
-            </div>
-            <div>
-              <h4 className="text-lg font-black text-brand-dark uppercase tracking-tight mb-2">
-                <EditableText translationKey="about.fields.1" user={user} />
+      {/* Vision & Mission Split */}
+      <section className="grid md:grid-cols-2 gap-8">
+        <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm group hover:shadow-xl transition-all">
+          <div className="w-12 h-12 bg-brand-pink/10 rounded-2xl flex items-center justify-center text-brand-pink mb-8 group-hover:scale-110 transition-transform">
+            <Target className="h-6 w-6" />
+          </div>
+          <h3 className="text-2xl font-black text-brand-dark uppercase tracking-tight mb-4">
+            <EditableText translationKey="about.vision.title" user={user} />
+          </h3>
+          <p className="text-slate-500 font-medium leading-relaxed">
+            <EditableText translationKey="about.vision.text" user={user} multiline />
+          </p>
+        </div>
+        <div className="bg-brand-dark p-10 rounded-[3rem] text-white group hover:shadow-xl transition-all relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-brand-lime/20 blur-3xl -mr-16 -mt-16"></div>
+          <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-brand-lime mb-8 group-hover:scale-110 transition-transform">
+            <Rocket className="h-6 w-6" />
+          </div>
+          <h3 className="text-2xl font-black uppercase tracking-tight mb-4">
+            <EditableText translationKey="about.mission.title" user={user} />
+          </h3>
+          <p className="text-slate-300 font-medium leading-relaxed">
+            <EditableText translationKey="about.mission.text" user={user} multiline />
+          </p>
+        </div>
+      </section>
+
+      {/* Programs Section */}
+      <section className="space-y-12">
+        <div className="flex flex-col items-center text-center space-y-4">
+          <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter">
+            <EditableText translationKey="about.programs.title" user={user} />
+          </h2>
+          <div className="w-24 h-1 bg-brand-pink rounded-full"></div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="bg-slate-50/50 p-8 rounded-[2.5rem] border border-slate-100 hover:bg-white hover:shadow-xl transition-all group">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform ${
+                i === 1 ? 'bg-brand-pink' : i === 2 ? 'bg-brand-cyan' : 'bg-brand-orange'
+              }`}>
+                {i === 1 ? <Award className="h-5 w-5" /> : i === 2 ? <Users className="h-5 w-5" /> : <Shield className="h-5 w-5" />}
+              </div>
+              <h4 className="text-xl font-black text-brand-dark uppercase tracking-tight mb-4">
+                <EditableText translationKey={`about.programs.${i}.title`} user={user} />
               </h4>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                <EditableText translationKey="about.main.goal" user={user} multiline />
+              <p className="text-sm text-slate-500 font-medium leading-relaxed">
+                <EditableText translationKey={`about.programs.${i}.desc`} user={user} multiline />
               </p>
             </div>
-          </div>
-
-          <div className="col-span-1 micro-bento-card bg-brand-dark p-8 rounded-[2.5rem] text-white flex flex-col justify-between group relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-lime/20 blur-3xl -mr-16 -mt-16"></div>
-            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-brand-lime mb-12">
-              <Rocket className="h-5 w-5" />
-            </div>
-            <h4 className="text-sm font-black uppercase tracking-tight leading-tight">
-              <EditableText translationKey="about.fields.2" user={user} />
-            </h4>
-          </div>
-
-          <div className="micro-bento-card bg-brand-cyan/5 p-6 rounded-[2rem] border border-brand-cyan/10 group hover:bg-brand-cyan hover:text-white transition-all">
-             <div className="w-8 h-8 bg-brand-cyan rounded-lg flex items-center justify-center text-white mb-8 group-hover:bg-white group-hover:text-brand-cyan">
-               <Sparkles className="h-4 w-4" />
-             </div>
-             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">
-               <EditableText translationKey="about.fields.3" user={user} />
-             </h4>
-          </div>
-
-          <div className="micro-bento-card bg-brand-orange/5 p-6 rounded-[2rem] border border-brand-orange/10 group hover:bg-brand-orange hover:text-white transition-all">
-             <div className="w-8 h-8 bg-brand-orange rounded-lg flex items-center justify-center text-white mb-8 group-hover:bg-white group-hover:text-brand-orange">
-               <Users className="h-4 w-4" />
-             </div>
-             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">
-               <EditableText translationKey="about.fields.4" user={user} />
-             </h4>
-          </div>
-
-          <div className="micro-bento-card bg-brand-pink/5 p-6 rounded-[2rem] border border-brand-pink/10 group hover:bg-brand-pink hover:text-white transition-all">
-             <div className="w-8 h-8 bg-brand-pink rounded-lg flex items-center justify-center text-white mb-8 group-hover:bg-white group-hover:text-brand-pink">
-               <Shield className="h-4 w-4" />
-             </div>
-             <h4 className="text-[9px] font-black uppercase tracking-widest leading-tight">
-               <EditableText translationKey="about.fields.5" user={user} />
-             </h4>
-          </div>
+          ))}
         </div>
       </section>
 

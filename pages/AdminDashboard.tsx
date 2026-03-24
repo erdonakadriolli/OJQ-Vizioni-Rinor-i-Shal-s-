@@ -6,7 +6,8 @@ import {
   Facebook, Instagram, Linkedin, Calendar, Sparkles, Loader2,
   CheckCircle, XCircle, Eye, FileText, ExternalLink, Image as ImageIcon,
   Save, Globe, Search as SearchIcon, Filter, Upload, File,
-  Home, Info, Target, FolderKanban as ProjectIcon, Handshake, MessageSquare
+  Home, Info, Target, FolderKanban as ProjectIcon, Handshake, MessageSquare,
+  Star, UserPlus
 } from 'lucide-react';
 import { getDb, saveDb } from '../services/mockDb';
 import { Project, ApplicationStatus, ProjectStatus, NewsItem, StaffMember, VolunteerApplication, Partner } from '../types';
@@ -16,7 +17,7 @@ import { db as firestore, auth } from '../firebase';
 import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'applications' | 'news' | 'staff' | 'home' | 'about' | 'mission' | 'partners'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'applications' | 'news' | 'staff' | 'home' | 'about' | 'mission' | 'partners' | 'stats'>('overview');
   const [db, setDb] = useState(getDb());
   const { t, language } = useLanguage();
   
@@ -343,6 +344,7 @@ const AdminDashboard: React.FC = () => {
               { id: 'news', icon: Newspaper, label: t('admin.news'), color: 'text-brand-lime', bg: 'hover:bg-brand-lime/10' },
               { id: 'staff', icon: Briefcase, label: t('admin.staff'), color: 'text-brand-blue', bg: 'hover:bg-brand-blue/10' },
               { id: 'partners', icon: Handshake, label: t('admin.partners'), color: 'text-brand-orange', bg: 'hover:bg-brand-orange/10' },
+              { id: 'stats', icon: Star, label: 'Statistikat', color: 'text-brand-pink', bg: 'hover:bg-brand-pink/10' },
               { id: 'applications', icon: Users, label: t('admin.applications'), color: 'text-brand-orange', bg: 'hover:bg-brand-orange/10' },
             ].map(item => (
               <button 
@@ -676,6 +678,79 @@ const AdminDashboard: React.FC = () => {
                     )}
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Stats Tab */}
+          {activeTab === 'stats' && (
+            <div className="space-y-10 animate-in fade-in">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tight">Statistikat e Organizatës</h1>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Menaxhoni shifrat kryesore në faqen kryesore</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {(db.stats || []).map((stat, idx) => (
+                  <div key={stat.id} className="bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-100 space-y-8 group hover:shadow-xl transition-all">
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center shadow-inner`}>
+                        {(() => {
+                          const Icon = { Star, Globe, UserPlus, Sparkles }[stat.iconName] || Star;
+                          return <Icon className="h-7 w-7" />;
+                        })()}
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Statistika {idx + 1}</span>
+                        <h3 className="font-black text-brand-dark uppercase tracking-tight">Karta {idx + 1}</h3>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Vlera (p.sh. 500+)</label>
+                        <input 
+                          type="text" 
+                          className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-black text-xl text-brand-dark outline-none focus:ring-4 focus:ring-brand-pink/10 transition-all"
+                          value={stat.value}
+                          onChange={(e) => {
+                            const newStats = [...db.stats];
+                            newStats[idx] = { ...newStats[idx], value: e.target.value };
+                            setDb({ ...db, stats: newStats });
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Përshkrimi (p.sh. TË RINJ TË TRAJNUAR)</label>
+                        <input 
+                          type="text" 
+                          className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm text-slate-500 outline-none focus:ring-4 focus:ring-brand-pink/10 transition-all"
+                          value={stat.label}
+                          onChange={(e) => {
+                            const newStats = [...db.stats];
+                            newStats[idx] = { ...newStats[idx], label: e.target.value };
+                            setDb({ ...db, stats: newStats });
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-end pt-6">
+                <button 
+                  onClick={() => {
+                    saveDb(db);
+                    setSuccessMessage('Statistikat u ruajtën me sukses!');
+                    setTimeout(() => setSuccessMessage(null), 3000);
+                  }}
+                  className="px-12 py-5 bg-brand-dark text-white rounded-full font-black uppercase text-xs tracking-widest shadow-2xl shadow-brand-dark/20 hover:scale-105 active:scale-95 transition-all flex items-center"
+                >
+                  <Save className="h-5 w-5 mr-3" /> Ruaj të gjitha Ndryshimet
+                </button>
               </div>
             </div>
           )}
