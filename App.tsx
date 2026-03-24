@@ -161,9 +161,9 @@ const App: React.FC = () => {
           <Navbar user={user} onLogout={handleLogout} />
           <main className="flex-grow">
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/about/:section" element={<About />} />
+              <Route path="/" element={<Home user={user} />} />
+              <Route path="/about" element={<About user={user} />} />
+              <Route path="/about/:section" element={<About user={user} />} />
               <Route path="/news" element={<News />} />
               <Route path="/news/:category" element={<News />} />
               <Route path="/projects" element={<Projects user={user} />} />
