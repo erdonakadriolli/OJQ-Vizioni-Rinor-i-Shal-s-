@@ -2,37 +2,45 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  ArrowRight, UserPlus, Bot, MessageSquare, Sparkles, Star, Globe, Shield, Handshake
+  ArrowRight, UserPlus, Bot, MessageSquare, Sparkles, Star, Globe, Shield, Handshake,
+  Target, Heart, Users, Briefcase, GraduationCap, Trophy
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
-import { getDb } from '../services/mockDb';
-import { Partner } from '../types';
-import { db as firestoreDb, auth } from '../firebase';
-import { collection } from 'firebase/firestore';
+import { Partner, Stat } from '../types';
+import { db as firestoreDb, auth, isAdmin as checkIsAdmin } from '../firebase';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
   const [partners, setPartners] = useState<Partner[]>([]);
-  const [stats, setStats] = useState<any[]>([]);
+  const [stats, setStats] = useState<Stat[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-      if (user && user.email === 'donakadriolli@gmail.com') {
-        setIsAdmin(true);
-      } else {
-        setIsAdmin(false);
-      }
+      setIsAdmin(checkIsAdmin(user));
     });
 
     return () => unsubscribeAuth();
   }, []);
 
   useEffect(() => {
-    const db = getDb();
-    setPartners(db.partners || []);
-    setStats(db.stats || []);
+    const partnersQuery = query(collection(firestoreDb, 'partners'), orderBy('name'));
+    const unsubscribePartners = onSnapshot(partnersQuery, (snapshot) => {
+      setPartners(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Partner)));
+    });
+
+    const statsQuery = query(collection(firestoreDb, 'stats'), orderBy('label'));
+    const unsubscribeStats = onSnapshot(statsQuery, (snapshot) => {
+      setStats(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Stat)));
+    });
+
+    return () => {
+      unsubscribePartners();
+      unsubscribeStats();
+    };
   }, []);
 
   return (
@@ -104,17 +112,24 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
           {stats.map((stat, i) => {
             const IconComponent = ({
-              Star, Globe, UserPlus, Sparkles
+              Star, Globe, UserPlus, Sparkles, Target, Heart, Users, Briefcase, GraduationCap, Trophy
             } as any)[stat.iconName] || Star;
 
             return (
-              <div key={i} className="flex flex-col items-center text-center p-10 rounded-[3.5rem] bg-white border border-slate-50 shadow-sm hover:shadow-2xl transition-all group">
+              <motion.div 
+                key={i} 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="flex flex-col items-center text-center p-10 rounded-[3.5rem] bg-white border border-slate-50 shadow-sm hover:shadow-2xl transition-all group"
+              >
                 <div className={`mb-8 p-5 rounded-2xl ${stat.bg} group-hover:scale-110 transition-transform ${stat.color}`}>
                   <IconComponent className="h-7 w-7" />
                 </div>
                 <div className={`text-5xl font-black uppercase tracking-tighter mb-2 ${stat.color}`}>{stat.value}</div>
                 <div className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{stat.label}</div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

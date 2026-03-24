@@ -1,4 +1,103 @@
 {
-  "entities": {},
-  "firestore": {}
+  "entities": {
+    "StaffMember": {
+      "title": "Staff Member",
+      "description": "A member of the NGO staff or volunteer team",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name of the staff member" },
+        "role": { "type": "string", "description": "Role or position in the organization" },
+        "category": { "type": "string", "description": "Category (e.g., Executive Director, Board of Directors, Volunteers)" },
+        "bio": { "type": "string", "description": "Short biography" },
+        "image": { "type": "string", "description": "URL or base64 of the profile image" },
+        "socials": {
+          "type": "object",
+          "properties": {
+            "facebook": { "type": "string" },
+            "instagram": { "type": "string" },
+            "linkedin": { "type": "string" }
+          }
+        }
+      },
+      "required": ["name", "role", "category"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "An NGO project",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "longDescription": { "type": "string" },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["Active", "Completed", "Upcoming"] },
+        "volunteerCount": { "type": "integer" },
+        "image": { "type": "string" },
+        "gallery": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["title", "description", "startDate", "status", "image"]
+    },
+    "NewsItem": {
+      "title": "News Item",
+      "description": "A news article or publication",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "datePosted": { "type": "string" },
+        "category": { "type": "string" },
+        "fileUrl": { "type": "string" },
+        "fileName": { "type": "string" }
+      },
+      "required": ["title", "content", "datePosted", "category"]
+    },
+    "Partner": {
+      "title": "Partner",
+      "description": "A partner or donor organization",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "logo": { "type": "string" },
+        "website": { "type": "string" }
+      },
+      "required": ["name", "logo"]
+    },
+    "Stat": {
+      "title": "Stat",
+      "description": "A key statistic for the home page",
+      "type": "object",
+      "properties": {
+        "value": { "type": "string" },
+        "label": { "type": "string" },
+        "iconName": { "type": "string" },
+        "color": { "type": "string" },
+        "bg": { "type": "string" }
+      },
+      "required": ["value", "label", "iconName", "color", "bg"]
+    },
+    "VolunteerApplication": {
+      "title": "Volunteer Application",
+      "description": "An application to join as a volunteer",
+      "type": "object",
+      "properties": {
+        "userName": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "phone": { "type": "string" },
+        "interests": { "type": "array", "items": { "type": "string" } },
+        "motivation": { "type": "string" },
+        "status": { "type": "string", "enum": ["Pending", "Approved", "Rejected"] },
+        "dateApplied": { "type": "string" }
+      },
+      "required": ["userName", "userEmail", "phone", "status", "dateApplied"]
+    }
+  },
+  "firestore": {
+    "staff": { "schema": "StaffMember", "description": "Collection of staff members" },
+    "projects": { "schema": "Project", "description": "Collection of projects" },
+    "news": { "schema": "NewsItem", "description": "Collection of news items" },
+    "partners": { "schema": "Partner", "description": "Collection of partners" },
+    "stats": { "schema": "Stat", "description": "Collection of statistics" },
+    "applications": { "schema": "VolunteerApplication", "description": "Collection of volunteer applications" }
+  }
 }

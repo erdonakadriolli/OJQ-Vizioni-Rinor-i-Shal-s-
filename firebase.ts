@@ -9,6 +9,16 @@ export const auth = getAuth(app);
 
 export const logout = () => signOut(auth);
 
+export const isAdmin = (user: any) => {
+  const adminEmails = [
+    'donakadriolli@gmail.com',
+    'vizioniRinoriShales@gmail.com',
+    'leotrimpajaziti17@gmail.com',
+    'admin@vizionirinorishales.org'
+  ];
+  return user && adminEmails.includes(user.email);
+};
+
 // Test connection
 async function testConnection() {
   try {

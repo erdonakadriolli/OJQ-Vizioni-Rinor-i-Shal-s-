@@ -119,7 +119,8 @@ const App: React.FC = () => {
       if (firebaseUser) {
         // If we have a firebase user but no app user, or they differ, sync them
         // Note: We prioritize the admin email for the role
-        const isAdmin = firebaseUser.email === 'donakadriolli@gmail.com';
+        const adminEmails = ['donakadriolli@gmail.com', 'vizioniRinoriShales@gmail.com', 'leotrimpajaziti17@gmail.com', 'admin@vizionirinorishales.org'];
+        const isAdmin = adminEmails.includes(firebaseUser.email || '');
         const syncedUser: User = {
           id: firebaseUser.uid,
           email: firebaseUser.email || '',

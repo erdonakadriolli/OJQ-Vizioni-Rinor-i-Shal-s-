@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserCheck, Send, CheckCircle, Heart, Star, Sparkles, MapPin } from 'lucide-react';
-import { getDb, saveDb } from '../services/mockDb';
+import { db } from '../firebase';
+import { collection, addDoc } from 'firebase/firestore';
 import { VolunteerApplication, ApplicationStatus } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -47,26 +48,28 @@ const VolunteerApply: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const db = getDb();
     
-    const newApplication: VolunteerApplication = {
-      id: 'app_' + Date.now(),
-      userName: formData.name,
-      userEmail: formData.email,
-      phone: formData.phone,
-      interests: formData.interests,
-      motivation: formData.motivation,
-      status: ApplicationStatus.PENDING,
-      dateApplied: new Date().toISOString().split('T')[0]
-    };
+    try {
+      const newApplication = {
+        userName: formData.name,
+        userEmail: formData.email,
+        phone: formData.phone,
+        interests: formData.interests,
+        motivation: formData.motivation,
+        status: ApplicationStatus.PENDING,
+        dateApplied: new Date().toISOString().split('T')[0]
+      };
 
-    const updatedApplications = [...(db.applications || []), newApplication];
-    saveDb({ ...db, applications: updatedApplications });
-    
-    setIsSubmitted(true);
-    window.scrollTo(0, 0);
+      await addDoc(collection(db, 'applications'), newApplication);
+      
+      setIsSubmitted(true);
+      window.scrollTo(0, 0);
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      alert("Pati një problem gjatë dërgimit të aplikimit. Ju lutem provoni përsëri.");
+    }
   };
 
   if (isSubmitted) {

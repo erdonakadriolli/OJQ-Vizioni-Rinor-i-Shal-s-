@@ -9,16 +9,20 @@ import {
   Home, Info, Target, FolderKanban as ProjectIcon, Handshake, MessageSquare,
   Star, UserPlus
 } from 'lucide-react';
-import { getDb, saveDb } from '../services/mockDb';
 import { Project, ApplicationStatus, ProjectStatus, NewsItem, StaffMember, VolunteerApplication, Partner } from '../types';
 import { GoogleGenAI } from "@google/genai";
 import { useLanguage } from '../context/LanguageContext';
-import { db as firestore, auth } from '../firebase';
+import { db as firestore, auth, handleFirestoreError, OperationType } from '../firebase';
 import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
 
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'applications' | 'news' | 'staff' | 'home' | 'about' | 'mission' | 'partners' | 'stats'>('overview');
-  const [db, setDb] = useState(getDb());
+  const [firestoreStaff, setFirestoreStaff] = useState<StaffMember[]>([]);
+  const [firestoreProjects, setFirestoreProjects] = useState<Project[]>([]);
+  const [firestoreNews, setFirestoreNews] = useState<NewsItem[]>([]);
+  const [firestorePartners, setFirestorePartners] = useState<Partner[]>([]);
+  const [firestoreStats, setFirestoreStats] = useState<any[]>([]);
+  const [firestoreApplications, setFirestoreApplications] = useState<VolunteerApplication[]>([]);
   const { t, language } = useLanguage();
   
   const [showProjectModal, setShowProjectModal] = useState(false);
@@ -80,19 +84,110 @@ const AdminDashboard: React.FC = () => {
   });
 
   useEffect(() => {
-    setDb(getDb());
-  }, []);
+    // Listen to Firestore staff
+    const qStaff = query(collection(firestore, 'staff'));
+    const unsubscribeStaff = onSnapshot(qStaff, (snapshot) => {
+      const staffData: StaffMember[] = [];
+      snapshot.forEach((doc) => {
+        staffData.push({ id: doc.id, ...doc.data() } as StaffMember);
+      });
+      setFirestoreStaff(staffData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'staff'));
 
-  const updateDb = (newDb: any) => {
-    setDb(newDb);
-    saveDb(newDb);
-    setSuccessMessage('Veprimi u krye me sukses!');
-    setTimeout(() => setSuccessMessage(null), 3000);
-  };
+    // Listen to Firestore projects
+    const qProjects = query(collection(firestore, 'projects'), orderBy('startDate', 'desc'));
+    const unsubscribeProjects = onSnapshot(qProjects, (snapshot) => {
+      const projectsData: Project[] = [];
+      snapshot.forEach((doc) => {
+        projectsData.push({ id: doc.id, ...doc.data() } as Project);
+      });
+      setFirestoreProjects(projectsData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'projects'));
+
+    // Listen to Firestore news
+    const qNews = query(collection(firestore, 'news'), orderBy('datePosted', 'desc'));
+    const unsubscribeNews = onSnapshot(qNews, (snapshot) => {
+      const newsData: NewsItem[] = [];
+      snapshot.forEach((doc) => {
+        newsData.push({ id: doc.id, ...doc.data() } as NewsItem);
+      });
+      setFirestoreNews(newsData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'news'));
+
+    // Listen to Firestore partners
+    const qPartners = query(collection(firestore, 'partners'), orderBy('name'));
+    const unsubscribePartners = onSnapshot(qPartners, (snapshot) => {
+      const partnersData: Partner[] = [];
+      snapshot.forEach((doc) => {
+        partnersData.push({ id: doc.id, ...doc.data() } as Partner);
+      });
+      setFirestorePartners(partnersData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'partners'));
+
+    // Listen to Firestore stats
+    const qStats = query(collection(firestore, 'stats'), orderBy('label'));
+    const unsubscribeStats = onSnapshot(qStats, (snapshot) => {
+      const statsData: any[] = [];
+      snapshot.forEach((doc) => {
+        statsData.push({ id: doc.id, ...doc.data() });
+      });
+      setFirestoreStats(statsData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'stats'));
+
+    // Listen to Firestore applications
+    const qApps = query(collection(firestore, 'applications'), orderBy('dateApplied', 'desc'));
+    const unsubscribeApps = onSnapshot(qApps, (snapshot) => {
+      const appsData: VolunteerApplication[] = [];
+      snapshot.forEach((doc) => {
+        appsData.push({ id: doc.id, ...doc.data() } as VolunteerApplication);
+      });
+      setFirestoreApplications(appsData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'applications'));
+    
+    return () => {
+      unsubscribeStaff();
+      unsubscribeProjects();
+      unsubscribeNews();
+      unsubscribePartners();
+      unsubscribeStats();
+      unsubscribeApps();
+    };
+  }, []);
 
   const showError = (msg: string) => {
     setErrorMessage(msg);
     setTimeout(() => setErrorMessage(null), 4000);
+  };
+
+  const compressImage = (base64Str: string, maxWidth = 800, maxHeight = 800, quality = 0.7): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = base64Str;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => resolve(base64Str); // Fallback to original if error
+    });
   };
 
   const handleFileRead = (file: File): Promise<string> => {
@@ -106,8 +201,8 @@ const AdminDashboard: React.FC = () => {
   const handleDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2.5 * 1024 * 1024) {
-        showError(language === 'AL' ? "Skedari shumë i madh (Max 2.5MB)." : "File too large (Max 2.5MB).");
+      if (file.size > 1 * 1024 * 1024) {
+        showError(language === 'AL' ? "Skedari shumë i madh (Max 1MB)." : "File too large (Max 1MB).");
         return;
       }
       const base64 = await handleFileRead(file);
@@ -126,19 +221,33 @@ const AdminDashboard: React.FC = () => {
     setShowPartnerModal(true);
   };
 
-  const handleSavePartner = () => {
+  const handleSavePartner = async () => {
     if (!partnerForm.name) return;
-    const dbData = getDb();
-    const newP: Partner = { 
-      id: editingPartner ? editingPartner.id : 'par_' + Date.now(), 
+    
+    const partnerData = {
       name: partnerForm.name,
       logo: partnerForm.logo || 'https://via.placeholder.com/150',
       website: partnerForm.website
     };
-    const updated = editingPartner ? (dbData.partners || []).map(p => p.id === editingPartner.id ? newP : p) : [...(dbData.partners || []), newP];
-    updateDb({ ...dbData, partners: updated });
-    setShowPartnerModal(false);
-    setEditingPartner(null);
+
+    try {
+      if (editingPartner) {
+        await updateDoc(doc(firestore, 'partners', editingPartner.id), partnerData);
+      } else {
+        await addDoc(collection(firestore, 'partners'), partnerData);
+      }
+      setSuccessMessage('Partneri u ruajt me sukses!');
+      setShowPartnerModal(false);
+      setEditingPartner(null);
+    } catch (err) {
+      console.error(err);
+      try {
+        handleFirestoreError(err, OperationType.WRITE, 'partners');
+      } catch (firestoreErr: any) {
+        const errData = JSON.parse(firestoreErr.message);
+        showError(`Gabim: ${errData.error}`);
+      }
+    }
   };
 
   const handleOpenStatsModal = (stat: any) => {
@@ -150,26 +259,36 @@ const AdminDashboard: React.FC = () => {
     setShowStatsModal(true);
   };
 
-  const handleSaveStat = () => {
+  const handleSaveStat = async () => {
     if (!editingStat) return;
-    const dbData = getDb();
-    const updatedStats = dbData.stats.map((s: any) => 
-      s.id === editingStat.id ? { ...s, value: statsForm.value, label: statsForm.label } : s
-    );
-    updateDb({ ...dbData, stats: updatedStats });
-    setShowStatsModal(false);
-    setEditingStat(null);
+    
+    const statData = {
+      value: statsForm.value,
+      label: statsForm.label
+    };
+
+    try {
+      await updateDoc(doc(firestore, 'stats', editingStat.id), statData);
+      setSuccessMessage('Statistika u përditësua!');
+      setShowStatsModal(false);
+      setEditingStat(null);
+    } catch (err) {
+      console.error(err);
+      try {
+        handleFirestoreError(err, OperationType.WRITE, 'stats');
+      } catch (firestoreErr: any) {
+        const errData = JSON.parse(firestoreErr.message);
+        showError(`Gabim: ${errData.error}`);
+      }
+    }
   };
 
   const handlePartnerLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1 * 1024 * 1024) {
-        showError(language === 'AL' ? "Logo shumë e madhe (Max 1MB)." : "Logo too large (Max 1MB).");
-        return;
-      }
       const base64 = await handleFileRead(file);
-      setPartnerForm(prev => ({ ...prev, logo: base64 }));
+      const compressed = await compressImage(base64, 400, 400, 0.8);
+      setPartnerForm(prev => ({ ...prev, logo: compressed }));
     }
   };
 
@@ -179,7 +298,8 @@ const AdminDashboard: React.FC = () => {
     const newImages: string[] = [];
     for (let i = 0; i < files.length; i++) {
       const base64 = await handleFileRead(files[i]);
-      newImages.push(base64);
+      const compressed = await compressImage(base64, 1200, 800, 0.7);
+      newImages.push(compressed);
     }
     setProjectForm(prev => ({ ...prev, gallery: [...prev.gallery, ...newImages] }));
   };
@@ -232,11 +352,10 @@ const AdminDashboard: React.FC = () => {
     setShowNewsModal(true);
   };
 
-  const handleSaveNews = () => {
+  const handleSaveNews = async () => {
     if (!newsForm.title) return;
-    const dbData = getDb();
-    const newItem: NewsItem = { 
-      id: editingNews ? editingNews.id : 'n_' + Date.now(), 
+    
+    const newsData = {
       title: newsForm.title,
       content: newsForm.content,
       datePosted: newsForm.datePosted,
@@ -244,10 +363,25 @@ const AdminDashboard: React.FC = () => {
       fileUrl: newsForm.fileUrl,
       fileName: newsForm.fileName
     };
-    const updated = editingNews ? dbData.news.map(n => n.id === editingNews.id ? newItem : n) : [...dbData.news, newItem];
-    updateDb({ ...dbData, news: updated });
-    setShowNewsModal(false);
-    setEditingNews(null);
+
+    try {
+      if (editingNews) {
+        await updateDoc(doc(firestore, 'news', editingNews.id), newsData);
+      } else {
+        await addDoc(collection(firestore, 'news'), newsData);
+      }
+      setSuccessMessage('Lajmi u ruajt me sukses!');
+      setShowNewsModal(false);
+      setEditingNews(null);
+    } catch (err) {
+      console.error(err);
+      try {
+        handleFirestoreError(err, OperationType.WRITE, 'news');
+      } catch (firestoreErr: any) {
+        const errData = JSON.parse(firestoreErr.message);
+        showError(`Gabim: ${errData.error}`);
+      }
+    }
   };
 
   const handleOpenProjectModal = (p?: Project) => {
@@ -268,11 +402,10 @@ const AdminDashboard: React.FC = () => {
     setShowProjectModal(true);
   };
 
-  const handleSaveProject = () => {
+  const handleSaveProject = async () => {
     if (!projectForm.title) return;
-    const dbData = getDb();
-    const newP: Project = { 
-      id: editingProject ? editingProject.id : 'p_' + Date.now(), 
+    
+    const projectData = {
       title: projectForm.title,
       description: projectForm.description,
       longDescription: projectForm.longDescription,
@@ -283,10 +416,25 @@ const AdminDashboard: React.FC = () => {
       volunteerCount: projectForm.volunteerCount,
       gallery: projectForm.gallery
     };
-    const updated = editingProject ? dbData.projects.map(p => p.id === editingProject.id ? newP : p) : [...dbData.projects, newP];
-    updateDb({ ...dbData, projects: updated });
-    setShowProjectModal(false);
-    setEditingProject(null);
+
+    try {
+      if (editingProject) {
+        await updateDoc(doc(firestore, 'projects', editingProject.id), projectData);
+      } else {
+        await addDoc(collection(firestore, 'projects'), projectData);
+      }
+      setSuccessMessage('Projekti u ruajt me sukses!');
+      setShowProjectModal(false);
+      setEditingProject(null);
+    } catch (err) {
+      console.error(err);
+      try {
+        handleFirestoreError(err, OperationType.WRITE, 'projects');
+      } catch (firestoreErr: any) {
+        const errData = JSON.parse(firestoreErr.message);
+        showError(`Gabim: ${errData.error}`);
+      }
+    }
   };
 
   const handleOpenStaffModal = (s?: StaffMember) => {
@@ -303,11 +451,15 @@ const AdminDashboard: React.FC = () => {
     setShowStaffModal(true);
   };
 
-  const handleSaveStaff = () => {
+  const handleSaveStaff = async () => {
     if (!staffForm.name) return;
-    const dbData = getDb();
-    const newS: StaffMember = { 
-      id: editingStaff ? editingStaff.id : 's_' + Date.now(), 
+    
+    if (!auth.currentUser) {
+      showError('Duhet të jeni të kyçur me Google për të ruajtur në DB');
+      return;
+    }
+
+    const staffData = {
       name: staffForm.name,
       role: staffForm.role,
       category: staffForm.category,
@@ -315,16 +467,41 @@ const AdminDashboard: React.FC = () => {
       image: staffForm.image || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
       socials: staffForm.socials
     };
-    const updated = editingStaff ? dbData.staff.map(s => s.id === editingStaff.id ? newS : s) : [...dbData.staff, newS];
-    updateDb({ ...dbData, staff: updated });
-    setShowStaffModal(false);
-    setEditingStaff(null);
+
+    try {
+      if (editingStaff) {
+        await updateDoc(doc(firestore, 'staff', editingStaff.id), staffData);
+      } else {
+        await addDoc(collection(firestore, 'staff'), staffData);
+      }
+      setSuccessMessage('Stafi u ruajt me sukses në DB!');
+      setShowStaffModal(false);
+      setEditingStaff(null);
+    } catch (err) {
+      console.error(err);
+      try {
+        handleFirestoreError(err, OperationType.WRITE, 'staff');
+      } catch (firestoreErr: any) {
+        const errData = JSON.parse(firestoreErr.message);
+        showError(`Gabim: ${errData.error}`);
+      }
+    }
   };
 
-  const handleAppAction = (appId: string, status: ApplicationStatus) => {
-    const updatedApps = db.applications.map(app => app.id === appId ? { ...app, status } : app);
-    updateDb({ ...db, applications: updatedApps });
-    setShowAppDetails(null);
+  const handleAppAction = async (appId: string, status: ApplicationStatus) => {
+    try {
+      await updateDoc(doc(firestore, 'applications', appId), { status });
+      setSuccessMessage('Statusi i aplikimit u përditësua!');
+      setShowAppDetails(null);
+    } catch (err) {
+      console.error(err);
+      try {
+        handleFirestoreError(err, OperationType.UPDATE, 'applications');
+      } catch (firestoreErr: any) {
+        const errData = JSON.parse(firestoreErr.message);
+        showError(`Gabim: ${errData.error}`);
+      }
+    }
   };
 
   const deleteItem = (type: string, id: string) => {
@@ -335,16 +512,21 @@ const AdminDashboard: React.FC = () => {
     if (!deleteConfirm) return;
     const { type, id } = deleteConfirm;
     
-    updateDb({ ...db, [type]: (db as any)[type].filter((item: any) => item.id !== id) });
+    try {
+      await deleteDoc(doc(firestore, type, id));
+      setSuccessMessage('Elementi u fshi me sukses!');
+    } catch (err) {
+      console.error(err);
+      try {
+        handleFirestoreError(err, OperationType.DELETE, type);
+      } catch (firestoreErr: any) {
+        const errData = JSON.parse(firestoreErr.message);
+        showError(`Gabim: ${errData.error}`);
+      }
+    }
     
     setDeleteConfirm(null);
   };
-
-  const filteredAdminNews = db.news.filter(n => {
-    const matchesSearch = n.title.toLowerCase().includes(newsSearch.toLowerCase());
-    const matchesFilter = newsFilter === 'All' || n.category === newsFilter;
-    return matchesSearch && matchesFilter;
-  });
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
@@ -425,11 +607,11 @@ const AdminDashboard: React.FC = () => {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { label: t('admin.projects'), value: db.projects.length, icon: ProjectIcon, color: 'text-brand-pink', bg: 'bg-brand-pink/10', border: 'border-brand-pink/20' },
-                  { label: t('admin.applications'), value: db.applications?.length || 0, icon: Users, color: 'text-brand-cyan', bg: 'bg-brand-cyan/10', border: 'border-brand-cyan/20' },
-                  { label: t('admin.staff'), value: db.staff.length, icon: Briefcase, color: 'text-brand-blue', bg: 'hover:bg-brand-blue/10', border: 'border-brand-blue/20' },
-                  { label: t('admin.partners'), value: db.partners?.length || 0, icon: Handshake, color: 'text-brand-orange', bg: 'hover:bg-brand-orange/10', border: 'border-brand-orange/20' },
-                  { label: t('admin.news'), value: db.news.length, icon: Newspaper, color: 'text-brand-lime', bg: 'hover:bg-brand-lime/10', border: 'border-brand-lime/20' },
+                  { label: t('admin.projects'), value: firestoreProjects.length, icon: ProjectIcon, color: 'text-brand-pink', bg: 'bg-brand-pink/10', border: 'border-brand-pink/20' },
+                  { label: t('admin.applications'), value: firestoreApplications.length, icon: Users, color: 'text-brand-cyan', bg: 'bg-brand-cyan/10', border: 'border-brand-cyan/20' },
+                  { label: t('admin.staff'), value: firestoreStaff.length, icon: Briefcase, color: 'text-brand-blue', bg: 'hover:bg-brand-blue/10', border: 'border-brand-blue/20' },
+                  { label: t('admin.partners'), value: firestorePartners.length, icon: Handshake, color: 'text-brand-orange', bg: 'hover:bg-brand-orange/10', border: 'border-brand-orange/20' },
+                  { label: t('admin.news'), value: firestoreNews.length, icon: Newspaper, color: 'text-brand-lime', bg: 'hover:bg-brand-lime/10', border: 'border-brand-lime/20' },
                 ].map((stat, i) => (
                   <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-1 transition-all group relative overflow-hidden">
                     <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-700 opacity-50`}></div>
@@ -531,7 +713,7 @@ const AdminDashboard: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
-                    {db.projects.map(p => (
+                    {firestoreProjects.map(p => (
                       <tr key={p.id} className="hover:bg-slate-50 transition-colors">
                         <td className="px-6 py-4 flex items-center space-x-3">
                            <img src={p.image} className="w-10 h-10 rounded-xl object-cover" />
@@ -584,7 +766,11 @@ const AdminDashboard: React.FC = () => {
                       </tr>
                     </thead>
                   <tbody className="divide-y divide-slate-50">
-                    {filteredAdminNews.map(n => (
+                    {firestoreNews.filter(n => {
+                      const matchesSearch = n.title.toLowerCase().includes(newsSearch.toLowerCase());
+                      const matchesFilter = newsFilter === 'All' || n.category === newsFilter;
+                      return matchesSearch && matchesFilter;
+                    }).map(n => (
                       <tr key={n.id} className="hover:bg-slate-50 transition-colors">
                         <td className="px-8 py-6 font-bold text-sm text-brand-dark line-clamp-1">{n.title}</td>
                         <td className="px-8 py-6">
@@ -619,7 +805,7 @@ const AdminDashboard: React.FC = () => {
                 </button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {db.staff.map(s => (
+                {firestoreStaff.map(s => (
                   <div key={s.id} className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden flex flex-col h-full">
                     <div className="absolute top-6 right-6 flex space-x-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
                       <button onClick={() => handleOpenStaffModal(s)} className="p-2.5 bg-white shadow-lg rounded-xl text-slate-400 hover:text-brand-cyan transition-colors"><Edit2 className="h-4 w-4" /></button>
@@ -687,7 +873,7 @@ const AdminDashboard: React.FC = () => {
                 </button>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {(db.partners || []).map(p => (
+                {firestorePartners.map(p => (
                   <div key={p.id} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden flex flex-col items-center text-center">
                     <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-all">
                       <button onClick={() => handleOpenPartnerModal(p)} className="p-2 text-slate-400 hover:text-brand-orange rounded-lg"><Edit2 className="h-3.5 w-3.5" /></button>
@@ -719,7 +905,7 @@ const AdminDashboard: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {(db.stats || []).map((stat, idx) => (
+                {firestoreStats.map((stat, idx) => (
                   <div key={stat.id} className="bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-100 space-y-8 group hover:shadow-xl transition-all relative overflow-hidden">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
@@ -772,7 +958,7 @@ const AdminDashboard: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
-                    {db.applications?.map(app => (
+                    {firestoreApplications.map(app => (
                       <tr key={app.id} className="hover:bg-slate-50 transition-colors">
                         <td className="px-8 py-6 font-bold text-sm text-brand-dark">{app.userName}</td>
                         <td className="px-8 py-6">
@@ -1029,7 +1215,8 @@ const AdminDashboard: React.FC = () => {
                       const file = e.target.files?.[0];
                       if (file) {
                         const base64 = await handleFileRead(file);
-                        setStaffForm(prev => ({...prev, image: base64}));
+                        const compressed = await compressImage(base64);
+                        setStaffForm(prev => ({...prev, image: compressed}));
                       }
                     }} />
                   </div>
@@ -1118,7 +1305,7 @@ const AdminDashboard: React.FC = () => {
                     <p className="text-[10px] font-black text-brand-cyan uppercase tracking-[0.2em] mb-3">Projekti i Synuar</p>
                     <div className="flex items-center space-x-3">
                       <FolderKanban className="h-5 w-5 text-brand-cyan" />
-                      <p className="font-black text-brand-dark">{db.projects.find(p => p.id === showAppDetails.projectId)?.title || "Projekt i panjohur"}</p>
+                      <p className="font-black text-brand-dark">{firestoreProjects.find(p => p.id === showAppDetails.projectId)?.title || "Projekt i panjohur"}</p>
                     </div>
                   </div>
                 </div>
