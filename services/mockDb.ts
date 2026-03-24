@@ -120,7 +120,12 @@ export const getDb = (): DbSchema => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(initialData));
     return initialData;
   }
-  return JSON.parse(stored);
+  const db = JSON.parse(stored);
+  // Ensure stats exists for older storage versions
+  if (!db.stats) {
+    db.stats = initialData.stats;
+  }
+  return db;
 };
 
 export const saveDb = (data: DbSchema) => {

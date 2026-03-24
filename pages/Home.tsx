@@ -14,14 +14,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 const Home: React.FC = () => {
   const { t } = useLanguage();
   const [partners, setPartners] = useState<Partner[]>([]);
+  const [stats, setStats] = useState<any[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
-
-  const stats = [
-    { value: '500+', label: t('stats.trained'), color: 'text-brand-pink', iconName: 'Star', bg: 'bg-brand-pink/5' },
-    { value: '25+', label: t('stats.completed'), color: 'text-brand-lime', iconName: 'Globe', bg: 'bg-brand-lime/5' },
-    { value: '100+', label: t('stats.volunteers'), color: 'text-brand-cyan', iconName: 'UserPlus', bg: 'bg-brand-cyan/5' },
-    { value: 'Lipjan', label: t('stats.region'), color: 'text-brand-orange', iconName: 'Sparkles', bg: 'bg-brand-orange/5' }
-  ];
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
@@ -38,6 +32,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const db = getDb();
     setPartners(db.partners || []);
+    setStats(db.stats || []);
   }, []);
 
   return (

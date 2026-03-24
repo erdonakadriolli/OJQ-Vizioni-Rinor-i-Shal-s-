@@ -25,6 +25,7 @@ const AdminDashboard: React.FC = () => {
   const [showNewsModal, setShowNewsModal] = useState(false);
   const [showStaffModal, setShowStaffModal] = useState(false);
   const [showPartnerModal, setShowPartnerModal] = useState(false);
+  const [showStatsModal, setShowStatsModal] = useState(false);
   const [showAppDetails, setShowAppDetails] = useState<VolunteerApplication | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -37,6 +38,7 @@ const AdminDashboard: React.FC = () => {
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
   const [editingNews, setEditingNews] = useState<NewsItem | null>(null);
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
+  const [editingStat, setEditingStat] = useState<any>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ type: string, id: string } | null>(null);
   
   const staffImageRef = useRef<HTMLInputElement>(null);
@@ -71,6 +73,10 @@ const AdminDashboard: React.FC = () => {
 
   const [newsForm, setNewsForm] = useState({
     title: '', content: '', datePosted: '', category: 'Latest News', fileUrl: '', fileName: ''
+  });
+
+  const [statsForm, setStatsForm] = useState({
+    value: '', label: ''
   });
 
   useEffect(() => {
@@ -133,6 +139,26 @@ const AdminDashboard: React.FC = () => {
     updateDb({ ...dbData, partners: updated });
     setShowPartnerModal(false);
     setEditingPartner(null);
+  };
+
+  const handleOpenStatsModal = (stat: any) => {
+    setEditingStat(stat);
+    setStatsForm({
+      value: stat.value,
+      label: stat.label
+    });
+    setShowStatsModal(true);
+  };
+
+  const handleSaveStat = () => {
+    if (!editingStat) return;
+    const dbData = getDb();
+    const updatedStats = dbData.stats.map((s: any) => 
+      s.id === editingStat.id ? { ...s, value: statsForm.value, label: statsForm.label } : s
+    );
+    updateDb({ ...dbData, stats: updatedStats });
+    setShowStatsModal(false);
+    setEditingStat(null);
   };
 
   const handlePartnerLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -694,63 +720,40 @@ const AdminDashboard: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {(db.stats || []).map((stat, idx) => (
-                  <div key={stat.id} className="bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-100 space-y-8 group hover:shadow-xl transition-all">
-                    <div className="flex items-center space-x-4">
-                      <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center shadow-inner`}>
-                        {(() => {
-                          const Icon = { Star, Globe, UserPlus, Sparkles }[stat.iconName] || Star;
-                          return <Icon className="h-7 w-7" />;
-                        })()}
+                  <div key={stat.id} className="bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-100 space-y-8 group hover:shadow-xl transition-all relative overflow-hidden">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center shadow-inner`}>
+                          {(() => {
+                            const Icon = { Star, Globe, UserPlus, Sparkles }[stat.iconName] || Star;
+                            return <Icon className="h-7 w-7" />;
+                          })()}
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Statistika {idx + 1}</span>
+                          <h3 className="font-black text-brand-dark uppercase tracking-tight">Karta {idx + 1}</h3>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Statistika {idx + 1}</span>
-                        <h3 className="font-black text-brand-dark uppercase tracking-tight">Karta {idx + 1}</h3>
-                      </div>
+                      <button 
+                        onClick={() => handleOpenStatsModal(stat)}
+                        className="p-3 bg-slate-50 text-slate-400 hover:bg-brand-pink hover:text-white rounded-2xl transition-all shadow-sm"
+                      >
+                        <Edit2 className="h-5 w-5" />
+                      </button>
                     </div>
 
-                    <div className="space-y-6">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Vlera (p.sh. 500+)</label>
-                        <input 
-                          type="text" 
-                          className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-black text-xl text-brand-dark outline-none focus:ring-4 focus:ring-brand-pink/10 transition-all"
-                          value={stat.value}
-                          onChange={(e) => {
-                            const newStats = [...db.stats];
-                            newStats[idx] = { ...newStats[idx], value: e.target.value };
-                            setDb({ ...db, stats: newStats });
-                          }}
-                        />
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Vlera</p>
+                        <p className="text-2xl font-black text-brand-dark">{stat.value}</p>
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Përshkrimi (p.sh. TË RINJ TË TRAJNUAR)</label>
-                        <input 
-                          type="text" 
-                          className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm text-slate-500 outline-none focus:ring-4 focus:ring-brand-pink/10 transition-all"
-                          value={stat.label}
-                          onChange={(e) => {
-                            const newStats = [...db.stats];
-                            newStats[idx] = { ...newStats[idx], label: e.target.value };
-                            setDb({ ...db, stats: newStats });
-                          }}
-                        />
+                      <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Përshkrimi</p>
+                        <p className="text-[10px] font-bold text-slate-500 uppercase leading-tight">{stat.label}</p>
                       </div>
                     </div>
                   </div>
                 ))}
-              </div>
-
-              <div className="flex justify-end pt-6">
-                <button 
-                  onClick={() => {
-                    saveDb(db);
-                    setSuccessMessage('Statistikat u ruajtën me sukses!');
-                    setTimeout(() => setSuccessMessage(null), 3000);
-                  }}
-                  className="px-12 py-5 bg-brand-dark text-white rounded-full font-black uppercase text-xs tracking-widest shadow-2xl shadow-brand-dark/20 hover:scale-105 active:scale-95 transition-all flex items-center"
-                >
-                  <Save className="h-5 w-5 mr-3" /> Ruaj të gjitha Ndryshimet
-                </button>
               </div>
             </div>
           )}
@@ -1250,6 +1253,56 @@ const AdminDashboard: React.FC = () => {
                   {t('admin.delete')}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* STATS MODAL */}
+      {showStatsModal && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-brand-dark/80 backdrop-blur-md" onClick={() => setShowStatsModal(false)}></div>
+          <div className="bg-white w-full max-w-lg rounded-[3.5rem] shadow-2xl relative z-10 overflow-hidden animate-in zoom-in duration-300">
+            <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <div>
+                <h2 className="text-2xl font-black text-brand-dark uppercase tracking-tight">Edito Statistikën</h2>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Përditësoni shifrat e ndikimit</p>
+              </div>
+              <button onClick={() => setShowStatsModal(false)} className="p-3 hover:bg-white rounded-2xl transition-all"><X className="h-6 w-6 text-slate-400" /></button>
+            </div>
+            <div className="p-10 space-y-8">
+              <div className="space-y-3">
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Vlera (p.sh. 500+)</label>
+                <input 
+                  type="text" 
+                  className="w-full px-8 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] font-black text-2xl text-brand-dark outline-none focus:ring-4 focus:ring-brand-pink/10 transition-all"
+                  value={statsForm.value}
+                  onChange={(e) => setStatsForm({...statsForm, value: e.target.value})}
+                />
+              </div>
+              <div className="space-y-3">
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Përshkrimi (p.sh. TË RINJ TË TRAJNUAR)</label>
+                <input 
+                  type="text" 
+                  className="w-full px-8 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] font-bold text-sm text-slate-500 outline-none focus:ring-4 focus:ring-brand-pink/10 transition-all uppercase"
+                  value={statsForm.label}
+                  onChange={(e) => setStatsForm({...statsForm, label: e.target.value})}
+                />
+              </div>
+            </div>
+            <div className="p-10 bg-slate-50/50 border-t border-slate-100 flex space-x-4">
+              <button 
+                onClick={handleSaveStat}
+                className="flex-grow bg-brand-dark text-white py-5 rounded-[2rem] font-black uppercase text-xs tracking-widest shadow-xl shadow-brand-dark/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center"
+              >
+                <Save className="h-5 w-5 mr-3" /> Ruaj Ndryshimet
+              </button>
+              <button 
+                onClick={() => setShowStatsModal(false)}
+                className="px-10 bg-white text-slate-400 py-5 rounded-[2rem] font-black uppercase text-xs tracking-widest border border-slate-200 hover:bg-slate-50 transition-all"
+              >
+                Anulo
+              </button>
             </div>
           </div>
         </div>
