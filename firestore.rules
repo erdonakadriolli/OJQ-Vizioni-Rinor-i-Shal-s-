@@ -70,6 +70,11 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    match /site_assets/{assetId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /test/connection {
       allow read: if true;
     }

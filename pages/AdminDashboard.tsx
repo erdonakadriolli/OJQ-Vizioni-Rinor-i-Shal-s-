@@ -7,7 +7,7 @@ import {
   CheckCircle, XCircle, Eye, FileText, ExternalLink, Image as ImageIcon,
   Save, Globe, Search as SearchIcon, Filter, Upload, File,
   Home, Info, Target, FolderKanban as ProjectIcon, Handshake, MessageSquare,
-  Star, UserPlus
+  Star, UserPlus, Heart, GraduationCap, Trophy
 } from 'lucide-react';
 import { Project, ApplicationStatus, ProjectStatus, NewsItem, StaffMember, VolunteerApplication, Partner } from '../types';
 import { GoogleGenAI } from "@google/genai";
@@ -80,7 +80,11 @@ const AdminDashboard: React.FC = () => {
   });
 
   const [statsForm, setStatsForm] = useState({
-    value: '', label: ''
+    value: '',
+    label: '',
+    iconName: 'Star',
+    color: 'text-brand-pink',
+    bg: 'bg-brand-pink/10'
   });
 
   useEffect(() => {
@@ -250,26 +254,46 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const handleOpenStatsModal = (stat: any) => {
-    setEditingStat(stat);
-    setStatsForm({
-      value: stat.value,
-      label: stat.label
-    });
+  const handleOpenStatsModal = (stat: any = null) => {
+    if (stat) {
+      setEditingStat(stat);
+      setStatsForm({
+        value: stat.value,
+        label: stat.label,
+        iconName: stat.iconName || 'Star',
+        color: stat.color || 'text-brand-pink',
+        bg: stat.bg || 'bg-brand-pink/10'
+      });
+    } else {
+      setEditingStat(null);
+      setStatsForm({
+        value: '',
+        label: '',
+        iconName: 'Star',
+        color: 'text-brand-pink',
+        bg: 'bg-brand-pink/10'
+      });
+    }
     setShowStatsModal(true);
   };
 
   const handleSaveStat = async () => {
-    if (!editingStat) return;
-    
     const statData = {
       value: statsForm.value,
-      label: statsForm.label
+      label: statsForm.label,
+      iconName: statsForm.iconName,
+      color: statsForm.color,
+      bg: statsForm.bg
     };
 
     try {
-      await updateDoc(doc(firestore, 'stats', editingStat.id), statData);
-      setSuccessMessage('Statistika u përditësua!');
+      if (editingStat) {
+        await updateDoc(doc(firestore, 'stats', editingStat.id), statData);
+        setSuccessMessage('Statistika u përditësua!');
+      } else {
+        await addDoc(collection(firestore, 'stats'), statData);
+        setSuccessMessage('Statistika u shtua!');
+      }
       setShowStatsModal(false);
       setEditingStat(null);
     } catch (err) {
@@ -280,6 +304,25 @@ const AdminDashboard: React.FC = () => {
         const errData = JSON.parse(firestoreErr.message);
         showError(`Gabim: ${errData.error}`);
       }
+    }
+  };
+
+  const seedInitialStats = async () => {
+    const initialStats = [
+      { value: '500+', label: 'TË RINJ TË TRAJNUAR', iconName: 'Star', color: 'text-brand-pink', bg: 'bg-brand-pink/10' },
+      { value: '25+', label: 'PROJEKTE TË PËRFUNDUARA', iconName: 'Globe', color: 'text-brand-lime', bg: 'bg-brand-lime/10' },
+      { value: '100+', label: 'VULLNETARË AKTIVË', iconName: 'UserPlus', color: 'text-brand-cyan', bg: 'bg-brand-cyan/10' },
+      { value: 'LIPJAN', label: 'RAJONI I MBULUAR', iconName: 'Sparkles', color: 'text-brand-orange', bg: 'bg-brand-orange/10' }
+    ];
+
+    try {
+      for (const stat of initialStats) {
+        await addDoc(collection(firestore, 'stats'), stat);
+      }
+      setSuccessMessage('Statistikat fillestare u shtuan sipas fotos!');
+    } catch (err) {
+      console.error(err);
+      showError('Gabim gjatë shtimit të statistikave fillestare.');
     }
   };
 
@@ -902,6 +945,24 @@ const AdminDashboard: React.FC = () => {
                   <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tight">Statistikat e Organizatës</h1>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Menaxhoni shifrat kryesore në faqen kryesore</p>
                 </div>
+                <div className="flex space-x-4">
+                  {firestoreStats.length === 0 && (
+                    <button 
+                      onClick={seedInitialStats}
+                      className="flex items-center space-x-3 bg-brand-dark text-white px-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-dark/20 hover:scale-105 transition-all"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      <span>Shto Statistika Fillestare</span>
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => handleOpenStatsModal()}
+                    className="flex items-center space-x-3 bg-brand-pink text-white px-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-pink/20 hover:scale-105 transition-all"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Shto Statistikë</span>
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -911,21 +972,29 @@ const AdminDashboard: React.FC = () => {
                       <div className="flex items-center space-x-4">
                         <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center shadow-inner`}>
                           {(() => {
-                            const Icon = { Star, Globe, UserPlus, Sparkles }[stat.iconName] || Star;
+                            const Icon = { Star, Globe, UserPlus, Sparkles, Target, Heart, Users, Briefcase, GraduationCap, Trophy }[stat.iconName] || Star;
                             return <Icon className="h-7 w-7" />;
                           })()}
                         </div>
                         <div>
                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Statistika {idx + 1}</span>
-                          <h3 className="font-black text-brand-dark uppercase tracking-tight">Karta {idx + 1}</h3>
+                          <h3 className="font-black text-brand-dark uppercase tracking-tight">{stat.label}</h3>
                         </div>
                       </div>
-                      <button 
-                        onClick={() => handleOpenStatsModal(stat)}
-                        className="p-3 bg-slate-50 text-slate-400 hover:bg-brand-pink hover:text-white rounded-2xl transition-all shadow-sm"
-                      >
-                        <Edit2 className="h-5 w-5" />
-                      </button>
+                      <div className="flex space-x-2">
+                        <button 
+                          onClick={() => handleOpenStatsModal(stat)}
+                          className="p-3 bg-slate-50 text-slate-400 hover:bg-brand-pink hover:text-white rounded-2xl transition-all shadow-sm"
+                        >
+                          <Edit2 className="h-5 w-5" />
+                        </button>
+                        <button 
+                          onClick={() => deleteItem('stats', stat.id)}
+                          className="p-3 bg-slate-50 text-slate-400 hover:bg-red-500 hover:text-white rounded-2xl transition-all shadow-sm"
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </button>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-6">
@@ -1452,20 +1521,34 @@ const AdminDashboard: React.FC = () => {
           <div className="bg-white w-full max-w-lg rounded-[3.5rem] shadow-2xl relative z-10 overflow-hidden animate-in zoom-in duration-300">
             <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <div>
-                <h2 className="text-2xl font-black text-brand-dark uppercase tracking-tight">Edito Statistikën</h2>
+                <h2 className="text-2xl font-black text-brand-dark uppercase tracking-tight">{editingStat ? 'Edito Statistikën' : 'Shto Statistikë'}</h2>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Përditësoni shifrat e ndikimit</p>
               </div>
               <button onClick={() => setShowStatsModal(false)} className="p-3 hover:bg-white rounded-2xl transition-all"><X className="h-6 w-6 text-slate-400" /></button>
             </div>
-            <div className="p-10 space-y-8">
-              <div className="space-y-3">
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Vlera (p.sh. 500+)</label>
-                <input 
-                  type="text" 
-                  className="w-full px-8 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] font-black text-2xl text-brand-dark outline-none focus:ring-4 focus:ring-brand-pink/10 transition-all"
-                  value={statsForm.value}
-                  onChange={(e) => setStatsForm({...statsForm, value: e.target.value})}
-                />
+            <div className="p-10 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Vlera (p.sh. 500+)</label>
+                  <input 
+                    type="text" 
+                    className="w-full px-8 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] font-black text-2xl text-brand-dark outline-none focus:ring-4 focus:ring-brand-pink/10 transition-all"
+                    value={statsForm.value}
+                    onChange={(e) => setStatsForm({...statsForm, value: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-3">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Ikona</label>
+                  <select 
+                    className="w-full px-8 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] font-bold text-sm text-brand-dark outline-none focus:ring-4 focus:ring-brand-pink/10 transition-all"
+                    value={statsForm.iconName}
+                    onChange={(e) => setStatsForm({...statsForm, iconName: e.target.value})}
+                  >
+                    {['Star', 'Globe', 'UserPlus', 'Sparkles', 'Target', 'Heart', 'Users', 'Briefcase', 'GraduationCap', 'Trophy'].map(icon => (
+                      <option key={icon} value={icon}>{icon}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
               <div className="space-y-3">
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Përshkrimi (p.sh. TË RINJ TË TRAJNUAR)</label>
@@ -1475,6 +1558,36 @@ const AdminDashboard: React.FC = () => {
                   value={statsForm.label}
                   onChange={(e) => setStatsForm({...statsForm, label: e.target.value})}
                 />
+              </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Ngjyra e Tekstit</label>
+                  <select 
+                    className="w-full px-8 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] font-bold text-sm text-brand-dark outline-none focus:ring-4 focus:ring-brand-pink/10 transition-all"
+                    value={statsForm.color}
+                    onChange={(e) => setStatsForm({...statsForm, color: e.target.value})}
+                  >
+                    <option value="text-brand-pink">Pink</option>
+                    <option value="text-brand-orange">Orange</option>
+                    <option value="text-brand-lime">Lime</option>
+                    <option value="text-brand-cyan">Cyan</option>
+                    <option value="text-brand-dark">Dark</option>
+                  </select>
+                </div>
+                <div className="space-y-3">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Ngjyra e Fondit</label>
+                  <select 
+                    className="w-full px-8 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] font-bold text-sm text-brand-dark outline-none focus:ring-4 focus:ring-brand-pink/10 transition-all"
+                    value={statsForm.bg}
+                    onChange={(e) => setStatsForm({...statsForm, bg: e.target.value})}
+                  >
+                    <option value="bg-brand-pink/10">Pink Light</option>
+                    <option value="bg-brand-orange/10">Orange Light</option>
+                    <option value="bg-brand-lime/10">Lime Light</option>
+                    <option value="bg-brand-cyan/10">Cyan Light</option>
+                    <option value="bg-slate-100">Gray Light</option>
+                  </select>
+                </div>
               </div>
             </div>
             <div className="p-10 bg-slate-50/50 border-t border-slate-100 flex space-x-4">

@@ -90,6 +90,16 @@
         "dateApplied": { "type": "string" }
       },
       "required": ["userName", "userEmail", "phone", "status", "dateApplied"]
+    },
+    "SiteAsset": {
+      "title": "Site Asset",
+      "description": "A global asset for the site, like a hero image",
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "URL or base64 of the asset" },
+        "type": { "type": "string", "enum": ["image", "video", "file"] }
+      },
+      "required": ["url", "type"]
     }
   },
   "firestore": {
@@ -98,6 +108,7 @@
     "news": { "schema": "NewsItem", "description": "Collection of news items" },
     "partners": { "schema": "Partner", "description": "Collection of partners" },
     "stats": { "schema": "Stat", "description": "Collection of statistics" },
-    "applications": { "schema": "VolunteerApplication", "description": "Collection of volunteer applications" }
+    "applications": { "schema": "VolunteerApplication", "description": "Collection of volunteer applications" },
+    "site_assets": { "schema": "SiteAsset", "description": "Collection of global site assets" }
   }
 }

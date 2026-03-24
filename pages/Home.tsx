@@ -108,9 +108,9 @@ const Home: React.FC = () => {
       </section>
 
       {/* Stats Section - Color Coded based on Logo */}
-      <section className="py-32 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
-          {stats.map((stat, i) => {
+      <section className="py-32 px-6 bg-slate-50/30">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {stats.length > 0 ? stats.map((stat, i) => {
             const IconComponent = ({
               Star, Globe, UserPlus, Sparkles, Target, Heart, Users, Briefcase, GraduationCap, Trophy
             } as any)[stat.iconName] || Star;
@@ -122,16 +122,32 @@ const Home: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="flex flex-col items-center text-center p-10 rounded-[3.5rem] bg-white border border-slate-50 shadow-sm hover:shadow-2xl transition-all group"
+                className="flex flex-col items-center text-center p-12 rounded-[4rem] bg-white border border-slate-100 shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden"
               >
-                <div className={`mb-8 p-5 rounded-2xl ${stat.bg} group-hover:scale-110 transition-transform ${stat.color}`}>
-                  <IconComponent className="h-7 w-7" />
+                <div className={`mb-10 p-6 rounded-[2rem] ${stat.bg} group-hover:scale-110 transition-transform ${stat.color} shadow-inner`}>
+                  <IconComponent className="h-8 w-8" />
                 </div>
-                <div className={`text-5xl font-black uppercase tracking-tighter mb-2 ${stat.color}`}>{stat.value}</div>
-                <div className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{stat.label}</div>
+                <div className={`text-6xl font-black uppercase tracking-tighter mb-4 ${stat.color} leading-none`}>{stat.value}</div>
+                <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] leading-tight max-w-[150px]">{stat.label}</div>
               </motion.div>
             );
-          })}
+          }) : (
+            // Fallback to show something if DB is empty, matching the photo
+            [
+              { value: '500+', label: 'TË RINJ TË TRAJNUAR', icon: Star, color: 'text-brand-pink', bg: 'bg-brand-pink/10' },
+              { value: '25+', label: 'PROJEKTE TË PËRFUNDUARA', icon: Globe, color: 'text-brand-lime', bg: 'bg-brand-lime/10' },
+              { value: '100+', label: 'VULLNETARË AKTIVË', icon: UserPlus, color: 'text-brand-cyan', bg: 'bg-brand-cyan/10' },
+              { value: 'LIPJAN', label: 'RAJONI I MBULUAR', icon: Sparkles, color: 'text-brand-orange', bg: 'bg-brand-orange/10' }
+            ].map((stat, i) => (
+              <div key={i} className="flex flex-col items-center text-center p-12 rounded-[4rem] bg-white border border-slate-100 shadow-sm transition-all">
+                <div className={`mb-10 p-6 rounded-[2rem] ${stat.bg} ${stat.color} shadow-inner`}>
+                  <stat.icon className="h-8 w-8" />
+                </div>
+                <div className={`text-6xl font-black uppercase tracking-tighter mb-4 ${stat.color} leading-none`}>{stat.value}</div>
+                <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] leading-tight max-w-[150px]">{stat.label}</div>
+              </div>
+            ))
+          )}
         </div>
       </section>
 
