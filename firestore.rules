@@ -20,7 +20,10 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() &&
-             ((request.auth.token.email == "donakadriolli@gmail.com") ||
+             ((request.auth.token.email == "donakadriolli@gmail.com" || 
+               request.auth.token.email == "vizioniRinoriShales@gmail.com" || 
+               request.auth.token.email == "leotrimpajaziti17@gmail.com" ||
+               request.auth.token.email == "admin@vizionirinorishales.org") ||
               (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
                get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'));
     }
@@ -40,6 +43,49 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
       allow write: if isAdmin();
+    }
+
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /news/{newsId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /partners/{partnerId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /stats/{statId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /applications/{applicationId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /test/connection {
+      allow read: if true;
+    }
+
+    match /staff/{staffId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidStaff(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    function isValidStaff(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.role is string && data.role.size() > 0 && data.role.size() < 100 &&
+             data.category is string && data.category.size() > 0 &&
+             (data.bio == null || (data.bio is string && data.bio.size() < 1000)) &&
+             (data.image == null || (data.image is string && data.image.size() < 2000000));
     }
 
     match /{path=**} {

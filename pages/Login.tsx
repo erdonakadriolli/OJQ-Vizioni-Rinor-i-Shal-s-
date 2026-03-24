@@ -25,7 +25,8 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
       const result = await signInWithPopup(auth, provider);
       const firebaseUser = result.user;
       
-      const isAdmin = firebaseUser.email === 'donakadriolli@gmail.com';
+      const adminEmails = ['donakadriolli@gmail.com', 'vizioniRinoriShales@gmail.com', 'leotrimpajaziti17@gmail.com', 'admin@vizionirinorishales.org'];
+      const isAdmin = adminEmails.includes(firebaseUser.email || '');
       const userData: User = {
         id: firebaseUser.uid,
         name: firebaseUser.displayName || 'User',
@@ -50,13 +51,13 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
 
     setTimeout(() => {
       const db = getDb();
-      const user = db.users.find(u => u.email === email);
+      const user = db.users.find(u => u.email === email && u.password === password);
 
       if (user) {
         onLogin(user);
         navigate(user.role === UserRole.ADMIN ? '/admin' : '/projects');
       } else {
-        setError(t('login.error') || 'Credentials incorrect. Try: admin@vizionirinorishales.org');
+        setError(t('login.error') || 'Email ose fjalëkalimi i gabuar.');
       }
       setIsLoading(false);
     }, 1000);

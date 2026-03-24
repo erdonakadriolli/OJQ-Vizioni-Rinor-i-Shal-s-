@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 import { getDb } from '../services/mockDb';
 import { StaffMember, User } from '../types';
 import { useLanguage } from '../context/LanguageContext';
+import { db as firestore } from '../firebase';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import Logo from '../components/Logo';
 import EditableText from '../components/EditableText';
 import EditableImage from '../components/EditableImage';
@@ -24,8 +26,15 @@ const About: React.FC<AboutProps> = ({ user }) => {
   const { t } = useLanguage();
 
   useEffect(() => {
-    const db = getDb();
-    setStaff(db.staff || []);
+    const q = query(collection(firestore, 'staff'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const staffData: StaffMember[] = [];
+      snapshot.forEach((doc) => {
+        staffData.push({ id: doc.id, ...doc.data() } as StaffMember);
+      });
+      setStaff(staffData);
+    });
+    return () => unsubscribe();
   }, []);
 
   const getStaffByCategory = (category: string) => {

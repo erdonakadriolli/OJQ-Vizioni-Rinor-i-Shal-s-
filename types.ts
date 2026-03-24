@@ -23,6 +23,7 @@ export interface User {
   email: string;
   role: UserRole;
   avatar?: string;
+  password?: string;
 }
 
 export interface Project {

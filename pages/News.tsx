@@ -1,7 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getDb } from '../services/mockDb';
+import { db } from '../firebase';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { NewsItem } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { Calendar, Newspaper, Tv, FileText, Download, ExternalLink, Search, ArrowRight } from 'lucide-react';
@@ -13,21 +14,25 @@ const News: React.FC = () => {
   const { t, language } = useLanguage();
 
   useEffect(() => {
-    const db = getDb();
-    let items = db.news || [];
-    
-    if (category) {
-      const mapping: Record<string, string[]> = {
-        'latest': ['Latest News', 'Lajmet e fundit'],
-        'media': ['Media'],
-        'reports': ['Reports', 'Raportet']
-      };
-      const dbCategories = mapping[category];
-      if (dbCategories) {
-        items = items.filter(n => dbCategories.includes(n.category));
+    const newsQuery = query(collection(db, 'news'), orderBy('datePosted', 'desc'));
+    const unsubscribe = onSnapshot(newsQuery, (snapshot) => {
+      let items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as NewsItem));
+      
+      if (category) {
+        const mapping: Record<string, string[]> = {
+          'latest': ['Latest News', 'Lajmet e fundit'],
+          'media': ['Media'],
+          'reports': ['Reports', 'Raportet']
+        };
+        const dbCategories = mapping[category];
+        if (dbCategories) {
+          items = items.filter(n => dbCategories.includes(n.category));
+        }
       }
-    }
-    setNews(items);
+      setNews(items);
+    });
+
+    return () => unsubscribe();
   }, [category, language]);
 
   const filteredNews = news.filter(n => 

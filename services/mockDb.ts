@@ -31,7 +31,7 @@ const initialData: DbSchema = {
   ],
   events: [],
   users: [
-    { id: 'u1', name: 'VRSH Admin', email: 'admin@vizionirinorishales.org', role: UserRole.ADMIN },
+    { id: 'u1', name: 'VRSH Admin', email: 'admin@vizionirinorishales.org', role: UserRole.ADMIN, password: 'Vizioni2024!' },
   ],
   applications: [],
   news: [

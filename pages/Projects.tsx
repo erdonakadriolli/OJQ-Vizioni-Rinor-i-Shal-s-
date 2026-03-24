@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Calendar, Info, ArrowRight, X, Image as ImageIcon, LayoutGrid, Maximize2 } from 'lucide-react';
 import { Project, ProjectStatus, User } from '../types';
-import { getDb } from '../services/mockDb';
+import { db } from '../firebase';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { useLanguage } from '../context/LanguageContext';
 
 interface ProjectsProps {
@@ -17,8 +18,12 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
   const { t } = useLanguage();
 
   useEffect(() => {
-    const db = getDb();
-    setProjects(db.projects);
+    const projectsQuery = query(collection(db, 'projects'), orderBy('startDate', 'desc'));
+    const unsubscribe = onSnapshot(projectsQuery, (snapshot) => {
+      setProjects(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project)));
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const filteredProjects = projects.filter(p => {
