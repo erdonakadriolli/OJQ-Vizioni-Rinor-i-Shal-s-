@@ -9,6 +9,7 @@ import { collection, onSnapshot, query } from 'firebase/firestore';
 import Logo from '../components/Logo';
 import EditableText from '../components/EditableText';
 import EditableImage from '../components/EditableImage';
+import { motion } from 'motion/react';
 import { 
   Users, Shield, Rocket, Target, 
   Heart, X, Facebook, Instagram, Linkedin, 
@@ -37,6 +38,20 @@ const About: React.FC<AboutProps> = ({ user }) => {
     return () => unsubscribe();
   }, []);
 
+  const [activeMissionIdx, setActiveMissionIdx] = useState(0);
+  const missionImages = [
+    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800",
+    "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=800",
+    "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=800"
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveMissionIdx((prev) => (prev + 1) % missionImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   const getStaffByCategory = (category: string) => {
     return staff.filter(member => member.category === category);
   };
@@ -62,15 +77,43 @@ const About: React.FC<AboutProps> = ({ user }) => {
           </p>
         </div>
         <div className="lg:col-span-5">
-          <div className="relative group">
+          <div className="relative group cursor-pointer" onClick={() => setActiveMissionIdx((activeMissionIdx + 1) % missionImages.length)}>
             <div className="absolute -inset-4 bg-brand-pink/10 rounded-[3rem] blur-2xl group-hover:bg-brand-pink/20 transition-all duration-500"></div>
-            <div className="relative aspect-[4/5] rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl bg-slate-100">
-              <EditableImage 
-                translationKey="about.hero.image" 
-                user={user} 
-                className="w-full h-full object-cover"
-                defaultImage="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800"
-              />
+            <div className="relative aspect-[4/5] rounded-[3rem]">
+              {missionImages.map((src, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={false}
+                  animate={{
+                    scale: activeMissionIdx === idx ? 1 : 0.9,
+                    rotate: activeMissionIdx === idx ? 0 : (idx % 2 === 0 ? 3 : -3),
+                    opacity: activeMissionIdx === idx ? 1 : 0,
+                    zIndex: activeMissionIdx === idx ? 10 : 0,
+                    x: activeMissionIdx === idx ? 0 : (idx < activeMissionIdx ? -50 : 50)
+                  }}
+                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute inset-0 rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl bg-slate-100"
+                >
+                  <img 
+                    src={src} 
+                    alt={`Mission ${idx}`} 
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/40 via-transparent to-transparent"></div>
+                </motion.div>
+              ))}
+              
+              {/* Indicators */}
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex space-x-2">
+                {missionImages.map((_, i) => (
+                  <button 
+                    key={i} 
+                    onClick={(e) => { e.stopPropagation(); setActiveMissionIdx(i); }}
+                    className={`h-1 rounded-full transition-all duration-500 ${activeMissionIdx === i ? 'w-8 bg-brand-pink' : 'w-2 bg-white/50 hover:bg-white'}`}
+                  ></button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

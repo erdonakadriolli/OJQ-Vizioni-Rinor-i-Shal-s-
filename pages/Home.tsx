@@ -43,6 +43,20 @@ const Home: React.FC = () => {
     };
   }, []);
 
+  const [activeHeroIdx, setActiveHeroIdx] = useState(0);
+  const heroImages = [
+    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1200",
+    "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=1200",
+    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200"
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveHeroIdx((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="flex flex-col">
       {/* Hero Section - Born from the Logo Colors */}
@@ -83,15 +97,33 @@ const Home: React.FC = () => {
              {/* Gradient Borders around the image stack */}
              <div className="absolute inset-0 bg-brand-pink rounded-[4rem] rotate-3 translate-x-4 translate-y-4 opacity-10"></div>
              <div className="absolute inset-0 bg-brand-lime rounded-[4rem] -rotate-3 -translate-x-4 -translate-y-4 opacity-10"></div>
-             <div className="relative h-full w-full rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white">
-                <img 
-               /* qitu o foto te home me ndrru*/ 
-                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1200" 
-                  alt="Rinia e Shalës" 
-                  className="w-full h-full object-cover transition-all duration-1000"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent"></div>
-                <div className="absolute bottom-12 left-12 right-12">
+             
+             <div className="relative h-full w-full group cursor-pointer" onClick={() => setActiveHeroIdx((activeHeroIdx + 1) % heroImages.length)}>
+                {heroImages.map((src, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={false}
+                    animate={{
+                      scale: activeHeroIdx === idx ? 1 : 0.9,
+                      rotate: activeHeroIdx === idx ? 0 : (idx % 2 === 0 ? 3 : -3),
+                      opacity: activeHeroIdx === idx ? 1 : 0,
+                      zIndex: activeHeroIdx === idx ? 10 : 0,
+                      x: activeHeroIdx === idx ? 0 : (idx < activeHeroIdx ? -100 : 100)
+                    }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute inset-0 rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white"
+                  >
+                    <img 
+                      src={src} 
+                      alt={`Hero ${idx}`} 
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent"></div>
+                  </motion.div>
+                ))}
+
+                <div className="absolute bottom-12 left-12 right-12 z-20">
                    <div className="flex items-center space-x-4 mb-4">
                       <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white">
                          <Shield className="h-6 w-6" />
@@ -100,6 +132,17 @@ const Home: React.FC = () => {
                          <h4 className="font-black uppercase text-xs tracking-widest">Iniciativa e Shpresës</h4>
                          <p className="text-[10px] font-bold text-slate-300 uppercase">Fshati Shalë, Lipjan</p>
                       </div>
+                   </div>
+                   
+                   {/* Indicators */}
+                   <div className="flex space-x-2">
+                     {heroImages.map((_, i) => (
+                       <button 
+                        key={i} 
+                        onClick={(e) => { e.stopPropagation(); setActiveHeroIdx(i); }}
+                        className={`h-1 rounded-full transition-all duration-500 ${activeHeroIdx === i ? 'w-8 bg-brand-pink' : 'w-2 bg-white/30 hover:bg-white/60'}`}
+                       ></button>
+                     ))}
                    </div>
                 </div>
              </div>
