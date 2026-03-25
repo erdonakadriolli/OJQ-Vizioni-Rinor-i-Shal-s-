@@ -1,7 +1,5 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, User, Bot, Trash2, ChevronLeft } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -36,23 +34,18 @@ const DerdoChat: React.FC = () => {
     setIsLoading(true);
 
     try {
-  const response = await fetch('/api/genai', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: messages.concat({ role: 'user', text: userMessage }) })
-  });
-  
-  const data = await response.json();
-  const botResponse = data.text || "Më falni, kam një problem teknik.";
+      const response = await fetch('/api/genai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: messages.concat({ role: 'user', text: userMessage }) })
+      });
+      
+      const data = await response.json();
+      const botResponse = data.text || "Më falni, kam një problem teknik.";
 
-  setMessages(prev => [...prev, { role: 'model', text: botResponse }]);
-} catch (error) {
-  console.error("Fetch Error:", error);
-  setMessages(prev => [...prev, { role: 'model', text: "Gabim në lidhje!" }]);
-}
       setMessages(prev => [...prev, { role: 'model', text: botResponse }]);
     } catch (error) {
-      console.error("Gemini Error:", error);
+      console.error("Fetch Error:", error);
       setMessages(prev => [...prev, { role: 'model', text: "Gabim në lidhje!" }]);
     } finally {
       setIsLoading(false);
@@ -72,7 +65,7 @@ const DerdoChat: React.FC = () => {
             <Link to="/" className="p-2 hover:bg-white/10 rounded-full transition-colors">
               <ChevronLeft className="h-6 w-6" />
             </Link>
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg bg-brand-pink`}>
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg bg-brand-pink">
               <Bot className="h-7 w-7 text-white" />
             </div>
             <div>
