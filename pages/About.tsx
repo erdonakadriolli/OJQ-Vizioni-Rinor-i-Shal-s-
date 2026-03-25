@@ -24,6 +24,8 @@ const About: React.FC<AboutProps> = ({ user }) => {
   const { section } = useParams<{ section: string }>();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [selectedMember, setSelectedMember] = useState<StaffMember | null>(null);
+  const [missionImages, setMissionImages] = useState<string[]>([]);
+  const [activeMissionIdx, setActiveMissionIdx] = useState(0);
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -35,22 +37,35 @@ const About: React.FC<AboutProps> = ({ user }) => {
       });
       setStaff(staffData);
     });
-    return () => unsubscribe();
+
+    const assetsQuery = query(collection(firestore, 'site_assets'));
+    const unsubscribeAssets = onSnapshot(assetsQuery, (snapshot) => {
+      const images = snapshot.docs
+        .map(doc => doc.data())
+        .filter(asset => asset.key === 'mission_images' && asset.type === 'image')
+        .map(asset => asset.url);
+      
+      if (images.length > 0) {
+        setMissionImages(images);
+      } else {
+        // Fallback to defaults if none in DB
+        setMissionImages(["/mission1.png", "/mission2.png", "/mission3.png"]);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      unsubscribeAssets();
+    };
   }, []);
 
-  const [activeMissionIdx, setActiveMissionIdx] = useState(0);
-  const missionImages = [
-    "/mission1.png",
-    "/mission2.png",
-    "/mission3.png"
-  ];
-
   useEffect(() => {
+    if (missionImages.length === 0) return;
     const timer = setInterval(() => {
       setActiveMissionIdx((prev) => (prev + 1) % missionImages.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [missionImages.length]);
 
   const getStaffByCategory = (category: string) => {
     return staff.filter(member => member.category === category);

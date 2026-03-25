@@ -17,6 +17,8 @@ const Home: React.FC = () => {
   const [partners, setPartners] = useState<Partner[]>([]);
   const [stats, setStats] = useState<Stat[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [heroImages, setHeroImages] = useState<string[]>([]);
+  const [activeHeroIdx, setActiveHeroIdx] = useState(0);
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
@@ -37,25 +39,35 @@ const Home: React.FC = () => {
       setStats(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Stat)));
     });
 
+    const assetsQuery = query(collection(firestoreDb, 'site_assets'));
+    const unsubscribeAssets = onSnapshot(assetsQuery, (snapshot) => {
+      const images = snapshot.docs
+        .map(doc => doc.data())
+        .filter(asset => asset.key === 'hero_images' && asset.type === 'image')
+        .map(asset => asset.url);
+      
+      if (images.length > 0) {
+        setHeroImages(images);
+      } else {
+        // Fallback to defaults if none in DB
+        setHeroImages(["/hero1.png", "/hero2.png", "/hero3.png"]);
+      }
+    });
+
     return () => {
       unsubscribePartners();
       unsubscribeStats();
+      unsubscribeAssets();
     };
   }, []);
 
-  const [activeHeroIdx, setActiveHeroIdx] = useState(0);
-  const heroImages = [
-    "/hero1.png",
-    "/hero2.png",
-    "/hero3.png"
-  ];
-
   useEffect(() => {
+    if (heroImages.length === 0) return;
     const timer = setInterval(() => {
       setActiveHeroIdx((prev) => (prev + 1) % heroImages.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [heroImages.length]);
 
   return (
     <div className="flex flex-col">
