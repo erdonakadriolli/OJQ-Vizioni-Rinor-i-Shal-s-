@@ -171,10 +171,6 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
                     }`}>
                       {selectedProject.status}
                     </span>
-                    <div className="flex items-center text-slate-400">
-                      <Calendar className="h-3.5 w-3.5 mr-2" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest">{selectedProject.startDate}</span>
-                    </div>
                   </div>
                   <h2 className="text-4xl md:text-5xl font-black text-brand-dark uppercase tracking-tighter mb-6 leading-[1.1]">{selectedProject.title}</h2>
                   <div className="h-1.5 w-20 bg-brand-pink rounded-full mb-10"></div>
@@ -195,22 +191,6 @@ const Projects: React.FC<ProjectsProps> = ({ user }) => {
                       </div>
                    </div>
 
-                   <div className="grid grid-cols-2 gap-8 pt-8 border-t border-slate-100">
-                      <div className="flex flex-col p-4 bg-slate-50 rounded-2xl">
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{t('projects.period')}</span>
-                        <span className="text-xs font-bold text-brand-dark">{selectedProject.startDate} — {selectedProject.endDate}</span>
-                      </div>
-                      <div className="flex flex-col p-4 bg-slate-50 rounded-2xl">
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{t('projects.participants')}</span>
-                        <span className="text-xs font-bold text-brand-dark">{selectedProject.volunteerCount} Participants</span>
-                      </div>
-                   </div>
-                </div>
-
-                <div className="mt-12 pt-8 border-t border-slate-100">
-                  <button className="w-full py-5 bg-brand-dark text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] hover:bg-brand-pink transition-all flex items-center justify-center group">
-                    Contact for Support <ArrowRight className="ml-3 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
                 </div>
               </div>
             </div>
