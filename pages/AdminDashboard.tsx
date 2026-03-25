@@ -381,7 +381,7 @@ const AdminDashboard: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       const base64 = await handleFileRead(file);
-      const compressed = await compressImage(base64, 1920, 1080, 0.7);
+      const compressed = await compressImage(base64, 1200, 800, 0.6);
       setAssetForm(prev => ({ ...prev, url: compressed }));
     }
   };
@@ -409,7 +409,7 @@ const AdminDashboard: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       const base64 = await handleFileRead(file);
-      const compressed = await compressImage(base64, 400, 400, 0.8);
+      const compressed = await compressImage(base64, 300, 300, 0.7);
       setPartnerForm(prev => ({ ...prev, logo: compressed }));
     }
   };
@@ -417,10 +417,17 @@ const AdminDashboard: React.FC = () => {
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
+    
+    // Limit total gallery images to 8
+    if (projectForm.gallery.length + files.length > 8) {
+      showError(language === 'AL' ? "Maksimumi 8 foto në galeri." : "Maximum 8 photos in gallery.");
+      return;
+    }
+
     const newImages: string[] = [];
     for (let i = 0; i < files.length; i++) {
       const base64 = await handleFileRead(files[i]);
-      const compressed = await compressImage(base64, 1200, 800, 0.7);
+      const compressed = await compressImage(base64, 800, 600, 0.6);
       newImages.push(compressed);
     }
     setProjectForm(prev => ({ ...prev, gallery: [...prev.gallery, ...newImages] }));
@@ -1343,7 +1350,8 @@ const AdminDashboard: React.FC = () => {
                       const file = e.target.files?.[0];
                       if (file) {
                         const base64 = await handleFileRead(file);
-                        setProjectForm(prev => ({...prev, image: base64}));
+                        const compressed = await compressImage(base64, 1000, 800, 0.7);
+                        setProjectForm(prev => ({...prev, image: compressed}));
                       }
                     }} />
                   </div>
