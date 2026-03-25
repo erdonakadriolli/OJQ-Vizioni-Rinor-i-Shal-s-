@@ -1315,6 +1315,20 @@ const AdminDashboard: React.FC = () => {
                     </select>
                   </div>
                 </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">{t('admin.startDate') || 'Data e Fillimit'}</label>
+                    <input type="date" className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink transition-all" value={projectForm.startDate} onChange={e => setProjectForm(prev => ({...prev, startDate: e.target.value}))} />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">{t('admin.endDate') || 'Data e Përfundimit'}</label>
+                    <input type="date" className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink transition-all" value={projectForm.endDate} onChange={e => setProjectForm(prev => ({...prev, endDate: e.target.value}))} />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Numri i Pjesëmarrësve / Vullnetarëve</label>
+                  <input type="number" className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-2 focus:ring-brand-pink/20 focus:border-brand-pink transition-all" value={projectForm.volunteerCount} onChange={e => setProjectForm(prev => ({...prev, volunteerCount: parseInt(e.target.value) || 0}))} />
+                </div>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center px-1">
                     <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Përmbledhja (AI)</label>
