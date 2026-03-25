@@ -45,9 +45,9 @@ const Home: React.FC = () => {
 
   const [activeHeroIdx, setActiveHeroIdx] = useState(0);
   const heroImages = [
-    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1200",
-    "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=1200",
-    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200"
+    "/hero1.png",
+    "/hero2.png",
+    "/hero3.png"
   ];
 
   useEffect(() => {
