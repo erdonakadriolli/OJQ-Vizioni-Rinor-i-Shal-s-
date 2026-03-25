@@ -36,22 +36,20 @@ const DerdoChat: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const systemPrompt = `Ju jeni ${t('nav.derdo')}, një asistent inteligjent për organizatën VRSH (Vizioni Rinor i Shalës) në fshatin Shalë, Lipjan. Përgjigjuni gjithmonë në gjuhën shqipe, jini miqësor dhe pozitiv.`;
+  const response = await fetch('/api/genai', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: messages.concat({ role: 'user', text: userMessage }) })
+  });
+  
+  const data = await response.json();
+  const botResponse = data.text || "Më falni, kam një problem teknik.";
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: messages.concat({ role: 'user', text: userMessage }).map(m => ({
-            role: m.role,
-            parts: [{ text: m.text }]
-        })),
-        config: {
-          systemInstruction: systemPrompt,
-          temperature: 0.7,
-        }
-      });
-
-      const botResponse = response.text || "Më falni, kam një problem teknik.";
+  setMessages(prev => [...prev, { role: 'model', text: botResponse }]);
+} catch (error) {
+  console.error("Fetch Error:", error);
+  setMessages(prev => [...prev, { role: 'model', text: "Gabim në lidhje!" }]);
+}
       setMessages(prev => [...prev, { role: 'model', text: botResponse }]);
     } catch (error) {
       console.error("Gemini Error:", error);
