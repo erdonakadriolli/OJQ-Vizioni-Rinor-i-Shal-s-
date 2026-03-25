@@ -19,13 +19,16 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return isAuthenticated() &&
-             ((request.auth.token.email == "donakadriolli@gmail.com" || 
-               request.auth.token.email == "vizioniRinoriShales@gmail.com" || 
-               request.auth.token.email == "leotrimpajaziti17@gmail.com" ||
-               request.auth.token.email == "admin@vizionirinorishales.org") ||
-              (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-               get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'));
+      return isAuthenticated() && (
+        (request.auth.token.email in [
+          "donakadriolli@gmail.com",
+          "vizioniRinoriShales@gmail.com",
+          "leotrimpajaziti17@gmail.com",
+          "admin@vizionirinorishales.org"
+        ] && request.auth.token.email_verified == true) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
     }
 
     function hasRequiredFields(fields) {
@@ -86,11 +89,13 @@ service cloud.firestore {
     }
 
     function isValidStaff(data) {
-      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
-             data.role is string && data.role.size() > 0 && data.role.size() < 100 &&
+      return hasRequiredFields(['name', 'role', 'category']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.role is string && data.role.size() < 100 &&
              data.category is string && data.category.size() > 0 &&
-             (data.bio == null || (data.bio is string && data.bio.size() < 1000)) &&
-             (data.image == null || (data.image is string && data.image.size() < 2000000));
+             (!('bio' in data) || (data.bio is string && data.bio.size() < 5000)) &&
+             (!('image' in data) || (data.image is string && data.image.size() < 10000000)) &&
+             (!('socials' in data) || data.socials is map);
     }
 
     match /{path=**} {
