@@ -16,13 +16,14 @@ import { db as firestore, auth, handleFirestoreError, OperationType } from '../f
 import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'applications' | 'news' | 'staff' | 'home' | 'about' | 'mission' | 'partners' | 'stats'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'applications' | 'news' | 'staff' | 'home' | 'about' | 'mission' | 'partners' | 'stats' | 'assets'>('overview');
   const [firestoreStaff, setFirestoreStaff] = useState<StaffMember[]>([]);
   const [firestoreProjects, setFirestoreProjects] = useState<Project[]>([]);
   const [firestoreNews, setFirestoreNews] = useState<NewsItem[]>([]);
   const [firestorePartners, setFirestorePartners] = useState<Partner[]>([]);
   const [firestoreStats, setFirestoreStats] = useState<any[]>([]);
   const [firestoreApplications, setFirestoreApplications] = useState<VolunteerApplication[]>([]);
+  const [firestoreAssets, setFirestoreAssets] = useState<any[]>([]);
   const { t, language } = useLanguage();
   
   const [showProjectModal, setShowProjectModal] = useState(false);
@@ -30,6 +31,7 @@ const AdminDashboard: React.FC = () => {
   const [showStaffModal, setShowStaffModal] = useState(false);
   const [showPartnerModal, setShowPartnerModal] = useState(false);
   const [showStatsModal, setShowStatsModal] = useState(false);
+  const [showAssetModal, setShowAssetModal] = useState(false);
   const [showAppDetails, setShowAppDetails] = useState<VolunteerApplication | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -43,6 +45,7 @@ const AdminDashboard: React.FC = () => {
   const [editingNews, setEditingNews] = useState<NewsItem | null>(null);
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
   const [editingStat, setEditingStat] = useState<any>(null);
+  const [editingAsset, setEditingAsset] = useState<any>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ type: string, id: string } | null>(null);
   
   const staffImageRef = useRef<HTMLInputElement>(null);
@@ -50,6 +53,7 @@ const AdminDashboard: React.FC = () => {
   const projectGalleryRef = useRef<HTMLInputElement>(null);
   const reportFileRef = useRef<HTMLInputElement>(null);
   const partnerLogoRef = useRef<HTMLInputElement>(null);
+  const assetFileRef = useRef<HTMLInputElement>(null);
 
   const [staffForm, setStaffForm] = useState({
     name: '', role: '', category: 'Current Staff', bio: '', image: '', 
@@ -85,6 +89,12 @@ const AdminDashboard: React.FC = () => {
     iconName: 'Star',
     color: 'text-brand-pink',
     bg: 'bg-brand-pink/10'
+  });
+
+  const [assetForm, setAssetForm] = useState({
+    url: '',
+    key: 'hero_images',
+    type: 'image'
   });
 
   useEffect(() => {
@@ -147,6 +157,16 @@ const AdminDashboard: React.FC = () => {
       });
       setFirestoreApplications(appsData);
     }, (err) => handleFirestoreError(err, OperationType.LIST, 'applications'));
+
+    // Listen to Firestore assets
+    const qAssets = query(collection(firestore, 'site_assets'));
+    const unsubscribeAssets = onSnapshot(qAssets, (snapshot) => {
+      const assetsData: any[] = [];
+      snapshot.forEach((doc) => {
+        assetsData.push({ id: doc.id, ...doc.data() });
+      });
+      setFirestoreAssets(assetsData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'site_assets'));
     
     return () => {
       unsubscribeStaff();
@@ -155,6 +175,7 @@ const AdminDashboard: React.FC = () => {
       unsubscribePartners();
       unsubscribeStats();
       unsubscribeApps();
+      unsubscribeAssets();
     };
   }, []);
 
@@ -304,6 +325,64 @@ const AdminDashboard: React.FC = () => {
         const errData = JSON.parse(firestoreErr.message);
         showError(`Gabim: ${errData.error}`);
       }
+    }
+  };
+
+  const handleOpenAssetModal = (asset: any = null) => {
+    if (asset) {
+      setEditingAsset(asset);
+      setAssetForm({
+        url: asset.url,
+        key: asset.key,
+        type: asset.type
+      });
+    } else {
+      setEditingAsset(null);
+      setAssetForm({
+        url: '',
+        key: 'hero_images',
+        type: 'image'
+      });
+    }
+    setShowAssetModal(true);
+  };
+
+  const handleSaveAsset = async () => {
+    if (!assetForm.url || !assetForm.key) return;
+
+    const assetData = {
+      url: assetForm.url,
+      key: assetForm.key,
+      type: assetForm.type
+    };
+
+    try {
+      if (editingAsset) {
+        await updateDoc(doc(firestore, 'site_assets', editingAsset.id), assetData);
+        setSuccessMessage('Asseti u përditësua!');
+      } else {
+        await addDoc(collection(firestore, 'site_assets'), assetData);
+        setSuccessMessage('Asseti u shtua!');
+      }
+      setShowAssetModal(false);
+      setEditingAsset(null);
+    } catch (err) {
+      console.error(err);
+      try {
+        handleFirestoreError(err, OperationType.WRITE, 'site_assets');
+      } catch (firestoreErr: any) {
+        const errData = JSON.parse(firestoreErr.message);
+        showError(`Gabim: ${errData.error}`);
+      }
+    }
+  };
+
+  const handleAssetUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const base64 = await handleFileRead(file);
+      const compressed = await compressImage(base64, 1920, 1080, 0.7);
+      setAssetForm(prev => ({ ...prev, url: compressed }));
     }
   };
 
@@ -595,6 +674,7 @@ const AdminDashboard: React.FC = () => {
               { id: 'news', icon: Newspaper, label: t('admin.news'), color: 'text-brand-lime', bg: 'hover:bg-brand-lime/10' },
               { id: 'staff', icon: Briefcase, label: t('admin.staff'), color: 'text-brand-blue', bg: 'hover:bg-brand-blue/10' },
               { id: 'partners', icon: Handshake, label: t('admin.partners'), color: 'text-brand-orange', bg: 'hover:bg-brand-orange/10' },
+              { id: 'assets', icon: ImageIcon, label: 'Assetet e Faqes', color: 'text-brand-cyan', bg: 'hover:bg-brand-cyan/10' },
               { id: 'stats', icon: Star, label: 'Statistikat', color: 'text-brand-pink', bg: 'hover:bg-brand-pink/10' },
               { id: 'applications', icon: Users, label: t('admin.applications'), color: 'text-brand-orange', bg: 'hover:bg-brand-orange/10' },
             ].map(item => (
@@ -931,6 +1011,70 @@ const AdminDashboard: React.FC = () => {
                         Visit Website <ExternalLink className="h-2.5 w-2.5 ml-1" />
                       </a>
                     )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Assets Tab */}
+          {activeTab === 'assets' && (
+            <div className="space-y-10 animate-in fade-in">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-black text-brand-dark uppercase tracking-tight">Assetet e Faqes</h1>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Menaxhoni imazhet globale të faqes (Hero, Mission, etj.)</p>
+                </div>
+                <button 
+                  onClick={() => handleOpenAssetModal()}
+                  className="flex items-center space-x-3 bg-brand-cyan text-white px-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-cyan/20 hover:scale-105 transition-all"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Shto Asset</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                {['hero_images', 'mission_images'].map(key => (
+                  <div key={key} className="space-y-6">
+                    <div className="flex items-center justify-between px-4">
+                      <h2 className="text-sm font-black text-brand-dark uppercase tracking-widest">{key.replace('_', ' ')}</h2>
+                      <span className="px-3 py-1 bg-slate-100 text-slate-400 rounded-full text-[8px] font-black uppercase tracking-widest">
+                        {firestoreAssets.filter(a => a.key === key).length} Imazhe
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {firestoreAssets.filter(a => a.key === key).map(asset => (
+                        <div key={asset.id} className="bg-white p-4 rounded-[2.5rem] border border-slate-100 shadow-sm group hover:shadow-xl transition-all relative overflow-hidden">
+                          <div className="aspect-video rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 mb-4">
+                            <img src={asset.url} alt="" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex items-center justify-between px-2">
+                            <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">{asset.type}</span>
+                            <div className="flex space-x-1">
+                              <button 
+                                onClick={() => handleOpenAssetModal(asset)}
+                                className="p-2 text-slate-300 hover:text-brand-cyan transition-colors"
+                              >
+                                <Edit2 className="h-4 w-4" />
+                              </button>
+                              <button 
+                                onClick={() => deleteItem('site_assets', asset.id)}
+                                className="p-2 text-slate-300 hover:text-red-500 transition-colors"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {firestoreAssets.filter(a => a.key === key).length === 0 && (
+                        <div className="col-span-full py-12 border-2 border-dashed border-slate-100 rounded-[2.5rem] flex flex-col items-center justify-center text-slate-300">
+                          <ImageIcon className="h-8 w-8 mb-2 opacity-20" />
+                          <p className="text-[10px] font-black uppercase tracking-widest">Nuk ka imazhe</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1474,6 +1618,74 @@ const AdminDashboard: React.FC = () => {
               <button 
                 onClick={() => setShowPartnerModal(false)}
                 className="px-8 bg-white text-slate-400 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border border-slate-200 hover:bg-slate-50 transition-all"
+              >
+                {t('admin.cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Asset Modal */}
+      {showAssetModal && (
+        <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-brand-dark/80 backdrop-blur-md" onClick={() => setShowAssetModal(false)}></div>
+          <div className="bg-white w-full max-w-lg rounded-[3.5rem] shadow-2xl relative z-10 overflow-hidden animate-in zoom-in duration-300">
+            <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <div>
+                <h2 className="text-2xl font-black text-brand-dark uppercase tracking-tight">{editingAsset ? 'Edito Asset' : 'Shto Asset'}</h2>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Përcaktoni imazhin dhe kategorinë</p>
+              </div>
+              <button onClick={() => setShowAssetModal(false)} className="p-3 hover:bg-white rounded-2xl transition-all group">
+                <X className="h-7 w-7 text-slate-400 group-hover:text-brand-dark transition-colors" />
+              </button>
+            </div>
+            <div className="p-10 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Kategoria (Key)</label>
+                <select 
+                  className="w-full px-8 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-black text-xs outline-none focus:ring-4 focus:ring-brand-cyan/10 transition-all appearance-none"
+                  value={assetForm.key}
+                  onChange={(e) => setAssetForm({ ...assetForm, key: e.target.value })}
+                >
+                  <option value="hero_images">Hero Images (Home)</option>
+                  <option value="mission_images">Mission Images (About)</option>
+                </select>
+              </div>
+
+              <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Imazhi</label>
+                <div 
+                  onClick={() => assetFileRef.current?.click()}
+                  className="cursor-pointer aspect-video border-2 border-dashed border-slate-200 rounded-[2.5rem] flex flex-col items-center justify-center overflow-hidden bg-slate-50 hover:bg-slate-100 transition-all relative group shadow-inner"
+                >
+                  {assetForm.url ? (
+                    <>
+                      <img src={assetForm.url} alt="" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-brand-dark/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <Upload className="h-8 w-8 text-white" />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center">
+                      <Camera className="text-slate-300 h-12 w-12 mx-auto mb-3" />
+                      <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Kliko për të ngarkuar</span>
+                    </div>
+                  )}
+                </div>
+                <input type="file" ref={assetFileRef} onChange={handleAssetUpload} accept="image/*" className="hidden" />
+              </div>
+            </div>
+            <div className="p-10 bg-slate-50/50 border-t border-slate-100 flex space-x-4">
+              <button 
+                onClick={handleSaveAsset}
+                className="flex-[2] bg-brand-cyan text-white py-5 rounded-[1.5rem] font-black uppercase text-[11px] tracking-[0.2em] shadow-xl shadow-brand-cyan/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              >
+                {t('admin.save')}
+              </button>
+              <button 
+                onClick={() => setShowAssetModal(false)}
+                className="flex-1 bg-white text-slate-400 py-5 rounded-[1.5rem] font-black uppercase text-[11px] tracking-widest border border-slate-200 hover:bg-slate-50 transition-all"
               >
                 {t('admin.cancel')}
               </button>
