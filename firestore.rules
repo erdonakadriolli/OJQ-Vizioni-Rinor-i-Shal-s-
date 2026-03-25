@@ -20,12 +20,10 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() && (
-        (request.auth.token.email in [
-          "donakadriolli@gmail.com",
-          "vizioniRinoriShales@gmail.com",
-          "leotrimpajaziti17@gmail.com",
-          "admin@vizionirinorishales.org"
-        ] && request.auth.token.email_verified == true) ||
+        (request.auth.token.email == "donakadriolli@gmail.com" || 
+         request.auth.token.email == "vizioniRinoriShales@gmail.com" || 
+         request.auth.token.email == "leotrimpajaziti17@gmail.com" ||
+         request.auth.token.email == "admin@vizionirinorishales.org") ||
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
       );
@@ -50,7 +48,19 @@ service cloud.firestore {
 
     match /projects/{projectId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update: if isAdmin() && isValidProject(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    function isValidProject(data) {
+      return hasRequiredFields(['title', 'description', 'status']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 500 &&
+             data.description is string && data.description.size() < 5000 &&
+             data.status is string &&
+             (!('longDescription' in data) || (data.longDescription is string && data.longDescription.size() < 10000)) &&
+             (!('image' in data) || (data.image is string && data.image.size() < 10000000)) &&
+             (!('volunteerCount' in data) || data.volunteerCount is number) &&
+             (!('gallery' in data) || data.gallery is list);
     }
 
     match /news/{newsId} {
@@ -90,10 +100,10 @@ service cloud.firestore {
 
     function isValidStaff(data) {
       return hasRequiredFields(['name', 'role', 'category']) &&
-             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
-             data.role is string && data.role.size() < 100 &&
-             data.category is string && data.category.size() > 0 &&
-             (!('bio' in data) || (data.bio is string && data.bio.size() < 5000)) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 500 &&
+             data.role is string && data.role.size() < 500 &&
+             data.category is string && data.category.size() > 0 && data.category.size() < 500 &&
+             (!('bio' in data) || (data.bio is string && data.bio.size() < 10000)) &&
              (!('image' in data) || (data.image is string && data.image.size() < 10000000)) &&
              (!('socials' in data) || data.socials is map);
     }
