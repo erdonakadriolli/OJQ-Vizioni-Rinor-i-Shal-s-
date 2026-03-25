@@ -1047,7 +1047,7 @@ const AdminDashboard: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                {['hero_images', 'mission_images'].map(key => (
+                {['site_logo', 'hero_images', 'mission_images'].map(key => (
                   <div key={key} className="space-y-6">
                     <div className="flex items-center justify-between px-4">
                       <h2 className="text-sm font-black text-brand-dark uppercase tracking-widest">{key.replace('_', ' ')}</h2>
@@ -1677,6 +1677,7 @@ const AdminDashboard: React.FC = () => {
                 >
                   <option value="hero_images">Hero Images (Home)</option>
                   <option value="mission_images">Mission Images (About)</option>
+                  <option value="site_logo">Logo e Faqes</option>
                 </select>
               </div>
 
