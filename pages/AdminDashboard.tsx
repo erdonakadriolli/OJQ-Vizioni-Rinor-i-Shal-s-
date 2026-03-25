@@ -527,6 +527,11 @@ const AdminDashboard: React.FC = () => {
   const handleSaveProject = async () => {
     if (!projectForm.title) return;
     
+    if (!auth.currentUser) {
+      showError('Duhet të jeni të kyçur me Google për të ruajtur në DB');
+      return;
+    }
+    
     const projectData = {
       title: projectForm.title,
       description: projectForm.description,
