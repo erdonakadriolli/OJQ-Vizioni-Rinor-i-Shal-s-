@@ -40,9 +40,9 @@ const About: React.FC<AboutProps> = ({ user }) => {
 
   const [activeMissionIdx, setActiveMissionIdx] = useState(0);
   const missionImages = [
-    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800",
-    "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=800",
-    "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=800"
+    "/mission1.png",
+    "/mission2.png",
+    "/mission3.png"
   ];
 
   useEffect(() => {
