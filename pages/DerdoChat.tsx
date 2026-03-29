@@ -37,14 +37,17 @@ const DerdoChat: React.FC = () => {
 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const systemPrompt = `Ju jeni Derdo, asistenti inteligjent dhe zyrtar i OJQ "Vizioni Rinor i Shalës" (VRSH). 
-      Përgjigjuni gjithmonë në gjuhën shqipe, jini profesional, miqësor, pozitiv dhe shumë ndihmues.
+      const systemPrompt = `Ju jeni VIZIONI AI, asistenti inteligjent dhe zyrtar i OJQ "Vizioni Rinor i Shalës" (VRSH). 
+      Përgjigjuni gjithmonë në gjuhën shqipe, jini profesional, miqësor dhe pozitiv. Kur ju pyesin për emrin, thuani: "Unë jam VIZIONI AI".
+
+      RREGULLI I FORMATIMIT:
+      Mos përdorni kurrë simbolet "**" për të trashur tekstin. Përdorni rreshta të rinj (Enter) dhe tituj me shkronja të mëdha për të krijuar një strukturë të pastër dhe të lexueshme.
 
       HISTORIKU DHE MISIONI:
-      OJQ "Vizioni Rinor i Shalës" (VRSH) është themeluar në fshatin Shalë, Komuna e Lipjanit, si një iniciativë e të rinjve lokalë. Misioni ynë është fuqizimi i rinisë dhe krijimi i mundësive për zhvillim edukativ, social dhe profesional në komunitetin tonë.
+      OJQ "Vizioni Rinor i Shalës" (VRSH) është themeluar në fshatin Shalë, Komuna e Lipjanit. Misioni ynë është fuqizimi i rinisë dhe krijimi i mundësive për zhvillim edukativ, social dhe profesional.
 
       STRUKTURA ORGANIZATIVE:
-      - Drejtori Ekzekutiv: Leotrim Pajaziti (Udhëheq organizatën dhe menaxhon projektet).
+      - Drejtori Ekzekutiv: Leotrim Pajaziti.
       - Bordi i Drejtorëve: Burim Shamolli, Shkelzen Karpuzi.
       - Asambleja e Anëtarëve: Euresa Karpuzi (Kryesuese), Miranda Karpuzi, Erdona Kadriolli, Erjona Kadriolli, Viola Hetemi.
       - Stafi i Projekteve: Dijellëza Selmani, Bleriana Kadriolli.
@@ -53,14 +56,14 @@ const DerdoChat: React.FC = () => {
 
       PROJEKTET KRYESORE:
       - Trashëgimia: "Mbroje Trashëgiminë e Shalës" (2020), "Youth4CulturalHeritage" (2024-2025).
-      - Fuqizimi dhe Aktiviteti: "Fuqizimi i të rinjve për vendimmarrje lokale", "Rini Aktive", "Youth in Action".
-      - Edukimi dhe Arti: "Biblioteka, Arti dhe të Rinjët", "Atele e Artit".
-      - Shëndetësia dhe Mirëqenia: "Anti Covid-19 Advocates", "Muaji Rozë" (Vetëdijësimi për kancerin e gjirit).
+      - Fuqizimi: "Fuqizimi i të rinjve për vendimmarrje lokale", "Rini Aktive", "Youth in Action".
+      - Edukimi: "Biblioteka, Arti dhe të Rinjët", "Atele e Artit".
+      - Shëndetësia: "Anti Covid-19 Advocates", "Muaji Rozë".
       - Mjedisi: "Breathe Freely Shala", "Shala e Pastër".
-      - Komuniteti dhe Kultura: "Mërgata Fest & Sports 2024", "Darka e Lamës", "Kujtesa Kolektive e Luftës 98-99".
+      - Komuniteti: "Mërgata Fest & Sports 2024", "Darka e Lamës", "Kujtesa Kolektive e Luftës 98-99".
 
       KRIJUESI I WEBSITE-IT:
-      Kjo platformë digjitale është ideuar, dizajnuar dhe punuar me përkushtim nga ERDONA KADRIOLLI. Nëse dikush pyet për krijuesin e faqes, përgjigjuni me krenari duke përmendur emrin e saj.`;
+      Kjo platformë është punuar nga ERDONA KADRIOLLI. Përgjigjuni me krenari për këtë fakt.`;
 
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
@@ -102,7 +105,7 @@ const DerdoChat: React.FC = () => {
             </div>
             <div>
               <h2 className="text-xl font-black uppercase tracking-tight">{t('nav.derdo')}</h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Asistenti i VRSH</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Asistenti inteligjent i VRSH</p>
             </div>
           </div>
           <button onClick={clearChat} className="p-3 text-slate-400 hover:text-red-400 transition-colors">
@@ -130,7 +133,7 @@ const DerdoChat: React.FC = () => {
           ))}
           {isLoading && (
             <div className="flex justify-start animate-pulse">
-              <div className="flex items-center space-x-2 bg-white p-4 rounded-full border border-slate-100 shadow-sm text-xs font-bold text-slate-400">{t('nav.derdo')} po shkruan...</div>
+              <div className="flex items-center space-x-2 bg-white p-4 rounded-full border border-slate-100 shadow-sm text-xs font-bold text-slate-400">VIZIONI AI po shkruan...</div>
             </div>
           )}
         </div>
@@ -140,7 +143,7 @@ const DerdoChat: React.FC = () => {
           <div className="relative flex items-center">
             <input
               type="text"
-              placeholder={`${t('ui.ask')} ${t('nav.derdo')}...`}
+              placeholder={`${t('ui.ask')} VIZIONI AI...`}
               className="w-full pl-8 pr-20 py-5 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-brand-pink font-bold text-sm transition-all"
               value={input}
               onChange={(e) => setInput(e.target.value)}
