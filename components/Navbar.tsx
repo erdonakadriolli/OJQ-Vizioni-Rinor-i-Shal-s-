@@ -17,7 +17,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const location = useLocation();
-  const { t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -114,6 +114,22 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
         </div>
 
         <div className="flex items-center space-x-2">
+          {/* Language Switcher */}
+          <div className="flex items-center bg-slate-50 rounded-full p-1 mr-2">
+            <button 
+              onClick={() => setLanguage('AL')}
+              className={`px-2 py-1 rounded-full text-[9px] font-black transition-all ${language === 'AL' ? 'bg-white text-brand-pink shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+            >
+              AL
+            </button>
+            <button 
+              onClick={() => setLanguage('EN')}
+              className={`px-2 py-1 rounded-full text-[9px] font-black transition-all ${language === 'EN' ? 'bg-white text-brand-pink shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+            >
+              EN
+            </button>
+          </div>
+
           <Link to="/join" className={`hidden sm:flex items-center space-x-2 px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-lg ${isActive('/join') ? 'bg-brand-lime text-white' : 'bg-brand-dark text-white hover:bg-brand-lime'}`}>
             <UserPlus className="h-4 w-4" />
             <span>{t('nav.join')}</span>
@@ -159,12 +175,29 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
             {/* Mobile Menu Header */}
             <div className="flex items-center justify-between px-6 py-6 border-b border-slate-100">
               <Logo size="sm" />
-              <button 
-                onClick={() => setIsOpen(false)} 
-                className="p-3 bg-slate-50 rounded-full text-slate-500 hover:bg-brand-pink hover:text-white transition-all"
-              >
-                <X className="h-6 w-6" />
-              </button>
+              <div className="flex items-center space-x-4">
+                {/* Mobile Language Switcher */}
+                <div className="flex items-center bg-slate-50 rounded-full p-1">
+                  <button 
+                    onClick={() => setLanguage('AL')}
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-black transition-all ${language === 'AL' ? 'bg-white text-brand-pink shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                  >
+                    AL
+                  </button>
+                  <button 
+                    onClick={() => setLanguage('EN')}
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-black transition-all ${language === 'EN' ? 'bg-white text-brand-pink shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                  >
+                    EN
+                  </button>
+                </div>
+                <button 
+                  onClick={() => setIsOpen(false)} 
+                  className="p-3 bg-slate-50 rounded-full text-slate-500 hover:bg-brand-pink hover:text-white transition-all"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
             </div>
 
             {/* Mobile Menu Content */}
