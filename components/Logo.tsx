@@ -8,8 +8,26 @@ interface LogoProps {
 }
 
 const Logo: React.FC<LogoProps> = ({ size = 'md', className = '' }) => {
-  // Always use the local logo.png
-  const logoUrl = '/logo.png';
+  const [logoUrl, setLogoUrl] = useState<string>('/logo.png');
+
+  useEffect(() => {
+    const q = query(
+      collection(db, 'site_assets'),
+      where('key', '==', 'site_logo'),
+      limit(1)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (!snapshot.empty) {
+        const data = snapshot.docs[0].data();
+        if (data.url) {
+          setLogoUrl(data.url);
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Responsive height classes based on the size prop
   const sizeClasses = {
