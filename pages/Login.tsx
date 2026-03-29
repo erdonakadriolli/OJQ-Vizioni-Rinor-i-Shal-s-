@@ -7,7 +7,7 @@ import { User, UserRole } from '../types';
 import { getDb } from '../services/mockDb';
 import { useLanguage } from '../context/LanguageContext';
 import { auth } from '../firebase';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from 'firebase/auth';
 
 const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
@@ -44,23 +44,37 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
-    setTimeout(() => {
-      const db = getDb();
-      const user = db.users.find(u => u.email === email && u.password === password);
-
-      if (user) {
-        onLogin(user);
-        navigate(user.role === UserRole.ADMIN ? '/admin' : '/projects');
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseUser = result.user;
+      
+      const adminEmails = ['donakadriolli@gmail.com', 'vizioniRinoriShales@gmail.com', 'leotrimpajaziti17@gmail.com', 'admin@vizionirinorishales.org'];
+      const isAdmin = adminEmails.includes(firebaseUser.email || '');
+      const userData: User = {
+        id: firebaseUser.uid,
+        name: firebaseUser.displayName || email.split('@')[0],
+        email: firebaseUser.email || '',
+        role: isAdmin ? UserRole.ADMIN : UserRole.VOLUNTEER
+      };
+      
+      onLogin(userData);
+      navigate(isAdmin ? '/admin' : '/projects');
+    } catch (err: any) {
+      console.error("Login form error:", err);
+      // In case they are trying to use the old mock credentials, we can inform them
+      if (email === 'admin@vizionirinorishales.org') {
+        setError("Kjo llogari nuk ekziston në Firebase. Përdor 'Hyr me Google' ose kërko qasje.");
       } else {
         setError(t('login.error') || 'Email ose fjalëkalimi i gabuar.');
       }
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
