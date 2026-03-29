@@ -7,18 +7,31 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
+import { useFirestore } from '../context/FirestoreContext';
 import { Partner, Stat } from '../types';
 import { db as firestoreDb, auth, isAdmin as checkIsAdmin } from '../firebase';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
-  const [partners, setPartners] = useState<Partner[]>([]);
-  const [stats, setStats] = useState<Stat[]>([]);
+  const { partners, stats, siteAssets, siteContent } = useFirestore();
   const [isAdmin, setIsAdmin] = useState(false);
   const [heroImages, setHeroImages] = useState<string[]>([]);
   const [activeHeroIdx, setActiveHeroIdx] = useState(0);
+  const [homeContent, setHomeContent] = useState({ title: '', desc: '' });
+
+  useEffect(() => {
+    if (siteContent.length > 0) {
+      const home = siteContent.find(c => c.id === 'home_hero');
+      if (home) {
+        setHomeContent({
+          title: home.title || '',
+          desc: home.desc || ''
+        });
+      }
+    }
+  }, [siteContent]);
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
@@ -29,41 +42,21 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const partnersQuery = query(collection(firestoreDb, 'partners'), orderBy('name'));
-    const unsubscribePartners = onSnapshot(partnersQuery, (snapshot) => {
-      setPartners(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Partner)));
-    });
-
-    const statsQuery = query(collection(firestoreDb, 'stats'), orderBy('label'));
-    const unsubscribeStats = onSnapshot(statsQuery, (snapshot) => {
-      setStats(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Stat)));
-    });
-
-    const assetsQuery = query(collection(firestoreDb, 'site_assets'));
-    const unsubscribeAssets = onSnapshot(assetsQuery, (snapshot) => {
-      const images = snapshot.docs
-        .map(doc => doc.data())
-        .filter(asset => asset.key === 'hero_images' && asset.type === 'image')
-        .map(asset => asset.url);
-      
-      if (images.length > 0) {
-        setHeroImages(images);
-      } else {
-        // Fallback to picsum if none in DB or missing files
-        setHeroImages([
-          "https://picsum.photos/seed/vizioni1/1920/1080",
-          "https://picsum.photos/seed/vizioni2/1920/1080",
-          "https://picsum.photos/seed/vizioni3/1920/1080"
-        ]);
-      }
-    });
-
-    return () => {
-      unsubscribePartners();
-      unsubscribeStats();
-      unsubscribeAssets();
-    };
-  }, []);
+    const images = siteAssets
+      .filter(asset => asset.key === 'hero_images' && asset.type === 'image')
+      .map(asset => asset.url);
+    
+    if (images.length > 0) {
+      setHeroImages(images);
+    } else {
+      // Fallback to picsum if none in DB or missing files
+      setHeroImages([
+        "https://picsum.photos/seed/vizioni1/1920/1080",
+        "https://picsum.photos/seed/vizioni2/1920/1080",
+        "https://picsum.photos/seed/vizioni3/1920/1080"
+      ]);
+    }
+  }, [siteAssets]);
 
   useEffect(() => {
     if (heroImages.length === 0) return;
@@ -91,13 +84,15 @@ const Home: React.FC = () => {
               <span>{t('hero.subtitle')}</span>
             </div>
             <h1 className="text-4xl sm:text-6xl md:text-[7.5rem] font-black text-brand-dark leading-[0.9] mb-10 uppercase tracking-tighter animate-in slide-in-from-left duration-1000">
-              {t('hero.title1')}<br/>
-              <span className="gradient-text">
-                {t('hero.title2')}
-              </span>
+              {homeContent.title || t('hero.title1')}<br/>
+              {(!homeContent.title) && (
+                <span className="gradient-text">
+                  {t('hero.title2')}
+                </span>
+              )}
             </h1>
             <p className="text-base md:text-xl text-slate-500 max-w-xl mb-12 font-medium leading-relaxed animate-in fade-in duration-1000 delay-300">
-              {t('hero.desc')}
+              {homeContent.desc || t('hero.desc')}
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 animate-in slide-in-from-bottom-8 duration-1000 delay-500">
               <Link to="/join" className="px-10 py-4 sm:px-12 sm:py-5 bg-brand-pink text-white rounded-full font-black uppercase text-[10px] sm:text-xs btn-glow-pink transition-all shadow-2xl shadow-brand-pink/30 tracking-widest flex items-center justify-center">

@@ -88,6 +88,11 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /site_content/{contentId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /test/connection {
       allow read: if true;
     }

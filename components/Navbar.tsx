@@ -17,7 +17,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const location = useLocation();
-  const { t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -61,60 +61,76 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
 
         {/* Desktop Menu */}
         <div className="hidden lg:flex items-center space-x-1">
-          <Link to="/" className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${location.pathname === '/' ? 'text-brand-pink bg-brand-pink/5' : 'text-slate-600 hover:text-brand-pink'}`}>
+          <Link to="/" className={`px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-widest transition-all ${location.pathname === '/' ? 'text-brand-pink bg-brand-pink/5' : 'text-slate-600 hover:text-brand-pink'}`}>
             {t('nav.home')}
           </Link>
 
           <div className="relative group" onMouseEnter={() => setActiveDropdown('about')} onMouseLeave={() => setActiveDropdown(null)}>
-            <button className={`flex items-center space-x-1 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive('/about') ? 'text-brand-pink bg-brand-pink/5' : 'text-slate-600 hover:text-brand-pink'}`}>
+            <button className={`flex items-center space-x-1 px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-widest transition-all ${isActive('/about') ? 'text-brand-pink bg-brand-pink/5' : 'text-slate-600 hover:text-brand-pink'}`}>
               <span>{t('nav.about')}</span>
               <ChevronDown className={`h-3 w-3 transition-transform duration-300 ${activeDropdown === 'about' ? 'rotate-180' : ''}`} />
             </button>
             <div className={`absolute left-0 mt-2 w-48 bg-white border border-slate-100 shadow-2xl rounded-[1.5rem] p-2 transition-all transform origin-top ${activeDropdown === 'about' ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 pointer-events-none -translate-y-2'}`}>
-              <Link to="/about/staff" className="flex items-center space-x-2 px-4 py-3 rounded-xl text-[9px] font-black text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-widest transition-all">
+              <Link to="/about/staff" className="flex items-center space-x-2 px-4 py-3 rounded-xl text-[10px] font-black text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-widest transition-all">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-lime"></div>
                 <span>{t('nav.staff')}</span>
               </Link>
-              <Link to="/about/mission" className="flex items-center space-x-2 px-4 py-3 rounded-xl text-[9px] font-black text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-widest transition-all">
+              <Link to="/about/mission" className="flex items-center space-x-2 px-4 py-3 rounded-xl text-[10px] font-black text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-widest transition-all">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-pink"></div>
                 <span>{t('nav.mission')}</span>
               </Link>
             </div>
           </div>
 
-          <Link to="/projects" className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive('/projects') ? 'text-brand-cyan bg-brand-cyan/5' : 'text-slate-600 hover:text-brand-cyan'}`}>
+          <Link to="/projects" className={`px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-widest transition-all ${isActive('/projects') ? 'text-brand-cyan bg-brand-cyan/5' : 'text-slate-600 hover:text-brand-cyan'}`}>
             {t('nav.projects')}
           </Link>
 
           <div className="relative group" onMouseEnter={() => setActiveDropdown('news')} onMouseLeave={() => setActiveDropdown(null)}>
-            <button className={`flex items-center space-x-1 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive('/news') ? 'text-brand-pink bg-brand-pink/5' : 'text-slate-600 hover:text-brand-pink'}`}>
+            <button className={`flex items-center space-x-1 px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-widest transition-all ${isActive('/news') ? 'text-brand-pink bg-brand-pink/5' : 'text-slate-600 hover:text-brand-pink'}`}>
               <span>{t('nav.news')}</span>
               <ChevronDown className={`h-3 w-3 transition-transform duration-300 ${activeDropdown === 'news' ? 'rotate-180' : ''}`} />
             </button>
             <div className={`absolute left-0 mt-2 w-56 bg-white border border-slate-100 shadow-2xl rounded-[1.5rem] p-2 transition-all transform origin-top ${activeDropdown === 'news' ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 pointer-events-none -translate-y-2'}`}>
-              <Link to="/news/latest" className="flex items-center space-x-2 px-4 py-3 rounded-xl text-[9px] font-black text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-widest transition-all">
+              <Link to="/news/latest" className="flex items-center space-x-2 px-4 py-3 rounded-xl text-[10px] font-black text-slate-600 hover:bg-slate-50 hover:text-brand-pink uppercase tracking-widest transition-all">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-pink"></div>
                 <span>{t('news.title.latest')}</span>
               </Link>
-              <Link to="/news/reports" className="flex items-center space-x-2 px-4 py-3 rounded-xl text-[9px] font-black text-slate-600 hover:bg-slate-50 hover:text-brand-cyan uppercase tracking-widest transition-all">
+              <Link to="/news/reports" className="flex items-center space-x-2 px-4 py-3 rounded-xl text-[10px] font-black text-slate-600 hover:bg-slate-50 hover:text-brand-cyan uppercase tracking-widest transition-all">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-cyan"></div>
                 <span>{t('news.title.reports')}</span>
               </Link>
-              <Link to="/news/media" className="flex items-center space-x-2 px-4 py-3 rounded-xl text-[9px] font-black text-slate-600 hover:bg-slate-50 hover:text-brand-orange uppercase tracking-widest transition-all">
+              <Link to="/news/media" className="flex items-center space-x-2 px-4 py-3 rounded-xl text-[10px] font-black text-slate-600 hover:bg-slate-50 hover:text-brand-orange uppercase tracking-widest transition-all">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-orange"></div>
                 <span>{t('news.title.media')}</span>
               </Link>
             </div>
           </div>
 
-          <Link to="/derdo" className={`flex items-center space-x-2 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive('/derdo') ? 'text-brand-orange bg-brand-orange/5' : 'text-slate-600 hover:text-brand-orange'}`}>
+          <Link to="/derdo" className={`flex items-center space-x-2 px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-widest transition-all ${isActive('/derdo') ? 'text-brand-orange bg-brand-orange/5' : 'text-slate-600 hover:text-brand-orange'}`}>
             <MessageSquare className="h-4 w-4" />
             <span>{t('nav.derdo')}</span>
           </Link>
         </div>
 
         <div className="flex items-center space-x-2">
-          <Link to="/join" className={`hidden sm:flex items-center space-x-2 px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-lg ${isActive('/join') ? 'bg-brand-lime text-white' : 'bg-brand-dark text-white hover:bg-brand-lime'}`}>
+          {/* Language Switcher */}
+          <div className="flex items-center bg-slate-50 rounded-full p-1 mr-2">
+            <button 
+              onClick={() => setLanguage('AL')}
+              className={`px-2 py-1 rounded-full text-[9px] font-black transition-all ${language === 'AL' ? 'bg-white text-brand-pink shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+            >
+              AL
+            </button>
+            <button 
+              onClick={() => setLanguage('EN')}
+              className={`px-2 py-1 rounded-full text-[9px] font-black transition-all ${language === 'EN' ? 'bg-white text-brand-pink shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+            >
+              EN
+            </button>
+          </div>
+
+          <Link to="/join" className={`hidden sm:flex items-center space-x-2 px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest transition-all shadow-lg ${isActive('/join') ? 'bg-brand-lime text-white' : 'bg-brand-dark text-white hover:bg-brand-lime'}`}>
             <UserPlus className="h-4 w-4" />
             <span>{t('nav.join')}</span>
           </Link>
@@ -159,12 +175,29 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
             {/* Mobile Menu Header */}
             <div className="flex items-center justify-between px-6 py-6 border-b border-slate-100">
               <Logo size="sm" />
-              <button 
-                onClick={() => setIsOpen(false)} 
-                className="p-3 bg-slate-50 rounded-full text-slate-500 hover:bg-brand-pink hover:text-white transition-all"
-              >
-                <X className="h-6 w-6" />
-              </button>
+              <div className="flex items-center space-x-4">
+                {/* Mobile Language Switcher */}
+                <div className="flex items-center bg-slate-50 rounded-full p-1">
+                  <button 
+                    onClick={() => setLanguage('AL')}
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-black transition-all ${language === 'AL' ? 'bg-white text-brand-pink shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                  >
+                    AL
+                  </button>
+                  <button 
+                    onClick={() => setLanguage('EN')}
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-black transition-all ${language === 'EN' ? 'bg-white text-brand-pink shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                  >
+                    EN
+                  </button>
+                </div>
+                <button 
+                  onClick={() => setIsOpen(false)} 
+                  className="p-3 bg-slate-50 rounded-full text-slate-500 hover:bg-brand-pink hover:text-white transition-all"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
             </div>
 
             {/* Mobile Menu Content */}
@@ -196,12 +229,12 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
                 transition={{ delay: 0.4 }}
                 className="space-y-2"
               >
-                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-brand-pink flex items-center opacity-60">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-pink flex items-center opacity-60">
                   <Info className="h-3 w-3 mr-2" /> {t('nav.about')}
                 </p>
                 <div className="flex flex-col space-y-2 pl-4 border-l border-slate-100">
-                  <Link to="/about/staff" className="text-xs font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('nav.staff')}</Link>
-                  <Link to="/about/mission" className="text-xs font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('nav.mission')}</Link>
+                  <Link to="/about/staff" className="text-sm font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('nav.staff')}</Link>
+                  <Link to="/about/mission" className="text-sm font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('nav.mission')}</Link>
                 </div>
               </motion.div>
 
@@ -212,13 +245,13 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
                 transition={{ delay: 0.5 }}
                 className="space-y-2"
               >
-                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-brand-pink flex items-center opacity-60">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-pink flex items-center opacity-60">
                   <Newspaper className="h-3 w-3 mr-2" /> {t('nav.news')}
                 </p>
                 <div className="flex flex-col space-y-2 pl-4 border-l border-slate-100">
-                  <Link to="/news/latest" className="text-xs font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('news.title.latest')}</Link>
-                  <Link to="/news/reports" className="text-xs font-bold text-slate-600 hover:text-brand-cyan transition-colors">{t('news.title.reports')}</Link>
-                  <Link to="/news/media" className="text-xs font-bold text-slate-600 hover:text-brand-orange transition-colors">{t('news.title.media')}</Link>
+                  <Link to="/news/latest" className="text-sm font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('news.title.latest')}</Link>
+                  <Link to="/news/reports" className="text-sm font-bold text-slate-600 hover:text-brand-cyan transition-colors">{t('news.title.reports')}</Link>
+                  <Link to="/news/media" className="text-sm font-bold text-slate-600 hover:text-brand-orange transition-colors">{t('news.title.media')}</Link>
                 </div>
               </motion.div>
             </div>

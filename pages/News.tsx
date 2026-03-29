@@ -1,39 +1,34 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { db } from '../firebase';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { NewsItem } from '../types';
 import { useLanguage } from '../context/LanguageContext';
+import { useFirestore } from '../context/FirestoreContext';
+import { NewsItem } from '../types';
 import { Calendar, Newspaper, Tv, FileText, Download, ExternalLink, Search, ArrowRight } from 'lucide-react';
 
 const News: React.FC = () => {
   const { category } = useParams<{ category: string }>();
+  const { news: allNews } = useFirestore();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const { t, language } = useLanguage();
 
   useEffect(() => {
-    const newsQuery = query(collection(db, 'news'), orderBy('datePosted', 'desc'));
-    const unsubscribe = onSnapshot(newsQuery, (snapshot) => {
-      let items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as NewsItem));
-      
-      if (category) {
-        const mapping: Record<string, string[]> = {
-          'latest': ['Latest News', 'Lajmet e fundit'],
-          'media': ['Media'],
-          'reports': ['Reports', 'Raportet']
-        };
-        const dbCategories = mapping[category];
-        if (dbCategories) {
-          items = items.filter(n => dbCategories.includes(n.category));
-        }
+    let items = [...allNews];
+    
+    if (category) {
+      const mapping: Record<string, string[]> = {
+        'latest': ['Latest News', 'Lajmet e fundit'],
+        'media': ['Media'],
+        'reports': ['Reports', 'Raportet']
+      };
+      const dbCategories = mapping[category];
+      if (dbCategories) {
+        items = items.filter(n => dbCategories.includes(n.category));
       }
-      setNews(items);
-    });
-
-    return () => unsubscribe();
-  }, [category, language]);
+    }
+    setNews(items);
+  }, [category, language, allNews]);
 
   const filteredNews = news.filter(n => 
     n.title.toLowerCase().includes(searchTerm.toLowerCase()) || 

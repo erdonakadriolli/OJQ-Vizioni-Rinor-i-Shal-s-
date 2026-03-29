@@ -14,6 +14,7 @@ import DerdoChat from './pages/DerdoChat';
 import { User, UserRole } from './types';
 import { Facebook, Instagram, Mail, Phone, MapPin, ArrowRight, Heart } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import { FirestoreProvider } from './context/FirestoreContext';
 import { logout as firebaseLogout, auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -156,36 +157,38 @@ const App: React.FC = () => {
 
   return (
     <LanguageProvider>
-      <HashRouter>
-        <div className="min-h-screen flex flex-col selection:bg-brand-pink selection:text-white">
-          <Navbar user={user} onLogout={handleLogout} />
-          <main className="flex-grow pt-20 lg:pt-24">
-            <Routes>
-              <Route path="/" element={<Home user={user} />} />
-              <Route path="/about" element={<About user={user} />} />
-              <Route path="/about/:section" element={<About user={user} />} />
-              <Route path="/news" element={<News />} />
-              <Route path="/news/:category" element={<News />} />
-              <Route path="/projects" element={<Projects user={user} />} />
-              <Route path="/login" element={<Login onLogin={handleLogin} />} />
-              <Route path="/join" element={<VolunteerApply />} />
-              <Route path="/derdo" element={<DerdoChat />} />
-              <Route 
-                path="/admin/*" 
-                element={
-                  user?.role === UserRole.ADMIN ? (
-                    <AdminDashboard />
-                  ) : (
-                    <Navigate to="/login" replace />
-                  )
-                } 
-              />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </HashRouter>
+      <FirestoreProvider>
+        <HashRouter>
+          <div className="min-h-screen flex flex-col selection:bg-brand-pink selection:text-white">
+            <Navbar user={user} onLogout={handleLogout} />
+            <main className="flex-grow pt-20 lg:pt-24">
+              <Routes>
+                <Route path="/" element={<Home user={user} />} />
+                <Route path="/about" element={<About user={user} />} />
+                <Route path="/about/:section" element={<About user={user} />} />
+                <Route path="/news" element={<News />} />
+                <Route path="/news/:category" element={<News />} />
+                <Route path="/projects" element={<Projects user={user} />} />
+                <Route path="/login" element={<Login onLogin={handleLogin} />} />
+                <Route path="/join" element={<VolunteerApply />} />
+                <Route path="/derdo" element={<DerdoChat />} />
+                <Route 
+                  path="/admin/*" 
+                  element={
+                    user?.role === UserRole.ADMIN ? (
+                      <AdminDashboard />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  } 
+                />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </HashRouter>
+      </FirestoreProvider>
     </LanguageProvider>
   );
 };

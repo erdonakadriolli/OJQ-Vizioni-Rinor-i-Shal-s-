@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { User, UserRole } from '../types';
 import { Edit2, Check, X, Upload, Loader2 } from 'lucide-react';
 import { db, handleFirestoreError, OperationType } from '../firebase';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
+import { useFirestore } from '../context/FirestoreContext';
 
 interface EditableImageProps {
   translationKey: string;
@@ -20,6 +21,7 @@ const EditableImage: React.FC<EditableImageProps> = ({
   alt = "",
   defaultImage = 'https://picsum.photos/seed/vibrant/1920/1080'
 }) => {
+  const { siteAssets, isLoading: isFirestoreLoading } = useFirestore();
   const [isEditing, setIsEditing] = useState(false);
   const [imageUrl, setImageUrl] = useState(defaultImage);
   const [tempImageUrl, setTempImageUrl] = useState<string | null>(null);
@@ -28,21 +30,16 @@ const EditableImage: React.FC<EditableImageProps> = ({
   const isAdmin = user?.role === UserRole.ADMIN;
 
   useEffect(() => {
-    const assetRef = doc(db, 'site_assets', translationKey);
-    const unsubscribe = onSnapshot(assetRef, (docSnap) => {
-      if (docSnap.exists()) {
-        setImageUrl(docSnap.data().url);
+    if (!isFirestoreLoading) {
+      const asset = siteAssets.find(a => a.id === translationKey);
+      if (asset?.url) {
+        setImageUrl(asset.url);
       } else {
         setImageUrl(defaultImage);
       }
       setIsLoading(false);
-    }, (err) => {
-      handleFirestoreError(err, OperationType.GET, `site_assets/${translationKey}`);
-      setIsLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [translationKey, defaultImage]);
+    }
+  }, [translationKey, defaultImage, siteAssets, isFirestoreLoading]);
 
   const handleSave = async () => {
     if (!tempImageUrl) return;

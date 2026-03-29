@@ -2,29 +2,19 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Calendar, Info, ArrowRight, X, Image as ImageIcon, LayoutGrid, Maximize2 } from 'lucide-react';
 import { Project, ProjectStatus, User } from '../types';
-import { db } from '../firebase';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { useLanguage } from '../context/LanguageContext';
+import { useFirestore } from '../context/FirestoreContext';
 
 interface ProjectsProps {
   user: User | null;
 }
 
 const Projects: React.FC<ProjectsProps> = ({ user }) => {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const { projects } = useFirestore();
   const [filter, setFilter] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const { t } = useLanguage();
-
-  useEffect(() => {
-    const projectsQuery = query(collection(db, 'projects'), orderBy('startDate', 'desc'));
-    const unsubscribe = onSnapshot(projectsQuery, (snapshot) => {
-      setProjects(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project)));
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const filteredProjects = projects.filter(p => {
     const matchesFilter = filter === 'All' || p.status === filter;

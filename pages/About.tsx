@@ -4,8 +4,9 @@ import { useParams } from 'react-router-dom';
 import { getDb } from '../services/mockDb';
 import { StaffMember, User } from '../types';
 import { useLanguage } from '../context/LanguageContext';
+import { useFirestore } from '../context/FirestoreContext';
 import { db as firestore } from '../firebase';
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import { collection, query } from 'firebase/firestore';
 import Logo from '../components/Logo';
 import EditableText from '../components/EditableText';
 import EditableImage from '../components/EditableImage';
@@ -22,42 +23,36 @@ interface AboutProps {
 
 const About: React.FC<AboutProps> = ({ user }) => {
   const { section } = useParams<{ section: string }>();
-  const [staff, setStaff] = useState<StaffMember[]>([]);
+  const { staff, siteAssets, siteContent } = useFirestore();
   const [selectedMember, setSelectedMember] = useState<StaffMember | null>(null);
   const [missionImages, setMissionImages] = useState<string[]>([]);
   const [activeMissionIdx, setActiveMissionIdx] = useState(0);
+  const [aboutContent, setAboutContent] = useState({ title: '', desc: '' });
+  const [missionContent, setMissionContent] = useState({ goal: '' });
   const { t } = useLanguage();
 
   useEffect(() => {
-    const q = query(collection(firestore, 'staff'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const staffData: StaffMember[] = [];
-      snapshot.forEach((doc) => {
-        staffData.push({ id: doc.id, ...doc.data() } as StaffMember);
-      });
-      setStaff(staffData);
-    });
-
-    const assetsQuery = query(collection(firestore, 'site_assets'));
-    const unsubscribeAssets = onSnapshot(assetsQuery, (snapshot) => {
-      const images = snapshot.docs
-        .map(doc => doc.data())
-        .filter(asset => asset.key === 'mission_images' && asset.type === 'image')
-        .map(asset => asset.url);
+    if (siteContent.length > 0) {
+      const about = siteContent.find(c => c.id === 'about_main');
+      if (about) setAboutContent({ title: about.title || '', desc: about.desc || '' });
       
-      if (images.length > 0) {
-        setMissionImages(images);
-      } else {
-        // Fallback to defaults if none in DB
-        setMissionImages(["/mission1.png", "/mission2.png", "/mission3.png"]);
-      }
-    });
+      const mission = siteContent.find(c => c.id === 'mission_goal');
+      if (mission) setMissionContent({ goal: mission.goal || '' });
+    }
+  }, [siteContent]);
 
-    return () => {
-      unsubscribe();
-      unsubscribeAssets();
-    };
-  }, []);
+  useEffect(() => {
+    const images = siteAssets
+      .filter(asset => asset.key === 'mission_images' && asset.type === 'image')
+      .map(asset => asset.url);
+    
+    if (images.length > 0) {
+      setMissionImages(images);
+    } else {
+      // Fallback to defaults if none in DB
+      setMissionImages(["/mission1.png", "/mission2.png", "/mission3.png"]);
+    }
+  }, [siteAssets]);
 
   useEffect(() => {
     if (missionImages.length === 0) return;
@@ -81,14 +76,18 @@ const About: React.FC<AboutProps> = ({ user }) => {
             <span>{t('about.hero.badge')}</span>
           </div>
           <h1 className="text-4xl md:text-7xl text-brand-dark uppercase tracking-tighter leading-[0.9] font-black">
-            <EditableText translationKey="about.hero.title1" user={user} /> <br/>
-            <span className="text-brand-pink italic underline decoration-brand-lime/30 underline-offset-8">
-              <EditableText translationKey="about.hero.title2" user={user} />
-            </span> <br/>
-            <EditableText translationKey="about.hero.title3" user={user} />
+            {aboutContent.title || <EditableText translationKey="about.hero.title1" user={user} />} <br/>
+            {(!aboutContent.title) && (
+              <>
+                <span className="text-brand-pink italic underline decoration-brand-lime/30 underline-offset-8">
+                  <EditableText translationKey="about.hero.title2" user={user} />
+                </span> <br/>
+                <EditableText translationKey="about.hero.title3" user={user} />
+              </>
+            )}
           </h1>
           <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-4xl">
-            <EditableText translationKey="about.main.desc" user={user} multiline />
+            {aboutContent.desc || <EditableText translationKey="about.main.desc" user={user} multiline />}
           </p>
         </div>
         <div className="lg:col-span-5">
@@ -156,7 +155,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
             <EditableText translationKey="about.mission.title" user={user} />
           </h3>
           <p className="text-slate-300 font-medium leading-relaxed">
-            <EditableText translationKey="about.mission.text" user={user} multiline />
+            {missionContent.goal || <EditableText translationKey="about.mission.text" user={user} multiline />}
           </p>
         </div>
       </section>

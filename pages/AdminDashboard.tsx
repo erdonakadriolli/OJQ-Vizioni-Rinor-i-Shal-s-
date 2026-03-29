@@ -12,18 +12,22 @@ import {
 import { Project, ApplicationStatus, ProjectStatus, NewsItem, StaffMember, VolunteerApplication, Partner } from '../types';
 import { GoogleGenAI } from "@google/genai";
 import { useLanguage } from '../context/LanguageContext';
+import { useFirestore } from '../context/FirestoreContext';
 import { db as firestore, auth, handleFirestoreError, OperationType } from '../firebase';
-import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
+import { collection, query, orderBy, doc, updateDoc, deleteDoc, addDoc, setDoc } from 'firebase/firestore';
 
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'applications' | 'news' | 'staff' | 'home' | 'about' | 'mission' | 'partners' | 'stats' | 'assets'>('overview');
-  const [firestoreStaff, setFirestoreStaff] = useState<StaffMember[]>([]);
-  const [firestoreProjects, setFirestoreProjects] = useState<Project[]>([]);
-  const [firestoreNews, setFirestoreNews] = useState<NewsItem[]>([]);
-  const [firestorePartners, setFirestorePartners] = useState<Partner[]>([]);
-  const [firestoreStats, setFirestoreStats] = useState<any[]>([]);
-  const [firestoreApplications, setFirestoreApplications] = useState<VolunteerApplication[]>([]);
-  const [firestoreAssets, setFirestoreAssets] = useState<any[]>([]);
+  const { 
+    staff: firestoreStaff, 
+    projects: firestoreProjects, 
+    news: firestoreNews, 
+    partners: firestorePartners, 
+    stats: firestoreStats, 
+    applications: firestoreApplications, 
+    siteAssets: firestoreAssets,
+    siteContent: firestoreContent
+  } = useFirestore();
   const { t, language } = useLanguage();
   
   const [showProjectModal, setShowProjectModal] = useState(false);
@@ -97,87 +101,22 @@ const AdminDashboard: React.FC = () => {
     type: 'image'
   });
 
+  const [homeForm, setHomeForm] = useState({ title: '', desc: '' });
+  const [aboutForm, setAboutForm] = useState({ title: '', desc: '' });
+  const [missionForm, setMissionForm] = useState({ goal: '' });
+
   useEffect(() => {
-    // Listen to Firestore staff
-    const qStaff = query(collection(firestore, 'staff'));
-    const unsubscribeStaff = onSnapshot(qStaff, (snapshot) => {
-      const staffData: StaffMember[] = [];
-      snapshot.forEach((doc) => {
-        staffData.push({ id: doc.id, ...doc.data() } as StaffMember);
-      });
-      setFirestoreStaff(staffData);
-    }, (err) => handleFirestoreError(err, OperationType.LIST, 'staff'));
-
-    // Listen to Firestore projects
-    const qProjects = query(collection(firestore, 'projects'), orderBy('startDate', 'desc'));
-    const unsubscribeProjects = onSnapshot(qProjects, (snapshot) => {
-      const projectsData: Project[] = [];
-      snapshot.forEach((doc) => {
-        projectsData.push({ id: doc.id, ...doc.data() } as Project);
-      });
-      setFirestoreProjects(projectsData);
-    }, (err) => handleFirestoreError(err, OperationType.LIST, 'projects'));
-
-    // Listen to Firestore news
-    const qNews = query(collection(firestore, 'news'), orderBy('datePosted', 'desc'));
-    const unsubscribeNews = onSnapshot(qNews, (snapshot) => {
-      const newsData: NewsItem[] = [];
-      snapshot.forEach((doc) => {
-        newsData.push({ id: doc.id, ...doc.data() } as NewsItem);
-      });
-      setFirestoreNews(newsData);
-    }, (err) => handleFirestoreError(err, OperationType.LIST, 'news'));
-
-    // Listen to Firestore partners
-    const qPartners = query(collection(firestore, 'partners'), orderBy('name'));
-    const unsubscribePartners = onSnapshot(qPartners, (snapshot) => {
-      const partnersData: Partner[] = [];
-      snapshot.forEach((doc) => {
-        partnersData.push({ id: doc.id, ...doc.data() } as Partner);
-      });
-      setFirestorePartners(partnersData);
-    }, (err) => handleFirestoreError(err, OperationType.LIST, 'partners'));
-
-    // Listen to Firestore stats
-    const qStats = query(collection(firestore, 'stats'), orderBy('label'));
-    const unsubscribeStats = onSnapshot(qStats, (snapshot) => {
-      const statsData: any[] = [];
-      snapshot.forEach((doc) => {
-        statsData.push({ id: doc.id, ...doc.data() });
-      });
-      setFirestoreStats(statsData);
-    }, (err) => handleFirestoreError(err, OperationType.LIST, 'stats'));
-
-    // Listen to Firestore applications
-    const qApps = query(collection(firestore, 'applications'), orderBy('dateApplied', 'desc'));
-    const unsubscribeApps = onSnapshot(qApps, (snapshot) => {
-      const appsData: VolunteerApplication[] = [];
-      snapshot.forEach((doc) => {
-        appsData.push({ id: doc.id, ...doc.data() } as VolunteerApplication);
-      });
-      setFirestoreApplications(appsData);
-    }, (err) => handleFirestoreError(err, OperationType.LIST, 'applications'));
-
-    // Listen to Firestore assets
-    const qAssets = query(collection(firestore, 'site_assets'));
-    const unsubscribeAssets = onSnapshot(qAssets, (snapshot) => {
-      const assetsData: any[] = [];
-      snapshot.forEach((doc) => {
-        assetsData.push({ id: doc.id, ...doc.data() });
-      });
-      setFirestoreAssets(assetsData);
-    }, (err) => handleFirestoreError(err, OperationType.LIST, 'site_assets'));
-    
-    return () => {
-      unsubscribeStaff();
-      unsubscribeProjects();
-      unsubscribeNews();
-      unsubscribePartners();
-      unsubscribeStats();
-      unsubscribeApps();
-      unsubscribeAssets();
-    };
-  }, []);
+    if (firestoreContent.length > 0) {
+      const home = firestoreContent.find(c => c.id === 'home_hero');
+      if (home) setHomeForm({ title: home.title || '', desc: home.desc || '' });
+      
+      const about = firestoreContent.find(c => c.id === 'about_main');
+      if (about) setAboutForm({ title: about.title || '', desc: about.desc || '' });
+      
+      const mission = firestoreContent.find(c => c.id === 'mission_goal');
+      if (mission) setMissionForm({ goal: mission.goal || '' });
+    }
+  }, [firestoreContent]);
 
   const showError = (msg: string) => {
     setErrorMessage(msg);
@@ -249,6 +188,11 @@ const AdminDashboard: React.FC = () => {
   const handleSavePartner = async () => {
     if (!partnerForm.name) return;
     
+    if (!auth.currentUser) {
+      showError('Duhet të jeni të kyçur me Google për të ruajtur në DB');
+      return;
+    }
+
     const partnerData = {
       name: partnerForm.name,
       logo: partnerForm.logo || 'https://via.placeholder.com/150',
@@ -299,6 +243,11 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleSaveStat = async () => {
+    if (!auth.currentUser) {
+      showError('Duhet të jeni të kyçur me Google për të ruajtur në DB');
+      return;
+    }
+
     const statData = {
       value: statsForm.value,
       label: statsForm.label,
@@ -349,6 +298,11 @@ const AdminDashboard: React.FC = () => {
 
   const handleSaveAsset = async () => {
     if (!assetForm.url || !assetForm.key) return;
+
+    if (!auth.currentUser) {
+      showError('Duhet të jeni të kyçur me Google për të ruajtur në DB');
+      return;
+    }
 
     const assetData = {
       url: assetForm.url,
@@ -484,6 +438,11 @@ const AdminDashboard: React.FC = () => {
   const handleSaveNews = async () => {
     if (!newsForm.title) return;
     
+    if (!auth.currentUser) {
+      showError('Duhet të jeni të kyçur me Google për të ruajtur në DB');
+      return;
+    }
+
     const newsData = {
       title: newsForm.title,
       content: newsForm.content,
@@ -619,6 +578,36 @@ const AdminDashboard: React.FC = () => {
         const errData = JSON.parse(firestoreErr.message);
         showError(`Gabim: ${errData.error}`);
       }
+    }
+  };
+
+  const handleSaveHome = async () => {
+    if (!auth.currentUser) return showError('Duhet të jeni të kyçur me Google');
+    try {
+      await setDoc(doc(firestore, 'site_content', 'home_hero'), homeForm);
+      setSuccessMessage('Ndryshimet në Home u ruajtën!');
+    } catch (err) {
+      handleFirestoreError(err, OperationType.WRITE, 'site_content/home_hero');
+    }
+  };
+
+  const handleSaveAbout = async () => {
+    if (!auth.currentUser) return showError('Duhet të jeni të kyçur me Google');
+    try {
+      await setDoc(doc(firestore, 'site_content', 'about_main'), aboutForm);
+      setSuccessMessage('Ndryshimet në About u ruajtën!');
+    } catch (err) {
+      handleFirestoreError(err, OperationType.WRITE, 'site_content/about_main');
+    }
+  };
+
+  const handleSaveMission = async () => {
+    if (!auth.currentUser) return showError('Duhet të jeni të kyçur me Google');
+    try {
+      await setDoc(doc(firestore, 'site_content', 'mission_goal'), missionForm);
+      setSuccessMessage('Ndryshimet në Mission u ruajtën!');
+    } catch (err) {
+      handleFirestoreError(err, OperationType.WRITE, 'site_content/mission_goal');
     }
   };
 
@@ -771,13 +760,23 @@ const AdminDashboard: React.FC = () => {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Hero Title</label>
-                    <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-blue/10 transition-all" defaultValue={t('hero.title1')} />
+                    <input 
+                      type="text" 
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-blue/10 transition-all" 
+                      value={homeForm.title} 
+                      onChange={(e) => setHomeForm({...homeForm, title: e.target.value})}
+                    />
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Hero Subtitle</label>
-                    <textarea rows={4} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-blue/10 transition-all resize-none" defaultValue={t('hero.desc')} />
+                    <textarea 
+                      rows={4} 
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-blue/10 transition-all resize-none" 
+                      value={homeForm.desc} 
+                      onChange={(e) => setHomeForm({...homeForm, desc: e.target.value})}
+                    />
                   </div>
-                  <button onClick={() => setSuccessMessage('Ndryshimet u ruajtën!')} className="px-8 py-4 bg-brand-blue text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-blue/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  <button onClick={handleSaveHome} className="px-8 py-4 bg-brand-blue text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-blue/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
                     {t('admin.save')}
                   </button>
                 </div>
@@ -795,13 +794,23 @@ const AdminDashboard: React.FC = () => {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">About Title</label>
-                    <input type="text" className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-cyan/10 transition-all" defaultValue={t('about.main.title')} />
+                    <input 
+                      type="text" 
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-cyan/10 transition-all" 
+                      value={aboutForm.title} 
+                      onChange={(e) => setAboutForm({...aboutForm, title: e.target.value})}
+                    />
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">About Description</label>
-                    <textarea rows={6} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-cyan/10 transition-all resize-none" defaultValue={t('about.main.desc')} />
+                    <textarea 
+                      rows={6} 
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-cyan/10 transition-all resize-none" 
+                      value={aboutForm.desc} 
+                      onChange={(e) => setAboutForm({...aboutForm, desc: e.target.value})}
+                    />
                   </div>
-                  <button onClick={() => setSuccessMessage('Ndryshimet u ruajtën!')} className="px-8 py-4 bg-brand-cyan text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-cyan/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  <button onClick={handleSaveAbout} className="px-8 py-4 bg-brand-cyan text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-cyan/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
                     {t('admin.save')}
                   </button>
                 </div>
@@ -819,9 +828,14 @@ const AdminDashboard: React.FC = () => {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Mission Content</label>
-                    <textarea rows={8} className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-lime/10 transition-all resize-none" defaultValue={t('about.main.goal')} />
+                    <textarea 
+                      rows={8} 
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-lime/10 transition-all resize-none" 
+                      value={missionForm.goal} 
+                      onChange={(e) => setMissionForm({...missionForm, goal: e.target.value})}
+                    />
                   </div>
-                  <button onClick={() => setSuccessMessage('Ndryshimet u ruajtën!')} className="px-8 py-4 bg-brand-lime text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-lime/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  <button onClick={handleSaveMission} className="px-8 py-4 bg-brand-lime text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-lime/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
                     {t('admin.save')}
                   </button>
                 </div>
