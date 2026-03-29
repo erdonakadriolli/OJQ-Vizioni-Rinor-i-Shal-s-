@@ -18,7 +18,7 @@ const translations: Record<'AL' | 'EN', Record<string, string>> = {
     'nav.news': 'Lajmet',
     'nav.join': 'Vullnetarizimi',
     'nav.login': 'Kyçu',
-    'nav.derdo': 'Vizioni AI',
+    'nav.derdo': 'VIZIONI AI',
 
     // Hero Section
     'hero.subtitle': 'Vizioni Rinor i Shalës',
@@ -135,8 +135,8 @@ const translations: Record<'AL' | 'EN', Record<string, string>> = {
 
     // Derdo AI
     'derdo.promo.tag': 'Inovacioni Digjital',
-    'derdo.greeting': 'Bisedo me Vizioni AI',
-    'derdo.desc': 'Vizioni AI është asistenti ynë inteligjent që ju ndihmon me informacione rreth organizatës, projekteve dhe vullnetarizmit.',
+    'derdo.greeting': 'Përshëndetje! Unë jam VIZIONI AI. Si mund t\'ju ndihmoj sot?',
+    'derdo.desc': 'VIZIONI AI është asistenti ynë inteligjent që ju ndihmon me informacione rreth organizatës, projekteve dhe vullnetarizmit.',
     'derdo.chat': 'Fillo bisedën',
 
     // Lajmet
@@ -200,7 +200,7 @@ const translations: Record<'AL' | 'EN', Record<string, string>> = {
     'nav.news': 'News',
     'nav.join': 'Volunteer',
     'nav.login': 'Login',
-    'nav.derdo': 'Vision AI',
+    'nav.derdo': 'VIZIONI AI',
 
     // Hero Section
     'hero.subtitle': 'Youth Vision of Shala',
@@ -317,8 +317,8 @@ const translations: Record<'AL' | 'EN', Record<string, string>> = {
 
     // Derdo AI
     'derdo.promo.tag': 'Digital Innovation',
-    'derdo.greeting': 'Chat with Vision AI',
-    'derdo.desc': 'Vision AI is our intelligent assistant that helps you with information about the organization, projects, and volunteering.',
+    'derdo.greeting': 'Hello! I am VIZIONI AI. How can I help you today?',
+    'derdo.desc': 'VIZIONI AI is our intelligent assistant that helps you with information about the organization, projects, and volunteering.',
     'derdo.chat': 'Start Chat',
 
     // News
