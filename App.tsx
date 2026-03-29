@@ -159,7 +159,7 @@ const App: React.FC = () => {
       <HashRouter>
         <div className="min-h-screen flex flex-col selection:bg-brand-pink selection:text-white">
           <Navbar user={user} onLogout={handleLogout} />
-          <main className="flex-grow">
+          <main className="flex-grow pt-20 lg:pt-24">
             <Routes>
               <Route path="/" element={<Home user={user} />} />
               <Route path="/about" element={<About user={user} />} />

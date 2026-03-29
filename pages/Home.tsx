@@ -86,20 +86,20 @@ const Home: React.FC = () => {
               <Sparkles className="h-3 w-3" />
               <span>{t('hero.subtitle')}</span>
             </div>
-            <h1 className="text-6xl md:text-[7.5rem] font-black text-brand-dark leading-[0.9] mb-10 uppercase tracking-tighter animate-in slide-in-from-left duration-1000">
+            <h1 className="text-4xl sm:text-6xl md:text-[7.5rem] font-black text-brand-dark leading-[0.9] mb-10 uppercase tracking-tighter animate-in slide-in-from-left duration-1000">
               {t('hero.title1')}<br/>
               <span className="gradient-text">
                 {t('hero.title2')}
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-slate-500 max-w-xl mb-12 font-medium leading-relaxed animate-in fade-in duration-1000 delay-300">
+            <p className="text-base md:text-xl text-slate-500 max-w-xl mb-12 font-medium leading-relaxed animate-in fade-in duration-1000 delay-300">
               {t('hero.desc')}
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 animate-in slide-in-from-bottom-8 duration-1000 delay-500">
-              <Link to="/join" className="px-12 py-5 bg-brand-pink text-white rounded-full font-black uppercase text-xs btn-glow-pink transition-all shadow-2xl shadow-brand-pink/30 tracking-widest flex items-center justify-center">
+              <Link to="/join" className="px-10 py-4 sm:px-12 sm:py-5 bg-brand-pink text-white rounded-full font-black uppercase text-[10px] sm:text-xs btn-glow-pink transition-all shadow-2xl shadow-brand-pink/30 tracking-widest flex items-center justify-center">
                 {t('hero.apply')} <UserPlus className="ml-3 h-5 w-5" />
               </Link>
-              <Link to="/projects" className="px-12 py-5 bg-brand-dark text-white rounded-full font-black uppercase text-xs hover:bg-slate-800 transition-all shadow-2xl shadow-brand-dark/20 tracking-widest flex items-center justify-center group">
+              <Link to="/projects" className="px-10 py-4 sm:px-12 sm:py-5 bg-brand-dark text-white rounded-full font-black uppercase text-[10px] sm:text-xs hover:bg-slate-800 transition-all shadow-2xl shadow-brand-dark/20 tracking-widest flex items-center justify-center group">
                 {t('hero.projects')} <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
