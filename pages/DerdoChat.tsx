@@ -36,7 +36,8 @@ const DerdoChat: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      // Use Vite environment variable for frontend
+      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
       const systemPrompt = `Ju jeni VIZIONI AI, asistenti inteligjent dhe zyrtar i OJQ "Vizioni Rinor i Shalës" (VRSH). 
       Përgjigjuni gjithmonë në gjuhën shqipe, jini profesional, miqësor dhe pozitiv. Kur ju pyesin për emrin, thuani: "Unë jam VIZIONI AI".
 
