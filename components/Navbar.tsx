@@ -65,10 +65,6 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
             {t('nav.home')}
           </Link>
 
-          <Link to="/projects" className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive('/projects') ? 'text-brand-cyan bg-brand-cyan/5' : 'text-slate-600 hover:text-brand-cyan'}`}>
-            {t('nav.projects')}
-          </Link>
-
           <div className="relative group" onMouseEnter={() => setActiveDropdown('about')} onMouseLeave={() => setActiveDropdown(null)}>
             <button className={`flex items-center space-x-1 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive('/about') ? 'text-brand-pink bg-brand-pink/5' : 'text-slate-600 hover:text-brand-pink'}`}>
               <span>{t('nav.about')}</span>
@@ -85,6 +81,10 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
               </Link>
             </div>
           </div>
+
+          <Link to="/projects" className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive('/projects') ? 'text-brand-cyan bg-brand-cyan/5' : 'text-slate-600 hover:text-brand-cyan'}`}>
+            {t('nav.projects')}
+          </Link>
 
           <div className="relative group" onMouseEnter={() => setActiveDropdown('news')} onMouseLeave={() => setActiveDropdown(null)}>
             <button className={`flex items-center space-x-1 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isActive('/news') ? 'text-brand-pink bg-brand-pink/5' : 'text-slate-600 hover:text-brand-pink'}`}>

@@ -10,7 +10,7 @@ interface LanguageContextType {
 const translations: Record<'AL' | 'EN', Record<string, string>> = {
   AL: {
     // Navigimi
-    'nav.home': 'Kryefaqja',
+    'nav.home': 'Ballina',
     'nav.about': 'Rreth Nesh',
     'nav.mission': 'Vizioni dhe Misioni',
     'nav.staff': 'Stafi',
