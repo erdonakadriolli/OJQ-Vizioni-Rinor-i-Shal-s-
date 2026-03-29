@@ -1,184 +1,128 @@
+
 <!DOCTYPE html>
 <html lang="sq">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vizioni Rinor i Shalës</title>
-  <link rel="icon" type="image/png" href="/logo.png">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300..700&family=Outfit:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Anton&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-    rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            serif: ['Playfair Display', 'serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-            outfit: ['Outfit', 'sans-serif'],
-            space: ['Space Grotesk', 'sans-serif'],
-            cormorant: ['Cormorant Garamond', 'serif'],
-            anton: ['Anton', 'sans-serif'],
-            baskerville: ['Libre Baskerville', 'serif'],
-            montserrat: ['Montserrat', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              dark: '#12121a',
-              pink: '#e11d74',
-              orange: '#f39237',
-              lime: '#95d03a',
-              cyan: '#00adb5',
-              blue: '#005691',
-              purple: '#7d5a94',
-            }
-          },
-          animation: {
-            'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'float': 'float 5s ease-in-out infinite',
-            'spin-slow': 'spin 15s linear infinite',
-          },
-          keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
-              '50%': { transform: 'translateY(-15px) rotate(1deg)' },
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vizioni Rinor i Shalës</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300..700&family=Outfit:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Anton&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['Playfair Display', 'serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+              outfit: ['Outfit', 'sans-serif'],
+              space: ['Space Grotesk', 'sans-serif'],
+              cormorant: ['Cormorant Garamond', 'serif'],
+              anton: ['Anton', 'sans-serif'],
+              baskerville: ['Libre Baskerville', 'serif'],
+              montserrat: ['Montserrat', 'sans-serif'],
+            },
+            colors: {
+              brand: {
+                dark: '#12121a',
+                pink: '#e11d74',
+                orange: '#f39237',
+                lime: '#95d03a',
+                cyan: '#00adb5',
+                blue: '#005691',
+                purple: '#7d5a94',
+              }
+            },
+            animation: {
+              'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 5s ease-in-out infinite',
+              'spin-slow': 'spin 15s linear infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                '50%': { transform: 'translateY(-15px) rotate(1deg)' },
+              }
             }
           }
         }
       }
-    }
-  </script>
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #fcfcfd;
-      overflow-x: hidden;
-      color: #1a1a24;
-    }
+    </script>
+    <style>
+        body { 
+          font-family: 'Inter', sans-serif; 
+          background-color: #fcfcfd;
+          overflow-x: hidden;
+          color: #1a1a24;
+        }
+        
+        .brand-aura {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          z-index: -1;
+          background: radial-gradient(circle at 50% 50%, #fcfcfd 0%, #f0f2f5 100%);
+        }
+        
+        .aura-blob {
+          position: absolute;
+          filter: blur(140px);
+          opacity: 0.12;
+          border-radius: 50%;
+        }
+        
+        .aura-1 { top: -10%; left: -5%; width: 45vw; height: 45vw; background: #e11d74; }
+        .aura-2 { bottom: -10%; right: -5%; width: 40vw; height: 40vw; background: #95d03a; }
+        .aura-3 { top: 20%; right: 10%; width: 30vw; height: 30vw; background: #f39237; }
+        .aura-4 { bottom: 20%; left: 10%; width: 35vw; height: 35vw; background: #00adb5; }
 
-    .brand-aura {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: -1;
-      background: radial-gradient(circle at 50% 50%, #fcfcfd 0%, #f0f2f5 100%);
-    }
+        .glass-card {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(30px);
+          -webkit-backdrop-filter: blur(30px);
+          border: 1px solid rgba(255, 255, 255, 0.5);
+        }
 
-    .aura-blob {
-      position: absolute;
-      filter: blur(140px);
-      opacity: 0.12;
-      border-radius: 50%;
-    }
+        .gradient-text {
+          background: linear-gradient(135deg, #e11d74 0%, #f39237 50%, #95d03a 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
 
-    .aura-1 {
-      top: -10%;
-      left: -5%;
-      width: 45vw;
-      height: 45vw;
-      background: #e11d74;
-    }
+        .micro-bento-card {
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .micro-bento-card:hover {
+          transform: translateY(-5px) scale(1.02);
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        }
 
-    .aura-2 {
-      bottom: -10%;
-      right: -5%;
-      width: 40vw;
-      height: 40vw;
-      background: #95d03a;
-    }
+        .btn-vizioni {
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
+        .btn-vizioni::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+          transform: translateX(-100%);
+          transition: transform 0.6s ease;
+        }
+        .btn-vizioni:hover::after {
+          transform: translateX(100%);
+        }
 
-    .aura-3 {
-      top: 20%;
-      right: 10%;
-      width: 30vw;
-      height: 30vw;
-      background: #f39237;
-    }
+        .btn-glow-pink { box-shadow: 0 0 20px rgba(225, 29, 116, 0.4); }
+        .btn-glow-pink:hover { box-shadow: 0 0 40px rgba(225, 29, 116, 0.6); }
+        .btn-glow-cyan { box-shadow: 0 0 20px rgba(0, 173, 181, 0.4); }
+        .btn-glow-cyan:hover { box-shadow: 0 0 40px rgba(0, 173, 181, 0.6); }
 
-    .aura-4 {
-      bottom: 20%;
-      left: 10%;
-      width: 35vw;
-      height: 35vw;
-      background: #00adb5;
-    }
-
-    .glass-card {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-    }
-
-    .gradient-text {
-      background: linear-gradient(135deg, #e11d74 0%, #f39237 50%, #95d03a 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .micro-bento-card {
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .micro-bento-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
-    }
-
-    .btn-vizioni {
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .btn-vizioni::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.6s ease;
-    }
-
-    .btn-vizioni:hover::after {
-      transform: translateX(100%);
-    }
-
-    .btn-glow-pink {
-      box-shadow: 0 0 20px rgba(225, 29, 116, 0.4);
-    }
-
-    .btn-glow-pink:hover {
-      box-shadow: 0 0 40px rgba(225, 29, 116, 0.6);
-    }
-
-    .btn-glow-cyan {
-      box-shadow: 0 0 20px rgba(0, 173, 181, 0.4);
-    }
-
-    .btn-glow-cyan:hover {
-      box-shadow: 0 0 40px rgba(0, 173, 181, 0.6);
-    }
-
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #e11d74;
-      border-radius: 20px;
-    }
-  </style>
-  <script type="importmap">
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e11d74; border-radius: 20px; }
+    </style>
+<script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@^19.2.3",
@@ -191,18 +135,16 @@
   }
 }
 </script>
-  <link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="/index.css">
 </head>
-
 <body>
-  <div class="brand-aura">
-    <div class="aura-blob aura-1 animate-pulse-slow"></div>
-    <div class="aura-blob aura-2 animate-pulse-slow" style="animation-delay: 2s"></div>
-    <div class="aura-blob aura-3 animate-pulse-slow" style="animation-delay: 4s"></div>
-    <div class="aura-blob aura-4 animate-pulse-slow" style="animation-delay: 1s"></div>
-  </div>
-  <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
+    <div class="brand-aura">
+      <div class="aura-blob aura-1 animate-pulse-slow"></div>
+      <div class="aura-blob aura-2 animate-pulse-slow" style="animation-delay: 2s"></div>
+      <div class="aura-blob aura-3 animate-pulse-slow" style="animation-delay: 4s"></div>
+      <div class="aura-blob aura-4 animate-pulse-slow" style="animation-delay: 1s"></div>
+    </div>
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
 </body>
-
 </html>

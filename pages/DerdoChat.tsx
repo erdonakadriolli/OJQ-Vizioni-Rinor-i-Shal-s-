@@ -11,8 +11,8 @@ interface Message {
 }
 
 const DerdoChat: React.FC = () => {
-  const { t } = useLanguage();
-  const initialMessage = t('derdo.greeting');
+  const { t, language } = useLanguage();
+  const initialMessage = language === 'AL' ? 'Unë jam VIZIONI AI' : 'I am VIZIONI AI';
 
   const [messages, setMessages] = useState<Message[]>([
     { role: 'model', text: initialMessage }
@@ -105,7 +105,7 @@ const DerdoChat: React.FC = () => {
             </div>
             <div>
               <h2 className="text-xl font-black uppercase tracking-tight">{t('nav.derdo')}</h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Asistenti inteligjent i VRSH</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t('derdo.header.desc')}</p>
             </div>
           </div>
           <button onClick={clearChat} className="p-3 text-slate-400 hover:text-red-400 transition-colors">

@@ -49,8 +49,12 @@ const Home: React.FC = () => {
       if (images.length > 0) {
         setHeroImages(images);
       } else {
-        // Fallback to defaults if none in DB
-        setHeroImages(["/hero1.png", "/hero2.png", "/hero3.png"]);
+        // Fallback to picsum if none in DB or missing files
+        setHeroImages([
+          "https://picsum.photos/seed/vizioni1/1920/1080",
+          "https://picsum.photos/seed/vizioni2/1920/1080",
+          "https://picsum.photos/seed/vizioni3/1920/1080"
+        ]);
       }
     });
 
@@ -105,10 +109,10 @@ const Home: React.FC = () => {
             </div>
           </div>
           
-          <div className="hidden lg:block relative h-[600px] animate-in zoom-in duration-1000 delay-200">
+          <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] animate-in fade-in duration-1000 delay-200 mt-12 lg:mt-0">
              {/* Gradient Borders around the image stack */}
-             <div className="absolute inset-0 bg-brand-pink rounded-[4rem] rotate-3 translate-x-4 translate-y-4 opacity-10"></div>
-             <div className="absolute inset-0 bg-brand-lime rounded-[4rem] -rotate-3 -translate-x-4 -translate-y-4 opacity-10"></div>
+             <div className="absolute inset-0 bg-brand-pink rounded-[3rem] lg:rounded-[4rem] rotate-3 translate-x-4 translate-y-4 opacity-10"></div>
+             <div className="absolute inset-0 bg-brand-lime rounded-[3rem] lg:rounded-[4rem] -rotate-3 -translate-x-4 -translate-y-4 opacity-10"></div>
              
              <div className="relative h-full w-full group cursor-pointer" onClick={() => setActiveHeroIdx((activeHeroIdx + 1) % heroImages.length)}>
                 {heroImages.map((src, idx) => (
@@ -123,7 +127,7 @@ const Home: React.FC = () => {
                       x: activeHeroIdx === idx ? 0 : (idx < activeHeroIdx ? -100 : 100)
                     }}
                     transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute inset-0 rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white"
+                    className="absolute inset-0 rounded-[3rem] lg:rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white"
                   >
                     <img 
                       src={src} 
@@ -135,14 +139,14 @@ const Home: React.FC = () => {
                   </motion.div>
                 ))}
 
-                <div className="absolute bottom-12 left-12 right-12 z-20">
+                <div className="absolute bottom-8 lg:bottom-12 left-8 lg:left-12 right-8 lg:right-12 z-20">
                    <div className="flex items-center space-x-4 mb-4">
-                      <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white">
-                         <Shield className="h-6 w-6" />
+                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white">
+                         <Shield className="h-5 w-5 lg:h-6 lg:h-6" />
                       </div>
                       <div className="text-white">
-                         <h4 className="font-black uppercase text-xs tracking-widest">Iniciativa e Shpresës</h4>
-                         <p className="text-[10px] font-bold text-slate-300 uppercase">Fshati Shalë, Lipjan</p>
+                         <h4 className="font-black uppercase text-[10px] lg:text-xs tracking-widest">Iniciativa e Shpresës</h4>
+                         <p className="text-[8px] lg:text-[10px] font-bold text-slate-300 uppercase">Fshati Shalë, Lipjan</p>
                       </div>
                    </div>
                    

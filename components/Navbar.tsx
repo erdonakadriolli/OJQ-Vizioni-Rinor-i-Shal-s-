@@ -168,9 +168,9 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
             </div>
 
             {/* Mobile Menu Content */}
-            <div className="flex-1 overflow-y-auto py-10 px-8 space-y-10">
+            <div className="flex-1 overflow-y-auto py-8 px-8 space-y-8">
               {/* Main Links */}
-              <div className="space-y-5">
+              <div className="space-y-4">
                 {mobileLinks.map((link, idx) => (
                   <motion.div
                     key={link.path}
@@ -180,9 +180,9 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
                   >
                     <Link 
                       to={link.path} 
-                      className={`flex items-center space-x-4 text-xl font-black uppercase tracking-tighter ${link.color}`}
+                      className={`flex items-center space-x-4 text-lg font-black uppercase tracking-tighter ${link.color}`}
                     >
-                      <link.icon className="h-6 w-6 opacity-20" />
+                      <link.icon className="h-5 w-5 opacity-20" />
                       <span>{link.name}</span>
                     </Link>
                   </motion.div>
@@ -194,14 +194,14 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
-                className="space-y-3"
+                className="space-y-2"
               >
-                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-brand-pink flex items-center opacity-60">
+                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-brand-pink flex items-center opacity-60">
                   <Info className="h-3 w-3 mr-2" /> {t('nav.about')}
                 </p>
-                <div className="flex flex-col space-y-3 pl-4 border-l border-slate-100">
-                  <Link to="/about/staff" className="text-sm font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('nav.staff')}</Link>
-                  <Link to="/about/mission" className="text-sm font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('nav.mission')}</Link>
+                <div className="flex flex-col space-y-2 pl-4 border-l border-slate-100">
+                  <Link to="/about/staff" className="text-xs font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('nav.staff')}</Link>
+                  <Link to="/about/mission" className="text-xs font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('nav.mission')}</Link>
                 </div>
               </motion.div>
 
@@ -210,15 +210,15 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 }}
-                className="space-y-3"
+                className="space-y-2"
               >
-                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-brand-pink flex items-center opacity-60">
+                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-brand-pink flex items-center opacity-60">
                   <Newspaper className="h-3 w-3 mr-2" /> {t('nav.news')}
                 </p>
-                <div className="flex flex-col space-y-3 pl-4 border-l border-slate-100">
-                  <Link to="/news/latest" className="text-sm font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('news.title.latest')}</Link>
-                  <Link to="/news/reports" className="text-sm font-bold text-slate-600 hover:text-brand-cyan transition-colors">{t('news.title.reports')}</Link>
-                  <Link to="/news/media" className="text-sm font-bold text-slate-600 hover:text-brand-orange transition-colors">{t('news.title.media')}</Link>
+                <div className="flex flex-col space-y-2 pl-4 border-l border-slate-100">
+                  <Link to="/news/latest" className="text-xs font-bold text-slate-600 hover:text-brand-pink transition-colors">{t('news.title.latest')}</Link>
+                  <Link to="/news/reports" className="text-xs font-bold text-slate-600 hover:text-brand-cyan transition-colors">{t('news.title.reports')}</Link>
+                  <Link to="/news/media" className="text-xs font-bold text-slate-600 hover:text-brand-orange transition-colors">{t('news.title.media')}</Link>
                 </div>
               </motion.div>
             </div>

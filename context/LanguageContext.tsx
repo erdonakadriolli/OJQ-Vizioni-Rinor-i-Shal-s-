@@ -135,9 +135,10 @@ const translations: Record<'AL' | 'EN', Record<string, string>> = {
 
     // Derdo AI
     'derdo.promo.tag': 'Inovacioni Digjital',
-    'derdo.greeting': 'Përshëndetje! Unë jam VIZIONI AI. Si mund t\'ju ndihmoj sot?',
-    'derdo.desc': 'VIZIONI AI është asistenti ynë inteligjent që ju ndihmon me informacione rreth organizatës, projekteve dhe vullnetarizmit.',
+    'derdo.greeting': 'VIZIONI AI',
+    'derdo.desc': 'Asistenti inteligjent i VRSH për informacione dhe vullnetarizëm.',
     'derdo.chat': 'Fillo bisedën',
+    'derdo.header.desc': 'Asistenti inteligjent i VRSH',
 
     // Lajmet
     'news.title.all': 'Të gjitha lajmet',
@@ -317,9 +318,10 @@ const translations: Record<'AL' | 'EN', Record<string, string>> = {
 
     // Derdo AI
     'derdo.promo.tag': 'Digital Innovation',
-    'derdo.greeting': 'Hello! I am VIZIONI AI. How can I help you today?',
-    'derdo.desc': 'VIZIONI AI is our intelligent assistant that helps you with information about the organization, projects, and volunteering.',
+    'derdo.greeting': 'VIZIONI AI',
+    'derdo.desc': 'VRSH intelligent assistant for information and volunteering.',
     'derdo.chat': 'Start Chat',
+    'derdo.header.desc': 'VRSH Intelligent Assistant',
 
     // News
     'news.title.all': 'All News',
