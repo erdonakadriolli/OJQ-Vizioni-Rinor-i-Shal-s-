@@ -86,7 +86,7 @@ const Footer: React.FC = () => {
             </li>
             <li className="flex items-center space-x-4 group">
               <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-brand-cyan border border-slate-200 flex-shrink-0 shadow-sm"><Mail className="h-5 w-5" /></div>
-              <a href="mailto:info@vizionirinorishales.org" className="hover:text-brand-cyan transition-colors">info@vizionirinorishales.org</a>
+              <span className="hover:text-brand-cyan transition-colors">info@vizionirinorishales.org</span>
             </li>
           </ul>
         </div>

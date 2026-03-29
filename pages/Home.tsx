@@ -90,7 +90,7 @@ const Home: React.FC = () => {
               <Sparkles className="h-3 w-3" />
               <span>{t('hero.subtitle')}</span>
             </div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-brand-dark leading-[1.1] mb-10 uppercase tracking-tighter animate-in slide-in-from-left duration-1000">
+            <h1 className="text-4xl sm:text-6xl md:text-[7.5rem] font-black text-brand-dark leading-[0.9] mb-10 uppercase tracking-tighter animate-in slide-in-from-left duration-1000">
               {t('hero.title1')}<br/>
               <span className="gradient-text">
                 {t('hero.title2')}
