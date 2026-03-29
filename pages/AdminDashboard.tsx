@@ -441,8 +441,8 @@ const AdminDashboard: React.FC = () => {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = promptType === 'project' 
-        ? `Write an inspiring description for "${title}" in the village of Shale, Lipjan. Language: ${language === 'AL' ? 'Albanian' : 'English'}.`
-        : `Write a professional news summary for "${title}" for an NGO in Kosovo. Language: ${language === 'AL' ? 'Albanian' : 'English'}.`;
+        ? `Write an inspiring and detailed description for a project titled "${title}" for the NGO "Vizioni Rinor i Shalës" (VRSH) in the village of Shale, Lipjan. Focus on youth empowerment and community impact. Language: ${language === 'AL' ? 'Albanian' : 'English'}.`
+        : `Write a professional and engaging news article/summary for "${title}" for the NGO "Vizioni Rinor i Shalës" (VRSH). The tone should be positive and community-focused. Language: ${language === 'AL' ? 'Albanian' : 'English'}.`;
 
       // Fix: Use simple string for contents to comply with latest SDK guidelines for text generation
       const response = await ai.models.generateContent({
