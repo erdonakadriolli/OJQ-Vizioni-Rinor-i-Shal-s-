@@ -11,23 +11,19 @@ import {
 } from 'lucide-react';
 import { Project, ApplicationStatus, ProjectStatus, NewsItem, StaffMember, VolunteerApplication, Partner } from '../types';
 import { GoogleGenAI } from "@google/genai";
-import { useLanguage } from '../context/LanguageContext';
-import { useFirestore } from '../context/FirestoreContext';
+import { useLanguage, translations } from '../context/LanguageContext';
 import { db as firestore, auth, handleFirestoreError, OperationType } from '../firebase';
-import { collection, query, orderBy, doc, updateDoc, deleteDoc, addDoc, setDoc } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, addDoc, where, getDocs } from 'firebase/firestore';
 
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'applications' | 'news' | 'staff' | 'home' | 'about' | 'mission' | 'partners' | 'stats' | 'assets'>('overview');
-  const { 
-    staff: firestoreStaff, 
-    projects: firestoreProjects, 
-    news: firestoreNews, 
-    partners: firestorePartners, 
-    stats: firestoreStats, 
-    applications: firestoreApplications, 
-    siteAssets: firestoreAssets,
-    siteContent: firestoreContent
-  } = useFirestore();
+  const [firestoreStaff, setFirestoreStaff] = useState<StaffMember[]>([]);
+  const [firestoreProjects, setFirestoreProjects] = useState<Project[]>([]);
+  const [firestoreNews, setFirestoreNews] = useState<NewsItem[]>([]);
+  const [firestorePartners, setFirestorePartners] = useState<Partner[]>([]);
+  const [firestoreStats, setFirestoreStats] = useState<any[]>([]);
+  const [firestoreApplications, setFirestoreApplications] = useState<VolunteerApplication[]>([]);
+  const [firestoreAssets, setFirestoreAssets] = useState<any[]>([]);
   const { t, language } = useLanguage();
   
   const [showProjectModal, setShowProjectModal] = useState(false);
@@ -58,6 +54,10 @@ const AdminDashboard: React.FC = () => {
   const reportFileRef = useRef<HTMLInputElement>(null);
   const partnerLogoRef = useRef<HTMLInputElement>(null);
   const assetFileRef = useRef<HTMLInputElement>(null);
+  const heroTitleRef = useRef<HTMLInputElement>(null);
+  const heroDescRef = useRef<HTMLTextAreaElement>(null);
+  const aboutDescRef = useRef<HTMLTextAreaElement>(null);
+  const missionContentRef = useRef<HTMLTextAreaElement>(null);
 
   const [staffForm, setStaffForm] = useState({
     name: '', role: '', category: 'Current Staff', bio: '', image: '', 
@@ -101,22 +101,87 @@ const AdminDashboard: React.FC = () => {
     type: 'image'
   });
 
-  const [homeForm, setHomeForm] = useState({ title: '', desc: '' });
-  const [aboutForm, setAboutForm] = useState({ title: '', desc: '' });
-  const [missionForm, setMissionForm] = useState({ goal: '' });
-
   useEffect(() => {
-    if (firestoreContent.length > 0) {
-      const home = firestoreContent.find(c => c.id === 'home_hero');
-      if (home) setHomeForm({ title: home.title || '', desc: home.desc || '' });
-      
-      const about = firestoreContent.find(c => c.id === 'about_main');
-      if (about) setAboutForm({ title: about.title || '', desc: about.desc || '' });
-      
-      const mission = firestoreContent.find(c => c.id === 'mission_goal');
-      if (mission) setMissionForm({ goal: mission.goal || '' });
-    }
-  }, [firestoreContent]);
+    // Listen to Firestore staff
+    const qStaff = query(collection(firestore, 'staff'));
+    const unsubscribeStaff = onSnapshot(qStaff, (snapshot) => {
+      const staffData: StaffMember[] = [];
+      snapshot.forEach((doc) => {
+        staffData.push({ id: doc.id, ...doc.data() } as StaffMember);
+      });
+      setFirestoreStaff(staffData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'staff'));
+
+    // Listen to Firestore projects
+    const qProjects = query(collection(firestore, 'projects'), orderBy('startDate', 'desc'));
+    const unsubscribeProjects = onSnapshot(qProjects, (snapshot) => {
+      const projectsData: Project[] = [];
+      snapshot.forEach((doc) => {
+        projectsData.push({ id: doc.id, ...doc.data() } as Project);
+      });
+      setFirestoreProjects(projectsData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'projects'));
+
+    // Listen to Firestore news
+    const qNews = query(collection(firestore, 'news'), orderBy('datePosted', 'desc'));
+    const unsubscribeNews = onSnapshot(qNews, (snapshot) => {
+      const newsData: NewsItem[] = [];
+      snapshot.forEach((doc) => {
+        newsData.push({ id: doc.id, ...doc.data() } as NewsItem);
+      });
+      setFirestoreNews(newsData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'news'));
+
+    // Listen to Firestore partners
+    const qPartners = query(collection(firestore, 'partners'), orderBy('name'));
+    const unsubscribePartners = onSnapshot(qPartners, (snapshot) => {
+      const partnersData: Partner[] = [];
+      snapshot.forEach((doc) => {
+        partnersData.push({ id: doc.id, ...doc.data() } as Partner);
+      });
+      setFirestorePartners(partnersData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'partners'));
+
+    // Listen to Firestore stats
+    const qStats = query(collection(firestore, 'stats'), orderBy('label'));
+    const unsubscribeStats = onSnapshot(qStats, (snapshot) => {
+      const statsData: any[] = [];
+      snapshot.forEach((doc) => {
+        statsData.push({ id: doc.id, ...doc.data() });
+      });
+      setFirestoreStats(statsData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'stats'));
+
+    // Listen to Firestore applications
+    const qApps = query(collection(firestore, 'applications'), orderBy('dateApplied', 'desc'));
+    const unsubscribeApps = onSnapshot(qApps, (snapshot) => {
+      const appsData: VolunteerApplication[] = [];
+      snapshot.forEach((doc) => {
+        appsData.push({ id: doc.id, ...doc.data() } as VolunteerApplication);
+      });
+      setFirestoreApplications(appsData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'applications'));
+
+    // Listen to Firestore assets
+    const qAssets = query(collection(firestore, 'site_assets'));
+    const unsubscribeAssets = onSnapshot(qAssets, (snapshot) => {
+      const assetsData: any[] = [];
+      snapshot.forEach((doc) => {
+        assetsData.push({ id: doc.id, ...doc.data() });
+      });
+      setFirestoreAssets(assetsData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'site_assets'));
+    
+    return () => {
+      unsubscribeStaff();
+      unsubscribeProjects();
+      unsubscribeNews();
+      unsubscribePartners();
+      unsubscribeStats();
+      unsubscribeApps();
+      unsubscribeAssets();
+    };
+  }, []);
 
   const showError = (msg: string) => {
     setErrorMessage(msg);
@@ -188,11 +253,6 @@ const AdminDashboard: React.FC = () => {
   const handleSavePartner = async () => {
     if (!partnerForm.name) return;
     
-    if (!auth.currentUser) {
-      showError('Duhet të jeni të kyçur me Google për të ruajtur në DB');
-      return;
-    }
-
     const partnerData = {
       name: partnerForm.name,
       logo: partnerForm.logo || 'https://via.placeholder.com/150',
@@ -206,6 +266,7 @@ const AdminDashboard: React.FC = () => {
         await addDoc(collection(firestore, 'partners'), partnerData);
       }
       setSuccessMessage('Partneri u ruajt me sukses!');
+      setTimeout(() => setSuccessMessage(null), 3000);
       setShowPartnerModal(false);
       setEditingPartner(null);
     } catch (err) {
@@ -216,6 +277,32 @@ const AdminDashboard: React.FC = () => {
         const errData = JSON.parse(firestoreErr.message);
         showError(`Gabim: ${errData.error}`);
       }
+    }
+  };
+
+  const handleSaveSiteContent = async (key: string, value: string) => {
+    if (!value) return;
+    try {
+      const q = query(collection(firestore, 'site_content'), where('key', '==', key));
+      const snapshot = await getDocs(q);
+      
+      if (snapshot.empty) {
+        await addDoc(collection(firestore, 'site_content'), {
+          key,
+          [language]: value,
+          [language === 'AL' ? 'EN' : 'AL']: translations[language === 'AL' ? 'EN' : 'AL'][key] || value
+        });
+      } else {
+        const docId = snapshot.docs[0].id;
+        await updateDoc(doc(firestore, 'site_content', docId), {
+          [language]: value
+        });
+      }
+      setSuccessMessage('Ndryshimet u ruajtën!');
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (err) {
+      console.error(err);
+      showError('Gabim gjatë ruajtjes!');
     }
   };
 
@@ -243,11 +330,6 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleSaveStat = async () => {
-    if (!auth.currentUser) {
-      showError('Duhet të jeni të kyçur me Google për të ruajtur në DB');
-      return;
-    }
-
     const statData = {
       value: statsForm.value,
       label: statsForm.label,
@@ -298,11 +380,6 @@ const AdminDashboard: React.FC = () => {
 
   const handleSaveAsset = async () => {
     if (!assetForm.url || !assetForm.key) return;
-
-    if (!auth.currentUser) {
-      showError('Duhet të jeni të kyçur me Google për të ruajtur në DB');
-      return;
-    }
 
     const assetData = {
       url: assetForm.url,
@@ -438,11 +515,6 @@ const AdminDashboard: React.FC = () => {
   const handleSaveNews = async () => {
     if (!newsForm.title) return;
     
-    if (!auth.currentUser) {
-      showError('Duhet të jeni të kyçur me Google për të ruajtur në DB');
-      return;
-    }
-
     const newsData = {
       title: newsForm.title,
       content: newsForm.content,
@@ -578,36 +650,6 @@ const AdminDashboard: React.FC = () => {
         const errData = JSON.parse(firestoreErr.message);
         showError(`Gabim: ${errData.error}`);
       }
-    }
-  };
-
-  const handleSaveHome = async () => {
-    if (!auth.currentUser) return showError('Duhet të jeni të kyçur me Google');
-    try {
-      await setDoc(doc(firestore, 'site_content', 'home_hero'), homeForm);
-      setSuccessMessage('Ndryshimet në Home u ruajtën!');
-    } catch (err) {
-      handleFirestoreError(err, OperationType.WRITE, 'site_content/home_hero');
-    }
-  };
-
-  const handleSaveAbout = async () => {
-    if (!auth.currentUser) return showError('Duhet të jeni të kyçur me Google');
-    try {
-      await setDoc(doc(firestore, 'site_content', 'about_main'), aboutForm);
-      setSuccessMessage('Ndryshimet në About u ruajtën!');
-    } catch (err) {
-      handleFirestoreError(err, OperationType.WRITE, 'site_content/about_main');
-    }
-  };
-
-  const handleSaveMission = async () => {
-    if (!auth.currentUser) return showError('Duhet të jeni të kyçur me Google');
-    try {
-      await setDoc(doc(firestore, 'site_content', 'mission_goal'), missionForm);
-      setSuccessMessage('Ndryshimet në Mission u ruajtën!');
-    } catch (err) {
-      handleFirestoreError(err, OperationType.WRITE, 'site_content/mission_goal');
     }
   };
 
@@ -761,22 +803,28 @@ const AdminDashboard: React.FC = () => {
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Hero Title</label>
                     <input 
+                      ref={heroTitleRef}
                       type="text" 
                       className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-blue/10 transition-all" 
-                      value={homeForm.title} 
-                      onChange={(e) => setHomeForm({...homeForm, title: e.target.value})}
+                      defaultValue={t('hero.title1')} 
                     />
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Hero Subtitle</label>
                     <textarea 
+                      ref={heroDescRef}
                       rows={4} 
                       className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-blue/10 transition-all resize-none" 
-                      value={homeForm.desc} 
-                      onChange={(e) => setHomeForm({...homeForm, desc: e.target.value})}
+                      defaultValue={t('hero.desc')} 
                     />
                   </div>
-                  <button onClick={handleSaveHome} className="px-8 py-4 bg-brand-blue text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-blue/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  <button 
+                    onClick={() => {
+                      handleSaveSiteContent('hero.title1', heroTitleRef.current?.value || '');
+                      handleSaveSiteContent('hero.desc', heroDescRef.current?.value || '');
+                    }} 
+                    className="px-8 py-4 bg-brand-blue text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-blue/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  >
                     {t('admin.save')}
                   </button>
                 </div>
@@ -793,24 +841,18 @@ const AdminDashboard: React.FC = () => {
               <div className="bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-100">
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">About Title</label>
-                    <input 
-                      type="text" 
-                      className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-cyan/10 transition-all" 
-                      value={aboutForm.title} 
-                      onChange={(e) => setAboutForm({...aboutForm, title: e.target.value})}
-                    />
-                  </div>
-                  <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">About Description</label>
                     <textarea 
+                      ref={aboutDescRef}
                       rows={6} 
                       className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-cyan/10 transition-all resize-none" 
-                      value={aboutForm.desc} 
-                      onChange={(e) => setAboutForm({...aboutForm, desc: e.target.value})}
+                      defaultValue={t('about.main.desc')} 
                     />
                   </div>
-                  <button onClick={handleSaveAbout} className="px-8 py-4 bg-brand-cyan text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-cyan/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  <button 
+                    onClick={() => handleSaveSiteContent('about.main.desc', aboutDescRef.current?.value || '')} 
+                    className="px-8 py-4 bg-brand-cyan text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-cyan/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  >
                     {t('admin.save')}
                   </button>
                 </div>
@@ -829,13 +871,16 @@ const AdminDashboard: React.FC = () => {
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Mission Content</label>
                     <textarea 
+                      ref={missionContentRef}
                       rows={8} 
                       className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-brand-lime/10 transition-all resize-none" 
-                      value={missionForm.goal} 
-                      onChange={(e) => setMissionForm({...missionForm, goal: e.target.value})}
+                      defaultValue={t('about.main.goal')} 
                     />
                   </div>
-                  <button onClick={handleSaveMission} className="px-8 py-4 bg-brand-lime text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-lime/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  <button 
+                    onClick={() => handleSaveSiteContent('about.main.goal', missionContentRef.current?.value || '')} 
+                    className="px-8 py-4 bg-brand-lime text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-brand-lime/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  >
                     {t('admin.save')}
                   </button>
                 </div>
@@ -1061,7 +1106,7 @@ const AdminDashboard: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                {['site_logo', 'hero_images', 'mission_images'].map(key => (
+                {['hero_images', 'mission_images'].map(key => (
                   <div key={key} className="space-y-6">
                     <div className="flex items-center justify-between px-4">
                       <h2 className="text-sm font-black text-brand-dark uppercase tracking-widest">{key.replace('_', ' ')}</h2>
@@ -1691,7 +1736,6 @@ const AdminDashboard: React.FC = () => {
                 >
                   <option value="hero_images">Hero Images (Home)</option>
                   <option value="mission_images">Mission Images (About)</option>
-                  <option value="site_logo">Logo e Faqes</option>
                 </select>
               </div>
 

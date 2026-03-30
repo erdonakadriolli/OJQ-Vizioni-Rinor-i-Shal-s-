@@ -90,7 +90,14 @@ service cloud.firestore {
 
     match /site_content/{contentId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAdmin() && isValidSiteContent(request.resource.data);
+    }
+
+    function isValidSiteContent(data) {
+      return hasRequiredFields(['key', 'AL', 'EN']) &&
+             data.key is string && data.key.size() > 0 && data.key.size() < 500 &&
+             data.AL is string && data.AL.size() < 50000 &&
+             data.EN is string && data.EN.size() < 50000;
     }
 
     match /test/connection {

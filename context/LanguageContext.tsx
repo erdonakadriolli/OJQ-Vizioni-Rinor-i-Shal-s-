@@ -1,5 +1,7 @@
 
-import React, { createContext, useContext, useCallback, useMemo, useState } from 'react';
+import React, { createContext, useContext, useCallback, useMemo, useState, useEffect } from 'react';
+import { db, handleFirestoreError, OperationType } from '../firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 interface LanguageContextType {
   t: (key: string) => string;
@@ -7,7 +9,7 @@ interface LanguageContextType {
   setLanguage: (lang: 'AL' | 'EN') => void;
 }
 
-const translations: Record<'AL' | 'EN', Record<string, string>> = {
+export const translations: Record<'AL' | 'EN', Record<string, string>> = {
   AL: {
     // Navigimi
     'nav.home': 'Ballina',
@@ -384,14 +386,32 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return (saved === 'AL' || saved === 'EN') ? saved : 'EN';
   });
 
+  const [overrides, setOverrides] = useState<Record<'AL' | 'EN', Record<string, string>>>({ AL: {}, EN: {} });
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, 'site_content'), (snapshot) => {
+      const al: Record<string, string> = {};
+      const en: Record<string, string> = {};
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.key) {
+          if (data.AL) al[data.key] = data.AL;
+          if (data.EN) en[data.key] = data.EN;
+        }
+      });
+      setOverrides({ AL: al, EN: en });
+    }, (error) => handleFirestoreError(error, OperationType.GET, 'site_content'));
+    return () => unsubscribe();
+  }, []);
+
   const setLanguage = useCallback((lang: 'AL' | 'EN') => {
     setLanguageState(lang);
     localStorage.setItem('language', lang);
   }, []);
 
   const t = useCallback((key: string) => {
-    return translations[language][key] || key;
-  }, [language]);
+    return overrides[language][key] || translations[language][key] || key;
+  }, [language, overrides]);
 
   const value = useMemo(() => ({ t, language, setLanguage }), [t, language, setLanguage]);
 

@@ -101,6 +101,17 @@
         "type": { "type": "string", "enum": ["image", "video", "file"] }
       },
       "required": ["url", "key", "type"]
+    },
+    "SiteContent": {
+      "title": "Site Content",
+      "description": "Site-wide text content and translations",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "description": "The translation key (e.g., 'hero.title1')" },
+        "AL": { "type": "string", "description": "Albanian translation" },
+        "EN": { "type": "string", "description": "English translation" }
+      },
+      "required": ["key", "AL", "EN"]
     }
   },
   "firestore": {
@@ -110,6 +121,7 @@
     "partners": { "schema": "Partner", "description": "Collection of partners" },
     "stats": { "schema": "Stat", "description": "Collection of statistics" },
     "applications": { "schema": "VolunteerApplication", "description": "Collection of volunteer applications" },
-    "site_assets": { "schema": "SiteAsset", "description": "Collection of global site assets" }
+    "site_assets": { "schema": "SiteAsset", "description": "Collection of global site assets" },
+    "site_content": { "schema": "SiteContent", "description": "Collection of site-wide text content" }
   }
 }

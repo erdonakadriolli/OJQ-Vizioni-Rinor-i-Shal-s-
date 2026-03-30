@@ -87,7 +87,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
             <EditableText translationKey="about.hero.title3" />
           </h1>
           <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-4xl">
-            <EditableText translationKey="about.main.desc" />
+            <EditableText translationKey="about.main.desc" multiline />
           </p>
         </div>
         <div className="lg:col-span-5">
@@ -143,7 +143,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
             <EditableText translationKey="about.vision.title" />
           </h3>
           <p className="text-slate-500 font-medium leading-relaxed">
-            <EditableText translationKey="about.vision.text" />
+            <EditableText translationKey="about.vision.text" multiline />
           </p>
         </div>
         <div className="bg-brand-dark p-10 rounded-[3rem] text-white group hover:shadow-xl transition-all relative overflow-hidden">
@@ -155,7 +155,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
             <EditableText translationKey="about.mission.title" />
           </h3>
           <p className="text-slate-300 font-medium leading-relaxed">
-            <EditableText translationKey="about.mission.text" />
+            <EditableText translationKey="about.mission.text" multiline />
           </p>
         </div>
       </section>
@@ -181,7 +181,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
                 <EditableText translationKey={`about.programs.${i}.title`} />
               </h4>
               <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                <EditableText translationKey={`about.programs.${i}.desc`} />
+                <EditableText translationKey={`about.programs.${i}.desc`} multiline />
               </p>
             </div>
           ))}
@@ -196,7 +196,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
              <EditableText translationKey="about.activities.title" />
            </h3>
            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
-             <EditableText translationKey="about.activities.desc" />
+             <EditableText translationKey="about.activities.desc" multiline />
            </p>
         </div>
         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
