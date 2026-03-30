@@ -7,31 +7,18 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
-import { useFirestore } from '../context/FirestoreContext';
 import { Partner, Stat } from '../types';
 import { db as firestoreDb, auth, isAdmin as checkIsAdmin } from '../firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
-  const { partners, stats, siteAssets, siteContent } = useFirestore();
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [stats, setStats] = useState<Stat[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [heroImages, setHeroImages] = useState<string[]>([]);
   const [activeHeroIdx, setActiveHeroIdx] = useState(0);
-  const [homeContent, setHomeContent] = useState({ title: '', desc: '' });
-
-  useEffect(() => {
-    if (siteContent.length > 0) {
-      const home = siteContent.find(c => c.id === 'home_hero');
-      if (home) {
-        setHomeContent({
-          title: home.title || '',
-          desc: home.desc || ''
-        });
-      }
-    }
-  }, [siteContent]);
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
@@ -42,21 +29,41 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const images = siteAssets
-      .filter(asset => asset.key === 'hero_images' && asset.type === 'image')
-      .map(asset => asset.url);
-    
-    if (images.length > 0) {
-      setHeroImages(images);
-    } else {
-      // Fallback to picsum if none in DB or missing files
-      setHeroImages([
-        "https://picsum.photos/seed/vizioni1/1920/1080",
-        "https://picsum.photos/seed/vizioni2/1920/1080",
-        "https://picsum.photos/seed/vizioni3/1920/1080"
-      ]);
-    }
-  }, [siteAssets]);
+    const partnersQuery = query(collection(firestoreDb, 'partners'), orderBy('name'));
+    const unsubscribePartners = onSnapshot(partnersQuery, (snapshot) => {
+      setPartners(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Partner)));
+    });
+
+    const statsQuery = query(collection(firestoreDb, 'stats'), orderBy('label'));
+    const unsubscribeStats = onSnapshot(statsQuery, (snapshot) => {
+      setStats(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Stat)));
+    });
+
+    const assetsQuery = query(collection(firestoreDb, 'site_assets'));
+    const unsubscribeAssets = onSnapshot(assetsQuery, (snapshot) => {
+      const images = snapshot.docs
+        .map(doc => doc.data())
+        .filter(asset => asset.key === 'hero_images' && asset.type === 'image')
+        .map(asset => asset.url);
+      
+      if (images.length > 0) {
+        setHeroImages(images);
+      } else {
+        // Fallback to picsum if none in DB or missing files
+        setHeroImages([
+          "https://picsum.photos/seed/vizioni1/1920/1080",
+          "https://picsum.photos/seed/vizioni2/1920/1080",
+          "https://picsum.photos/seed/vizioni3/1920/1080"
+        ]);
+      }
+    });
+
+    return () => {
+      unsubscribePartners();
+      unsubscribeStats();
+      unsubscribeAssets();
+    };
+  }, []);
 
   useEffect(() => {
     if (heroImages.length === 0) return;
@@ -83,16 +90,14 @@ const Home: React.FC = () => {
               <Sparkles className="h-3 w-3" />
               <span>{t('hero.subtitle')}</span>
             </div>
-            <h1 className="text-4xl sm:text-6xl md:text-[7.5rem] font-black text-brand-dark leading-[0.9] mb-10 uppercase tracking-tighter animate-in slide-in-from-left duration-1000">
-              {homeContent.title || t('hero.title1')}<br/>
-              {(!homeContent.title) && (
-                <span className="gradient-text">
-                  {t('hero.title2')}
-                </span>
-              )}
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-brand-dark leading-[1.1] mb-10 uppercase tracking-tighter animate-in slide-in-from-left duration-1000">
+              {t('hero.title1')}<br/>
+              <span className="gradient-text">
+                {t('hero.title2')}
+              </span>
             </h1>
             <p className="text-base md:text-xl text-slate-500 max-w-xl mb-12 font-medium leading-relaxed animate-in fade-in duration-1000 delay-300">
-              {homeContent.desc || t('hero.desc')}
+              {t('hero.desc')}
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 animate-in slide-in-from-bottom-8 duration-1000 delay-500">
               <Link to="/join" className="px-10 py-4 sm:px-12 sm:py-5 bg-brand-pink text-white rounded-full font-black uppercase text-[10px] sm:text-xs btn-glow-pink transition-all shadow-2xl shadow-brand-pink/30 tracking-widest flex items-center justify-center">
@@ -161,47 +166,49 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Stats Section - Color Coded based on Logo */}
-      <section className="py-32 px-6 bg-slate-50/30">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.length > 0 ? stats.map((stat, i) => {
-            const IconComponent = ({
-              Star, Globe, UserPlus, Sparkles, Target, Heart, Users, Briefcase, GraduationCap, Trophy
-            } as any)[stat.iconName] || Star;
+      {/* Stats Section - Horizontal Scrollable */}
+      <section className="py-32 px-6 bg-slate-50/30 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex overflow-x-auto pb-8 gap-8 snap-x no-scrollbar">
+            {stats.length > 0 ? stats.map((stat, i) => {
+              const IconComponent = ({
+                Star, Globe, UserPlus, Sparkles, Target, Heart, Users, Briefcase, GraduationCap, Trophy
+              } as any)[stat.iconName] || Star;
 
-            return (
-              <motion.div 
-                key={i} 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="flex flex-col items-center text-center p-12 rounded-[4rem] bg-white border border-slate-100 shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden"
-              >
-                <div className={`mb-10 p-6 rounded-[2rem] ${stat.bg} group-hover:scale-110 transition-transform ${stat.color} shadow-inner`}>
-                  <IconComponent className="h-8 w-8" />
+              return (
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  className="flex-none w-[280px] sm:w-[320px] flex flex-col items-center text-center p-12 rounded-[4rem] bg-white border border-slate-100 shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden snap-center"
+                >
+                  <div className={`mb-10 p-6 rounded-[2rem] ${stat.bg} group-hover:scale-110 transition-transform ${stat.color} shadow-inner`}>
+                    <IconComponent className="h-8 w-8" />
+                  </div>
+                  <div className={`text-6xl font-black uppercase tracking-tighter mb-4 ${stat.color} leading-none`}>{stat.value}</div>
+                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] leading-tight max-w-[150px]">{stat.label}</div>
+                </motion.div>
+              );
+            }) : (
+              // Fallback to show something if DB is empty
+              [
+                { value: '500+', label: 'TË RINJ TË TRAJNUAR', icon: Star, color: 'text-brand-pink', bg: 'bg-brand-pink/10' },
+                { value: '25+', label: 'PROJEKTE TË PËRFUNDUARA', icon: Globe, color: 'text-brand-lime', bg: 'bg-brand-lime/10' },
+                { value: '100+', label: 'VULLNETARË AKTIVË', icon: UserPlus, color: 'text-brand-cyan', bg: 'bg-brand-cyan/10' },
+                { value: 'LIPJAN', label: 'RAJONI I MBULUAR', icon: Sparkles, color: 'text-brand-orange', bg: 'bg-brand-orange/10' }
+              ].map((stat, i) => (
+                <div key={i} className="flex-none w-[280px] sm:w-[320px] flex flex-col items-center text-center p-12 rounded-[4rem] bg-white border border-slate-100 shadow-sm transition-all snap-center">
+                  <div className={`mb-10 p-6 rounded-[2rem] ${stat.bg} ${stat.color} shadow-inner`}>
+                    <stat.icon className="h-8 w-8" />
+                  </div>
+                  <div className={`text-6xl font-black uppercase tracking-tighter mb-4 ${stat.color} leading-none`}>{stat.value}</div>
+                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] leading-tight max-w-[150px]">{stat.label}</div>
                 </div>
-                <div className={`text-6xl font-black uppercase tracking-tighter mb-4 ${stat.color} leading-none`}>{stat.value}</div>
-                <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] leading-tight max-w-[150px]">{stat.label}</div>
-              </motion.div>
-            );
-          }) : (
-            // Fallback to show something if DB is empty, matching the photo
-            [
-              { value: '500+', label: 'TË RINJ TË TRAJNUAR', icon: Star, color: 'text-brand-pink', bg: 'bg-brand-pink/10' },
-              { value: '25+', label: 'PROJEKTE TË PËRFUNDUARA', icon: Globe, color: 'text-brand-lime', bg: 'bg-brand-lime/10' },
-              { value: '100+', label: 'VULLNETARË AKTIVË', icon: UserPlus, color: 'text-brand-cyan', bg: 'bg-brand-cyan/10' },
-              { value: 'LIPJAN', label: 'RAJONI I MBULUAR', icon: Sparkles, color: 'text-brand-orange', bg: 'bg-brand-orange/10' }
-            ].map((stat, i) => (
-              <div key={i} className="flex flex-col items-center text-center p-12 rounded-[4rem] bg-white border border-slate-100 shadow-sm transition-all">
-                <div className={`mb-10 p-6 rounded-[2rem] ${stat.bg} ${stat.color} shadow-inner`}>
-                  <stat.icon className="h-8 w-8" />
-                </div>
-                <div className={`text-6xl font-black uppercase tracking-tighter mb-4 ${stat.color} leading-none`}>{stat.value}</div>
-                <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] leading-tight max-w-[150px]">{stat.label}</div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
       </section>
 
@@ -219,15 +226,16 @@ const Home: React.FC = () => {
               </h2>
             </div>
             
-            <div className="relative">
-              <div className="flex flex-wrap justify-center items-center gap-12 md:gap-20">
-                {partners.map((partner) => (
+            <div className="relative overflow-hidden">
+              <div className="flex animate-marquee whitespace-nowrap gap-12 md:gap-20 items-center hover:[animation-play-state:paused]">
+                {/* Double the array for seamless loop */}
+                {[...partners, ...partners, ...partners].map((partner, idx) => (
                   <a 
-                    key={partner.id} 
+                    key={`${partner.id}-${idx}`} 
                     href={partner.website || '#'} 
                     target={partner.website ? "_blank" : "_self"}
                     rel="noopener noreferrer"
-                    className="group relative"
+                    className="inline-flex flex-none group relative"
                   >
                     <div className="w-32 h-32 md:w-40 md:h-40 grayscale hover:grayscale-0 opacity-40 hover:opacity-100 transition-all duration-500 flex items-center justify-center p-4">
                       <img 

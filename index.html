@@ -37,11 +37,16 @@
               'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
               'float': 'float 5s ease-in-out infinite',
               'spin-slow': 'spin 15s linear infinite',
+              'marquee': 'marquee 30s linear infinite',
             },
             keyframes: {
               float: {
                 '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
                 '50%': { transform: 'translateY(-15px) rotate(1deg)' },
+              },
+              marquee: {
+                '0%': { transform: 'translateX(0)' },
+                '100%': { transform: 'translateX(-50%)' }
               }
             }
           }
@@ -54,6 +59,14 @@
           background-color: #fcfcfd;
           overflow-x: hidden;
           color: #1a1a24;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
         
         .brand-aura {
