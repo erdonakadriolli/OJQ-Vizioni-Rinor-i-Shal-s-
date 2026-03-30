@@ -55,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
-            <Logo size="md" />
+            {/* Logo removed as per user request */}
           </Link>
         </div>
 
@@ -175,7 +175,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
             {/* Mobile Menu Header */}
             <div className="flex items-center justify-between px-6 py-6 border-b border-slate-100">
               <div className="flex items-center">
-                <Logo size="md" />
+                {/* Logo removed as per user request */}
               </div>
               <div className="flex items-center space-x-4">
                 {/* Mobile Language Switcher */}
