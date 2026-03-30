@@ -27,7 +27,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 relative z-10">
         <div className="col-span-1 md:col-span-1 space-y-8">
           <div className="flex items-center space-x-4">
-            <Logo size="md" />
+            {/* Logo removed as per user request */}
           </div>
           <p className="text-sm leading-relaxed font-medium text-slate-500">
             {t('footer.desc')}

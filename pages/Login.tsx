@@ -72,7 +72,9 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
         <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100">
           <div className="p-10">
             <div className="text-center mb-10">
-              <Logo size="lg" className="mx-auto" />
+              <div className="flex items-center justify-center">
+                {/* Logo removed as per user request */}
+              </div>
               <h2 className="text-3xl font-black text-brand-dark uppercase mt-6 tracking-tight">{t('login.title')}</h2>
               <p className="text-slate-500 mt-2 font-medium">{t('login.subtitle')}</p>
             </div>
