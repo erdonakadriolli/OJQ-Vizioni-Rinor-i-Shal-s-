@@ -263,9 +263,8 @@ const About: React.FC<AboutProps> = ({ user }) => {
           </h2>
           <div className="w-20 h-1 bg-brand-cyan mb-12 rounded-full"></div>
           
-          {/* Logo Section removed as per user request */}
           <div className="mb-12">
-            {/* Logo removed */}
+            <Logo size="lg" />
           </div>
         </div>
 

@@ -73,7 +73,7 @@ const Login: React.FC<{ onLogin: (user: User) => void }> = ({ onLogin }) => {
           <div className="p-10">
             <div className="text-center mb-10">
               <div className="flex items-center justify-center">
-                {/* Logo removed as per user request */}
+                <Logo size="lg" className="mx-auto" />
               </div>
               <h2 className="text-3xl font-black text-brand-dark uppercase mt-6 tracking-tight">{t('login.title')}</h2>
               <p className="text-slate-500 mt-2 font-medium">{t('login.subtitle')}</p>
