@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
+import {
   ArrowRight, UserPlus, Bot, MessageSquare, Sparkles, Star, Globe, Shield, Handshake,
   Target, Heart, Users, Briefcase, GraduationCap, Trophy
 } from 'lucide-react';
@@ -45,7 +45,7 @@ const Home: React.FC = () => {
         .map(doc => doc.data())
         .filter(asset => asset.key === 'hero_images' && asset.type === 'image')
         .map(asset => asset.url);
-      
+
       if (images.length > 0) {
         setHeroImages(images);
       } else {
@@ -79,15 +79,15 @@ const Home: React.FC = () => {
       <section className="relative min-h-screen flex items-center pt-24 overflow-hidden">
         {/* Dynamic Background Accents */}
         <div className="absolute top-0 right-0 w-2/3 h-full opacity-15 pointer-events-none">
-           <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-brand-pink rounded-full blur-[150px] animate-pulse"></div>
-           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-brand-lime rounded-full blur-[120px] animate-pulse-slow"></div>
-           <div className="absolute top-1/2 left-1/4 w-[300px] h-[300px] bg-brand-orange rounded-full blur-[100px] animate-pulse" style={{animationDelay: '2s'}}></div>
+          <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-brand-pink rounded-full blur-[150px] animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-brand-lime rounded-full blur-[120px] animate-pulse-slow"></div>
+          <div className="absolute top-1/2 left-1/4 w-[300px] h-[300px] bg-brand-orange rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }}></div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full grid lg:grid-cols-2 gap-16 items-center relative z-10">
           <div className="text-left">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-brand-dark leading-[1.1] mb-10 uppercase tracking-tighter animate-in slide-in-from-left duration-1000">
-              {t('hero.title1')}<br/>
+              {t('hero.title1')}<br />
               <span className="gradient-text">
                 {t('hero.title2')}
               </span>
@@ -104,60 +104,60 @@ const Home: React.FC = () => {
               </Link>
             </div>
           </div>
-          
-          <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] animate-in fade-in duration-1000 delay-200 mt-12 lg:mt-0">
-             {/* Gradient Borders around the image stack */}
-             <div className="absolute inset-0 bg-brand-pink rounded-[3rem] lg:rounded-[4rem] rotate-3 translate-x-4 translate-y-4 opacity-10"></div>
-             <div className="absolute inset-0 bg-brand-lime rounded-[3rem] lg:rounded-[4rem] -rotate-3 -translate-x-4 -translate-y-4 opacity-10"></div>
-             
-             <div className="relative h-full w-full group cursor-pointer" onClick={() => setActiveHeroIdx((activeHeroIdx + 1) % heroImages.length)}>
-                {heroImages.map((src, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={false}
-                    animate={{
-                      scale: activeHeroIdx === idx ? 1 : 0.9,
-                      rotate: activeHeroIdx === idx ? 0 : (idx % 2 === 0 ? 3 : -3),
-                      opacity: activeHeroIdx === idx ? 1 : 0,
-                      zIndex: activeHeroIdx === idx ? 10 : 0,
-                      x: activeHeroIdx === idx ? 0 : (idx < activeHeroIdx ? -100 : 100)
-                    }}
-                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute inset-0 rounded-[3rem] lg:rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white"
-                  >
-                    <img 
-                      src={src} 
-                      alt={`Hero ${idx}`} 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent"></div>
-                  </motion.div>
-                ))}
 
-                <div className="absolute bottom-8 lg:bottom-12 left-8 lg:left-12 right-8 lg:right-12 z-20">
-                   <div className="flex items-center space-x-4 mb-4">
-                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white">
-                         <Shield className="h-5 w-5 lg:h-6 lg:h-6" />
-                      </div>
-                      <div className="text-white">
-                         <h4 className="font-black uppercase text-[10px] lg:text-xs tracking-widest">Iniciativa e Shpresës</h4>
-                         <p className="text-[8px] lg:text-[10px] font-bold text-slate-300 uppercase">Fshati Shalë, Lipjan</p>
-                      </div>
-                   </div>
-                   
-                   {/* Indicators */}
-                   <div className="flex space-x-2">
-                     {heroImages.map((_, i) => (
-                       <button 
-                        key={i} 
-                        onClick={(e) => { e.stopPropagation(); setActiveHeroIdx(i); }}
-                        className={`h-1 rounded-full transition-all duration-500 ${activeHeroIdx === i ? 'w-8 bg-brand-pink' : 'w-2 bg-white/30 hover:bg-white/60'}`}
-                       ></button>
-                     ))}
-                   </div>
+          <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] animate-in fade-in duration-1000 delay-200 mt-12 lg:mt-0">
+            {/* Gradient Borders around the image stack */}
+            <div className="absolute inset-0 bg-brand-pink rounded-[3rem] lg:rounded-[4rem] rotate-3 translate-x-4 translate-y-4 opacity-10"></div>
+            <div className="absolute inset-0 bg-brand-lime rounded-[3rem] lg:rounded-[4rem] -rotate-3 -translate-x-4 -translate-y-4 opacity-10"></div>
+
+            <div className="relative h-full w-full group cursor-pointer" onClick={() => setActiveHeroIdx((activeHeroIdx + 1) % heroImages.length)}>
+              {heroImages.map((src, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={false}
+                  animate={{
+                    scale: activeHeroIdx === idx ? 1 : 0.9,
+                    rotate: activeHeroIdx === idx ? 0 : (idx % 2 === 0 ? 3 : -3),
+                    opacity: activeHeroIdx === idx ? 1 : 0,
+                    zIndex: activeHeroIdx === idx ? 10 : 0,
+                    x: activeHeroIdx === idx ? 0 : (idx < activeHeroIdx ? -100 : 100)
+                  }}
+                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute inset-0 rounded-[3rem] lg:rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white"
+                >
+                  <img
+                    src={src}
+                    alt={`Hero ${idx}`}
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent"></div>
+                </motion.div>
+              ))}
+
+              <div className="absolute bottom-8 lg:bottom-12 left-8 lg:left-12 right-8 lg:right-12 z-20">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white">
+                    <Shield className="h-5 w-5 lg:h-6 lg:h-6" />
+                  </div>
+                  <div className="text-white">
+                    <h4 className="font-black uppercase text-[10px] lg:text-xs tracking-widest">Iniciativa e Shpresës</h4>
+                    <p className="text-[8px] lg:text-[10px] font-bold text-slate-300 uppercase">Fshati Shalë, Lipjan</p>
+                  </div>
                 </div>
-             </div>
+
+                {/* Indicators */}
+                <div className="flex space-x-2">
+                  {heroImages.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={(e) => { e.stopPropagation(); setActiveHeroIdx(i); }}
+                      className={`h-1 rounded-full transition-all duration-500 ${activeHeroIdx === i ? 'w-8 bg-brand-pink' : 'w-2 bg-white/30 hover:bg-white/60'}`}
+                    ></button>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -172,8 +172,8 @@ const Home: React.FC = () => {
               } as any)[stat.iconName] || Star;
 
               return (
-                <motion.div 
-                  key={i} 
+                <motion.div
+                  key={i}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -221,22 +221,22 @@ const Home: React.FC = () => {
                 {t('home.partners.title')}
               </h2>
             </div>
-            
+
             <div className="relative overflow-hidden">
               <div className="flex animate-marquee whitespace-nowrap gap-12 md:gap-20 items-center hover:[animation-play-state:paused]">
                 {/* Double the array for seamless loop */}
                 {[...partners, ...partners, ...partners].map((partner, idx) => (
-                  <a 
-                    key={`${partner.id}-${idx}`} 
-                    href={partner.website || '#'} 
+                  <a
+                    key={`${partner.id}-${idx}`}
+                    href={partner.website || '#'}
                     target={partner.website ? "_blank" : "_self"}
                     rel="noopener noreferrer"
                     className="inline-flex flex-none group relative"
                   >
                     <div className="w-32 h-32 md:w-40 md:h-40 grayscale hover:grayscale-0 opacity-40 hover:opacity-100 transition-all duration-500 flex items-center justify-center p-4">
-                      <img 
-                        src={partner.logo} 
-                        alt={partner.name} 
+                      <img
+                        src={partner.logo}
+                        alt={partner.name}
                         className="max-w-full max-h-full object-contain filter drop-shadow-sm group-hover:drop-shadow-xl transition-all"
                         referrerPolicy="no-referrer"
                       />
@@ -260,7 +260,7 @@ const Home: React.FC = () => {
           <div className="bg-brand-dark rounded-[4rem] p-12 md:p-24 relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center gap-16 group">
             <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-orange/15 to-transparent pointer-events-none"></div>
             <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-brand-orange/10 rounded-full blur-[100px]"></div>
-            
+
             <div className="flex-grow z-10 text-center md:text-left">
               <div className="inline-flex items-center space-x-2 px-5 py-2 bg-white/5 text-brand-orange rounded-full text-[10px] font-black uppercase tracking-[0.3em] mb-10">
                 <Bot className="h-4 w-4" /> <span>{t('derdo.promo.tag')}</span>
@@ -275,16 +275,16 @@ const Home: React.FC = () => {
                 <MessageSquare className="h-5 w-5" /> <span>{t('derdo.chat')}</span>
               </Link>
             </div>
-            
+
             <div className="w-full md:w-1/3 flex justify-center z-10">
-               <div className="relative w-72 h-72 md:w-96 md:h-96">
-                  <div className="absolute inset-0 bg-brand-orange rounded-full opacity-10 animate-ping"></div>
-                  <div className="absolute inset-4 border-2 border-brand-orange/30 rounded-full animate-spin-slow"></div>
-                  <div className="absolute inset-10 border-2 border-white/10 rounded-full"></div>
-                  <div className="relative w-full h-full bg-white/10 backdrop-blur-xl rounded-full border border-white/20 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-700">
-                     <Bot className="h-40 w-40 md:h-56 md:w-56 text-brand-orange drop-shadow-[0_0_40px_rgba(243,146,55,0.4)]" />
-                  </div>
-               </div>
+              <div className="relative w-72 h-72 md:w-96 md:h-96">
+                <div className="absolute inset-0 bg-brand-orange rounded-full opacity-10 animate-ping"></div>
+                <div className="absolute inset-4 border-2 border-brand-orange/30 rounded-full animate-spin-slow"></div>
+                <div className="absolute inset-10 border-2 border-white/10 rounded-full"></div>
+                <div className="relative w-full h-full bg-white/10 backdrop-blur-xl rounded-full border border-white/20 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-700">
+                  <Bot className="h-40 w-40 md:h-56 md:w-56 text-brand-orange drop-shadow-[0_0_40px_rgba(243,146,55,0.4)]" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
