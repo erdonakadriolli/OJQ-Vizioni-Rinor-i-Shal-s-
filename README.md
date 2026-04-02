@@ -9,7 +9,7 @@ Projekti zyrtar digjital i OJQ-së **"Vizioni Rinor i Shalës"**, ndërtuar për
 ## ⚡ Veçoritë Kryesore
 
 - **🌍 Multi-Gjuhësh:** Mbështetje për Shqip dhe Anglisht.
-- **🤖 VIZIONI AI:** Asistent Inteligjent (fuqizuar nga Gemini 3.1-flash-live) për vizitorët.
+- **🤖 VIZIONI AI:** Asistent Inteligjent (fuqizuar nga Gemini 2.5-flash) për vizitorët.
 - **📊 Paneli Admin:** Menaxhim i plotë i projekteve, lajmeve dhe vullnetarëve.
 - **📱 Dizajn Modern:** Ndërfaqe interaktive dhe e përshtatshme për pajisje mobile.
 

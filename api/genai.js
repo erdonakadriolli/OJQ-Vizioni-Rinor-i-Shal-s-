@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.1-flash-live",
+      model: "gemini-2.5-flash",
       contents: messages.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
       config: {
         systemInstruction: `Ju jeni VIZIONI AI, asistenti inteligjent dhe zyrtar i OJQ "Vizioni Rinor i Shalës" (VRSH). 
