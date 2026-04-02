@@ -86,10 +86,6 @@ const Home: React.FC = () => {
         
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full grid lg:grid-cols-2 gap-16 items-center relative z-10">
           <div className="text-left">
-            <div className="inline-flex items-center space-x-2 px-5 py-2 bg-white/60 backdrop-blur-md border border-slate-100 text-brand-pink rounded-full font-black uppercase text-[10px] tracking-[0.3em] mb-8 animate-in slide-in-from-left duration-700">
-              <Sparkles className="h-3 w-3" />
-              <span>{t('hero.subtitle')}</span>
-            </div>
             <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-brand-dark leading-[1.1] mb-10 uppercase tracking-tighter animate-in slide-in-from-left duration-1000">
               {t('hero.title1')}<br/>
               <span className="gradient-text">
