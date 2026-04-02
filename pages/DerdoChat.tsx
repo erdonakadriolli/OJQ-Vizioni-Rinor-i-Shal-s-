@@ -27,6 +27,18 @@ const DerdoChat: React.FC = () => {
     }
   }, [messages]);
 
+  const formatText = (text: string) => {
+    // Remove markdown headers (###) keeping the text, and parse **bold** text
+    const cleanText = text.replace(/###\s*/g, '');
+    const parts = cleanText.split(/(\*\*.*?\*\*)/g).map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={index} className="font-bold text-slate-800">{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+    return parts;
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -97,12 +109,12 @@ const DerdoChat: React.FC = () => {
                 <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-brand-pink ml-3' : 'bg-brand-dark mr-3'}`}>
                   {msg.role === 'user' ? <User className="h-4 w-4 text-white" /> : <Bot className="h-4 w-4 text-white" />}
                 </div>
-                <div className={`p-5 rounded-[2rem] text-sm font-medium leading-relaxed shadow-sm ${
+                <div className={`whitespace-pre-wrap p-5 rounded-[2rem] text-sm font-medium leading-relaxed shadow-sm ${
                   msg.role === 'user' 
                     ? 'bg-brand-pink text-white rounded-tr-none' 
                     : 'bg-white text-slate-700 rounded-tl-none border border-slate-100'
                 }`}>
-                  {msg.text}
+                  {msg.role === 'model' ? formatText(msg.text) : msg.text}
                 </div>
               </div>
             </div>
