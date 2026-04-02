@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   try {
     const { messages } = req.body;
 
-    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",

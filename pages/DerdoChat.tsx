@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, User, Bot, Trash2, ChevronLeft } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
+
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -36,58 +36,28 @@ const DerdoChat: React.FC = () => {
     setIsLoading(true);
 
     try {
-      if (!process.env.API_KEY) {
-        setMessages(prev => [...prev, { role: 'model', text: "Gabim: Mungon GEMINI_API_KEY në skedarin .env. Ju lutem shtoni atë për të aktivizuar VIZIONI AI." }]);
-        setIsLoading(false);
-        return;
-      }
+      const requestMessages = messages.concat({ role: 'user', text: userMessage }).map(m => ({
+        role: m.role,
+        text: m.text
+      }));
 
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const systemPrompt = `Ju jeni VIZIONI AI, asistenti inteligjent dhe zyrtar i OJQ "Vizioni Rinor i Shalës" (VRSH). 
-      Përgjigjuni gjithmonë në gjuhën shqipe, jini profesional, miqësor dhe pozitiv. Kur ju pyesin për emrin, thuani: "Unë jam VIZIONI AI".
-
-      RREGULLI I FORMATIMIT:
-      Mos përdorni kurrë simbolet "**" për të trashur tekstin. Përdorni rreshta të rinj (Enter) dhe tituj me shkronja të mëdha për të krijuar një strukturë të pastër dhe të lexueshme.
-
-      HISTORIKU DHE MISIONI:
-      OJQ "Vizioni Rinor i Shalës" (VRSH) është themeluar në fshatin Shalë, Komuna e Lipjanit. Misioni ynë është fuqizimi i rinisë dhe krijimi i mundësive për zhvillim edukativ, social dhe profesional.
-
-      STRUKTURA ORGANIZATIVE:
-      - Drejtori Ekzekutiv: Leotrim Pajaziti.
-      - Bordi i Drejtorëve: Burim Shamolli, Shkelzen Karpuzi.
-      - Asambleja e Anëtarëve: Euresa Karpuzi (Kryesuese), Miranda Karpuzi, Erdona Kadriolli, Erjona Kadriolli, Viola Hetemi.
-      - Stafi i Projekteve: Dijellëza Selmani, Bleriana Kadriolli.
-      - Vullnetarët Aktivë: Haxhi Hetemi, Egzona Hetemi.
-      - Vullnetarët e Projekteve: Arbenita Krasniqi, Anisa Bajraktari, Loresa Gashi, Blinera Gashi, Laureta Gashi.
-
-      PROJEKTET KRYESORE:
-      - Trashëgimia: "Mbroje Trashëgiminë e Shalës" (2020), "Youth4CulturalHeritage" (2024-2025).
-      - Fuqizimi: "Fuqizimi i të rinjve për vendimmarrje lokale", "Rini Aktive", "Youth in Action".
-      - Edukimi: "Biblioteka, Arti dhe të Rinjët", "Atele e Artit".
-      - Shëndetësia: "Anti Covid-19 Advocates", "Muaji Rozë".
-      - Mjedisi: "Breathe Freely Shala", "Shala e Pastër".
-      - Komuniteti: "Mërgata Fest & Sports 2024", "Darka e Lamës", "Kujtesa Kolektive e Luftës 98-99".
-
-      KRIJUESI I WEBSITE-IT:
-      Kjo platformë është punuar nga ERDONA KADRIOLLI. Përgjigjuni me krenari për këtë fakt.`;
-
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: messages.concat({ role: 'user', text: userMessage }).map(m => ({
-            role: m.role,
-            parts: [{ text: m.text }]
-        })),
-        config: {
-          systemInstruction: systemPrompt,
-          temperature: 0.7,
-        }
+      const response = await fetch('/api/genai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ messages: requestMessages })
       });
 
-      const botResponse = response.text || "Më falni, kam një problem teknik.";
-      setMessages(prev => [...prev, { role: 'model', text: botResponse }]);
+      if (!response.ok) {
+        throw new Error(`Gabim i serverit: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setMessages(prev => [...prev, { role: 'model', text: data.text }]);
     } catch (error) {
-      console.error("Gemini Error:", error);
-      setMessages(prev => [...prev, { role: 'model', text: "Gabim në lidhje!" }]);
+      console.error("Vercel Backend Error:", error);
+      setMessages(prev => [...prev, { role: 'model', text: "Gabim në lidhje me Serverin!" }]);
     } finally {
       setIsLoading(false);
     }
