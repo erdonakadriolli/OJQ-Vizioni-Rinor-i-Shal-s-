@@ -1,79 +1,50 @@
-# 🌟 Vizioni Rinor i Shalës (VRSH) - Platforma Digjitale
+# 🌟 Vizioni Rinor i Shalës (VRSH)
 
-Ky është projekti zyrtar i faqes web për Organizatën Joqeveritare **"Vizioni Rinor i Shalës" (VRSH)**, me bazë në Shalë, Lipjan. Platforma është ndërtuar për të fuqizuar rininë lokale, për të promovuar aktivizmin qytetar dhe për të digjitalizuar proceset e organizatës.
+Projekti zyrtar digjital i OJQ-së **"Vizioni Rinor i Shalës"**, ndërtuar për të fuqizuar rininë, për të promovuar aktivizmin dhe për të digjitalizuar organizatën.
 
-🌐 **Faqja Zyrtare:** [https://vizionirinorishales.org](https://vizionirinorishales.org)
+🌐 **Faqja Zyrtare:** [vizionirinorishales.org](https://vizionirinorishales.org)
 
-## 🚀 Veçoritë Kryesore
+---
 
-- **🌍 Sistemit Multi-Gjuhësh**: Mbështetje e plotë për gjuhën Shqipe dhe Angleze (AL/EN).
-- **🤖 VIZIONI AI**: Një asistent inteligjent i integruar (bazuar në Gemini AI) që u përgjigjet pyetjeve të vizitorëve rreth organizatës, projekteve dhe vullnetarizmit.
-- **📊 Paneli i Adminit**: Një sistem i plotë menaxhimi (Dashboard) për:
-  - Menaxhimin e Projekteve (Shtim/Fshirje/Editim).
-  - Publikimin e Lajmeve dhe Raporteve.
-  - Menaxhimin e Stafit dhe Strukturës.
-  - Rishikimin e Aplikimeve për Vullnetarë.
-- **📝 Aplikimi Online**: Formular interaktiv për të rinjtë që dëshirojnë t'i bashkohen organizatës.
-- **📱 Dizajn Responsiv**: Optimizuar për celularë, tabletë dhe desktop.
-- **✨ Animacione Moderne**: Përdorimi i `framer-motion` për një përvojë sa më dinamike.
+## ⚡ Veçoritë Kryesore
 
-## 🛠️ Teknologjitë e Përdorura
+- **🌍 Multi-Gjuhësh:** Mbështetje për Shqip dhe Anglisht.
+- **🤖 VIZIONI AI:** Asistent Inteligjent (fuqizuar nga Gemini 3.1-flash-live) për vizitorët.
+- **📊 Paneli Admin:** Menaxhim i plotë i projekteve, lajmeve dhe vullnetarëve.
+- **📱 Dizajn Modern:** Ndërfaqe interaktive dhe e përshtatshme për pajisje mobile.
 
-- **Frontend**: React.js (me Vite)
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **Animations**: Framer Motion
-- **AI Integration**: Google Generative AI (@google/genai)
-- **Routing**: React Router DOM
-- **State Management**: React Context API (për Gjuhën dhe Autentikimin)
+---
 
-## 📂 Struktura e Projektit
+## 🛠️ Teknologjitë
 
-```text
-├── src/
-│   ├── components/     # Komponentët e ripërdorshëm (Navbar, Footer, etj.)
-│   ├── context/        # LanguageContext për AL/EN
-│   ├── pages/          # Faqet kryesore (Home, About, Projects, News, Admin, etj.)
-│   ├── services/       # Shërbimet si MockDB dhe integrimi i AI
-│   ├── types/          # Definicioni i TypeScript interfaces
-│   └── App.tsx         # Konfigurimi i rrugëve (Routes)
-├── public/             # Asetet statike
-└── tailwind.config.js  # Konfigurimi i Tailwind
-```
+- **Kodi:** React.js (Vite), Tailwind CSS, Framer Motion
+- **Sistemi AI:** Vercel Serverless (Node.js) & Google Generative AI
+- **Databaza:** Firebase
 
-## ⚙️ Instalimi dhe Përdorimi
+---
 
-1. **Klononi repozitorin**:
+## ⚙️ Instalimi
+
+1. **Shkarko projektin:**
    ```bash
    git clone https://github.com/erdonakadriolli/vizionirinorishales
    ```
 
-2. **Instaloni varësitë**:
+2. **Instalo të dhënat:**
    ```bash
    npm install
    ```
 
-3. **Konfiguroni variablat e mjedisit (.env)**:
-   Krijoni një file `.env` dhe shtoni çelësin tuaj të Gemini API:
-   ```env
-   VITE_GEMINI_API_KEY=your_api_key_here
-   ```
+3. **Lidhu me AI:**
+   - Kalo në Vercel dhe shto çelësin tek Settings > Environment Variables: `GEMINI_API_KEY`.
 
-4. **Nisni projektin**:
+4. **Nisja lokale:**
    ```bash
    npm run dev
    ```
 
-## 🤖 VIZIONI AI
-
-Asistenti ynë inteligjent është i trajnuar posaçërisht për VRSH. Ai:
-- Nuk përdor markdown të rëndë (si `**`) për një lexim më të pastër.
-- Identifikohet gjithmonë si "VIZIONI AI".
-- Ofron informacione të sakta për stafin, drejtorin Leotrim Pajaziti dhe projektet si "Akademia Digjitale".
-
-## ✍️ Autorësia
-
-Ky projekt është dizajnuar dhe zhvilluar me përkushtim nga **Erdona Kadriolli**.
-
 ---
-© 2026 Vizioni Rinor i Shalës. Të gjitha të drejtat të rezervuara.
+
+<p align="center">
+  Krijuar nga <b>Erdona Kadriolli</b>
+</p>
