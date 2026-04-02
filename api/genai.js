@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash",
       contents: messages.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
       config: {
         systemInstruction: `Ju jeni VIZIONI AI, asistenti inteligjent dhe zyrtar i OJQ "Vizioni Rinor i Shalës" (VRSH). 
@@ -46,6 +46,6 @@ export default async function handler(req, res) {
     res.status(200).json({ text: response.text || "Më falni, ka ndodhur një gabim." });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ text: "Gabim në lidhje!" });
+    res.status(200).json({ text: `[Raporti Diagnostikues i Gabimit Vercel]: ${err.message}. Të lutem kontrollo gjithashtu nëse po e teston në localhost apo në domainin Vercel.` });
   }
 }
