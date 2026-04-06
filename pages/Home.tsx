@@ -107,8 +107,8 @@ const Home: React.FC = () => {
 
           <div className="relative h-[300px] sm:h-[400px] lg:h-[600px] animate-in fade-in duration-1000 delay-200 mt-12 lg:mt-0">
             {/* Gradient Borders around the image stack */}
-            <div className="absolute inset-0 bg-brand-pink rounded-[3rem] lg:rounded-[4rem] rotate-3 translate-x-4 translate-y-4 opacity-10"></div>
-            <div className="absolute inset-0 bg-brand-lime rounded-[3rem] lg:rounded-[4rem] -rotate-3 -translate-x-4 -translate-y-4 opacity-10"></div>
+            <div className="absolute inset-0 bg-brand-pink rounded-[2rem] lg:rounded-[3rem] rotate-3 translate-x-4 translate-y-4 opacity-10"></div>
+            <div className="absolute inset-0 bg-brand-lime rounded-[2rem] lg:rounded-[3rem] -rotate-3 -translate-x-4 -translate-y-4 opacity-10"></div>
 
             <div className="relative h-full w-full group cursor-pointer" onClick={() => setActiveHeroIdx((activeHeroIdx + 1) % heroImages.length)}>
               {heroImages.map((src, idx) => (
@@ -123,7 +123,7 @@ const Home: React.FC = () => {
                     x: activeHeroIdx === idx ? 0 : (idx < activeHeroIdx ? -100 : 100)
                   }}
                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 rounded-[3rem] lg:rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white"
+                  className="absolute inset-0 rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white"
                 >
                   <img
                     src={src}
@@ -163,7 +163,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Stats Section - Horizontal Scrollable */}
-      <section className="py-32 px-6 bg-slate-50/30 overflow-hidden">
+      <section className="py-20 px-6 bg-slate-50/30 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="flex overflow-x-auto pb-8 gap-8 snap-x no-scrollbar">
             {stats.length > 0 ? stats.map((stat, i) => {
@@ -178,12 +178,12 @@ const Home: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.1 }}
-                  className="flex-none w-[280px] sm:w-[320px] flex flex-col items-center text-center p-12 rounded-[4rem] bg-white border border-slate-100 shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden snap-center"
+                  className="flex-none w-[220px] sm:w-[260px] flex flex-col items-center text-center p-8 rounded-[2.5rem] bg-white border border-slate-100 shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden snap-center"
                 >
-                  <div className={`mb-10 p-6 rounded-[2rem] ${stat.bg} group-hover:scale-110 transition-transform ${stat.color} shadow-inner`}>
-                    <IconComponent className="h-8 w-8" />
+                  <div className={`mb-6 p-4 rounded-3xl ${stat.bg} group-hover:scale-110 transition-transform ${stat.color} shadow-inner`}>
+                    <IconComponent className="h-6 w-6" />
                   </div>
-                  <div className={`text-6xl font-black uppercase tracking-tighter mb-4 ${stat.color} leading-none`}>{stat.value}</div>
+                  <div className={`text-4xl font-black uppercase tracking-tighter mb-3 ${stat.color} leading-none`}>{stat.value}</div>
                   <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] leading-tight max-w-[150px]">{stat.label}</div>
                 </motion.div>
               );
@@ -195,11 +195,11 @@ const Home: React.FC = () => {
                 { value: '100+', label: 'VULLNETARË AKTIVË', icon: UserPlus, color: 'text-brand-cyan', bg: 'bg-brand-cyan/10' },
                 { value: 'LIPJAN', label: 'RAJONI I MBULUAR', icon: Sparkles, color: 'text-brand-orange', bg: 'bg-brand-orange/10' }
               ].map((stat, i) => (
-                <div key={i} className="flex-none w-[280px] sm:w-[320px] flex flex-col items-center text-center p-12 rounded-[4rem] bg-white border border-slate-100 shadow-sm transition-all snap-center">
-                  <div className={`mb-10 p-6 rounded-[2rem] ${stat.bg} ${stat.color} shadow-inner`}>
-                    <stat.icon className="h-8 w-8" />
+                <div key={i} className="flex-none w-[220px] sm:w-[260px] flex flex-col items-center text-center p-8 rounded-[2.5rem] bg-white border border-slate-100 shadow-sm transition-all snap-center">
+                  <div className={`mb-6 p-4 rounded-3xl ${stat.bg} ${stat.color} shadow-inner`}>
+                    <stat.icon className="h-6 w-6" />
                   </div>
-                  <div className={`text-6xl font-black uppercase tracking-tighter mb-4 ${stat.color} leading-none`}>{stat.value}</div>
+                  <div className={`text-4xl font-black uppercase tracking-tighter mb-3 ${stat.color} leading-none`}>{stat.value}</div>
                   <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] leading-tight max-w-[150px]">{stat.label}</div>
                 </div>
               ))
@@ -257,7 +257,7 @@ const Home: React.FC = () => {
       {/* AI Bot Section - Deep Dark with Orange Glow (Logo Right) */}
       <section className="py-24 px-6 bg-slate-50/50">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-brand-dark rounded-[4rem] p-12 md:p-24 relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center gap-16 group">
+          <div className="bg-brand-dark rounded-[3rem] p-10 md:p-16 relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center gap-16 group">
             <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-orange/15 to-transparent pointer-events-none"></div>
             <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-brand-orange/10 rounded-full blur-[100px]"></div>
 

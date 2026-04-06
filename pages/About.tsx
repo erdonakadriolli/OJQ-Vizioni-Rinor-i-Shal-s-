@@ -92,8 +92,8 @@ const About: React.FC<AboutProps> = ({ user }) => {
         </div>
         <div className="lg:col-span-5">
           <div className="relative group cursor-pointer" onClick={() => setActiveMissionIdx((activeMissionIdx + 1) % missionImages.length)}>
-            <div className="absolute -inset-4 bg-brand-pink/10 rounded-[3rem] blur-2xl group-hover:bg-brand-pink/20 transition-all duration-500"></div>
-            <div className="relative aspect-[4/5] rounded-[3rem]">
+            <div className="absolute -inset-4 bg-brand-pink/10 rounded-[2rem] blur-2xl group-hover:bg-brand-pink/20 transition-all duration-500"></div>
+            <div className="relative aspect-[4/5] rounded-[2rem]">
               {missionImages.map((src, idx) => (
                 <motion.div
                   key={idx}
@@ -106,7 +106,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
                     x: activeMissionIdx === idx ? 0 : (idx < activeMissionIdx ? -50 : 50)
                   }}
                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl bg-slate-100"
+                  className="absolute inset-0 rounded-[2rem] overflow-hidden border-8 border-white shadow-2xl bg-slate-100"
                 >
                   <img 
                     src={src} 
@@ -135,7 +135,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
 
       {/* Vision & Mission Split */}
       <section className="grid md:grid-cols-2 gap-8">
-        <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm group hover:shadow-xl transition-all">
+        <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm group hover:shadow-xl transition-all">
           <div className="w-12 h-12 bg-brand-pink/10 rounded-2xl flex items-center justify-center text-brand-pink mb-8 group-hover:scale-110 transition-transform">
             <Target className="h-6 w-6" />
           </div>
@@ -146,7 +146,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
             <EditableText translationKey="about.vision.text" multiline />
           </p>
         </div>
-        <div className="bg-brand-dark p-10 rounded-[3rem] text-white group hover:shadow-xl transition-all relative overflow-hidden">
+        <div className="bg-brand-dark p-8 rounded-[2rem] text-white group hover:shadow-xl transition-all relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-brand-lime/20 blur-3xl -mr-16 -mt-16"></div>
           <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-brand-lime mb-8 group-hover:scale-110 transition-transform">
             <Rocket className="h-6 w-6" />
@@ -171,7 +171,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
 
         <div className="grid md:grid-cols-3 gap-8">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-slate-50/50 p-8 rounded-[2.5rem] border border-slate-100 hover:bg-white hover:shadow-xl transition-all group">
+            <div key={i} className="bg-slate-50/50 p-6 rounded-[1.5rem] border border-slate-100 hover:bg-white hover:shadow-xl transition-all group">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform ${
                 i === 1 ? 'bg-brand-pink' : i === 2 ? 'bg-brand-cyan' : 'bg-brand-orange'
               }`}>
@@ -189,7 +189,7 @@ const About: React.FC<AboutProps> = ({ user }) => {
       </section>
 
       {/* Simplified Banner for Activities */}
-      <section className="bg-white rounded-[3.5rem] p-10 md:p-14 border border-slate-100 flex flex-col md:flex-row items-center gap-12 shadow-sm relative overflow-hidden">
+      <section className="bg-white rounded-[2.5rem] p-8 md:p-10 border border-slate-100 flex flex-col md:flex-row items-center gap-12 shadow-sm relative overflow-hidden">
         <div className="absolute top-0 left-0 w-1 h-full bg-brand-pink"></div>
         <div className="md:w-1/3">
            <h3 className="text-2xl font-black text-brand-dark uppercase tracking-tight mb-4">
