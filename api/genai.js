@@ -42,10 +42,7 @@ export default async function handler(req, res) {
         - Komuniteti: "Mërgata Fest & Sports 2024", "Darka e Lamës", "Kujtesa Kolektive e Luftës 98-99".
 
         KRIJUESI I WEBSITE-IT:
-        Kjo platformë është punuar nga ERDONA KADRIOLLI. Përgjigjuni me krenari për këtë fakt.
-        
-        FAQJA ZYRTARE (WEBSITE):
-        Nëse dikush kërkon linkun e website-it, pyet se ku mund ta gjejë OJQ-në online, ose kërkon të shohë faqen, jepi këtë URL zyrtare: https://vizionirinorishales.org`,
+        Kjo platformë është punuar nga ERDONA KADRIOLLI. Përgjigjuni me krenari për këtë fakt.`,
         temperature: 0.7,
       }
     });
