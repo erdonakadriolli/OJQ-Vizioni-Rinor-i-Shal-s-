@@ -12,7 +12,7 @@ import News from './pages/News';
 import VolunteerApply from './pages/VolunteerApply';
 import DerdoChat from './pages/DerdoChat';
 import { User, UserRole } from './types';
-import { Facebook, Instagram, Mail, Phone, MapPin, ArrowRight, Heart } from 'lucide-react';
+import { Facebook, Instagram, Youtube, Mail, Phone, MapPin, ArrowRight, Heart } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { FirestoreProvider } from './context/FirestoreContext';
 import { logout as firebaseLogout, auth } from './firebase';
@@ -43,6 +43,9 @@ const Footer: React.FC = () => {
               <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
                 <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-1.13-.31-2.34-.25-3.41.33-.71.38-1.27 1.03-1.57 1.77-.3.72-.34 1.52-.16 2.27.18.75.58 1.44 1.14 1.96.56.52 1.28.86 2.05.97.77.11 1.57.01 2.28-.28.71-.29 1.32-.8 1.73-1.44.41-.64.62-1.4.61-2.17-.01-3.17.01-6.33-.01-9.5z"/>
               </svg>
+            </a>
+            <a href="https://www.youtube.com/@vizionirinorishales1668" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center hover:bg-brand-pink hover:text-white transition-all duration-500 border border-slate-200 shadow-sm">
+              <Youtube className="h-5 w-5" />
             </a>
           </div>
         </div>
