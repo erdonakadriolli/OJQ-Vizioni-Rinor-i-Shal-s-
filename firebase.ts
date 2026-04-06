@@ -1,7 +1,12 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signOut } from 'firebase/auth';
 import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, onSnapshot, doc, updateDoc, deleteDoc, getDocFromServer } from 'firebase/firestore';
-import firebaseConfig from './firebase-applet-config.json';
+import firebaseConfigBlueprint from './firebase-applet-config.json';
+
+const firebaseConfig = {
+  ...firebaseConfigBlueprint,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || firebaseConfigBlueprint.apiKey,
+};
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
