@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash",
       contents: messages.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
       config: {
         systemInstruction: `Ju jeni VIZIONI AI, asistenti inteligjent dhe zyrtar i OJQ "Vizioni Rinor i Shalës" (VRSH). 
@@ -48,7 +48,9 @@ export default async function handler(req, res) {
 
         KRIJUESI I WEBSITE-IT:
         Kjo platformë është punuar nga ERDONA KADRIOLLI. Përgjigjuni me krenari për këtë fakt.`,
-        temperature: 0.7,
+        generationConfig: {
+          temperature: 0.7,
+        },
       }
     });
 
